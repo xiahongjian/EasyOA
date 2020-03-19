@@ -1,0 +1,6 @@
+.classpath
+.project
+.bak
+.settings/
+target/
+module/
