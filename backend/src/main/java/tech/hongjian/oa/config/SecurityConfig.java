@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
@@ -36,17 +37,18 @@ import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.model.RestResponse;
 import tech.hongjian.oa.service.UserService;
 import tech.hongjian.oa.util.JSONUtil;
+import tech.hongjian.oa.util.WebUtil;
 
 /**
  * @author xiahongjian
  * @time 2020-01-15 22:37:28
  */
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserService userService;
-    
+
     @Autowired
     private CustomUrlDecisionManager customUrlDecisionManager;
 
@@ -58,7 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(ConfigConsts.URL.LOGIN, ConfigConsts.URL.LOGOUT, "/css/**",
-                "/js/**", "/index.html", "/img/**", "/fonts/**", "/favicon.ico");
+                "/js/**", "/index.html", "/img/**", "/fonts/**", "/favicon.ico", "/error");
     }
 
     @Override
@@ -78,10 +80,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 }})
             .and()
             .formLogin()
-            .loginPage(ConfigConsts.URL.LOGIN)
-            .loginProcessingUrl("/login.do")
             .usernameParameter(ConfigConsts.PARAM_USERNAME)
             .passwordParameter(ConfigConsts.PARAM_PASSWORD)
+//            .loginProcessingUrl(ConfigConsts.URL.LOGIN)
             .successHandler(new AuthenticationSuccessHandler() {
                 @Override
                 public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -112,7 +113,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     } else if (exception instanceof BadCredentialsException) {
                         msg = "用户名或者密码输入错误，请重新输入!";
                     }
-                    out.print(JSONUtil.toJSON(RestResponse.fail(msg)));
+                    out.print(JSONUtil.toJSON(RestResponse.fail(Code.LONGIN_ERROR, msg)));
                     out.close();
                 }
             })
@@ -124,7 +125,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 @Override
                 public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
                         Authentication authentication) throws IOException, ServletException {
-                    response.setContentType(ConfigConsts.CONTENT_TYPE);
+                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     PrintWriter out = response.getWriter();
                     out.print(JSONUtil.toJSON(RestResponse.ok()));
                     out.close();
@@ -137,11 +138,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 @Override
                 public void commence(HttpServletRequest request, HttpServletResponse response,
                         AuthenticationException authException) throws IOException, ServletException {
-                    response.setContentType(ConfigConsts.CONTENT_TYPE);
-                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                    PrintWriter out = response.getWriter();
-                    out.print(JSONUtil.toJSON(RestResponse.fail("Unauthorized")));
-                    out.close();
+                    // AJAX请求
+                    if (WebUtil.isAjaxRequest(request)) {
+                        response.setContentType(ConfigConsts.CONTENT_TYPE);
+                        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                        PrintWriter out = response.getWriter();
+                        out.print(JSONUtil.toJSON(RestResponse.fail(Code.NOT_LOGIN, "Unauthorized")));
+                        out.close();
+                        return;
+                    }
+                    // 非AJAX请求
+                    response.sendRedirect(ConfigConsts.URL.LOGIN);
                 }
             });
     }

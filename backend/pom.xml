@@ -17,7 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <activiti.version>7.0.0.SR1</activiti.version>
-        <mp.version>3.3.0</mp.version>
+        <mp.version>3.3.2</mp.version>
     </properties>
 
     <dependencies>
@@ -62,9 +62,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
-
-        <!-- <dependency> <groupId>commons-codec</groupId> <artifactId>commons-codec</artifactId> 
-            </dependency> -->
 
         <dependency>
             <groupId>mysql</groupId>

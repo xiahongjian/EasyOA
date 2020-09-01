@@ -17,7 +17,7 @@
         	$('#submit').click(function() {
         		var username = $('[name=username]').val();
         		var password = $('[name=password]').val();
-        		$.post('login.do', {
+        		$.post('/login', {
         			username: username,
         			password: password
         		}, function(data) {
