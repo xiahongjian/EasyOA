@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserService userService;
 
     @Autowired
-    private CustomUrlDecisionManager customUrlDecisionManager;
+    private ResourceBasedDecisionManager customUrlDecisionManager;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -59,8 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers(ConfigConsts.URL.LOGIN, ConfigConsts.URL.LOGOUT, "/css/**",
-                "/js/**", "/index.html", "/img/**", "/fonts/**", "/favicon.ico", "/error");
+        web.ignoring().antMatchers("/css/**", "/js/**", "/index.html", "/img/**", "/fonts/**", "/favicon.ico", "/error");
     }
 
     @Override
@@ -82,7 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .formLogin()
             .usernameParameter(ConfigConsts.PARAM_USERNAME)
             .passwordParameter(ConfigConsts.PARAM_PASSWORD)
-//            .loginProcessingUrl(ConfigConsts.URL.LOGIN)
+            .loginProcessingUrl(ConfigConsts.URL.LOGIN)
             .successHandler(new AuthenticationSuccessHandler() {
                 @Override
                 public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

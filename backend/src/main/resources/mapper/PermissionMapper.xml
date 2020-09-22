@@ -3,16 +3,16 @@
 <mapper namespace="tech.hongjian.oa.mapper.PermissionMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="tech.hongjian.oa.entity.Permission">
-    <result column="id" property="id" />
-    <result column="create_time" property="createTime" />
-    <result column="update_time" property="updateTime" />
+    <resultMap id="BaseResultMap"
+        type="tech.hongjian.oa.entity.Permission">
+        <result column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
         <result column="name" property="name" />
         <result column="description" property="description" />
         <result column="url" property="url" />
         <result column="operation" property="operation" />
         <result column="group" property="group" />
-        <result column="group_desc" property="groupDesc" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -20,7 +20,24 @@
         id,
         create_time,
         update_time,
-        name, description, url, operation, group, group_desc
+        name, description, url,
+        operation, `group`
     </sql>
+
+    <sql id="Temp_Base_Column_List">
+        t.id,
+        t.create_time,
+        t.update_time,
+        t.name, t.description, t.url, t.operation,
+        t.group
+    </sql>
+
+    <select id="findUserPermission" resultMap="BaseResultMap" resultType="Permission">
+        select
+        <include refid="Temp_Base_Column_List" />
+        from `permission` t, `user_permission_rel` r
+        where t.id = r.permission_id and r.user_id = #{userId}
+    </select>
+
 
 </mapper>

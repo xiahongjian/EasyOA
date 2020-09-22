@@ -15,4 +15,4 @@ spring:
     
 mybatis-plus:
   type-enums-package: tech.hongjian.oa.entity.enums
-  
+  type-aliases-package: tech.hongjian.oa.entity

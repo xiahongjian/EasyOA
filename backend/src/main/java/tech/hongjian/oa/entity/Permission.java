@@ -32,8 +32,6 @@ public class Permission extends BaseEntity implements GrantedAuthority {
 
     private String group;
 
-    private String groupDesc;
-
     @Override
     public String getAuthority() {
         return url + ";" + operation;

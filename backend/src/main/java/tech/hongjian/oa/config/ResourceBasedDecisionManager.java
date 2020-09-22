@@ -16,26 +16,31 @@ import org.springframework.stereotype.Component;
 
 import tech.hongjian.oa.entity.Permission;
 import tech.hongjian.oa.entity.enums.Operation;
+import static tech.hongjian.oa.config.ConfigConsts.URL;
 
 /**
  * @author xiahongjian
  * @since 2020-03-18 20:09:42
  */
 @Component
-public class CustomUrlDecisionManager implements AccessDecisionManager {
+public class ResourceBasedDecisionManager implements AccessDecisionManager {
 
     @Override
-    public void decide(Authentication authentication, Object object,
-            Collection<ConfigAttribute> configAttributes)
+    public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes)
             throws AccessDeniedException, InsufficientAuthenticationException {
         HttpServletRequest request = ((FilterInvocation) object).getRequest();
+        String uri = request.getRequestURI();
+        // 当请求的是登录和登出url时忽略
+        if (URL.LOGIN.equals(uri) || URL.LOGOUT.equals(uri)) {
+            return;
+        }
         for (GrantedAuthority ga : authentication.getAuthorities()) {
             if (ga instanceof Permission) {
                 Permission permission = (Permission) ga;
                 String operation = permission.getOperation().name();
                 AntPathRequestMatcher matcher = new AntPathRequestMatcher(permission.getUrl());
-                if (matcher.matches(request) && (request.getMethod().equals(operation)
-                        || Operation.ALL.name().equals(operation))) {
+                if (matcher.matches(request)
+                        && (request.getMethod().equals(operation) || Operation.ALL.name().equals(operation))) {
                     return;
                 }
             }
