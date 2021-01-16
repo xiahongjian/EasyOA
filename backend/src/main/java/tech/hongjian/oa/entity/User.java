@@ -1,8 +1,7 @@
 package tech.hongjian.oa.entity;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,19 +10,18 @@ import com.baomidou.mybatisplus.annotation.TableField;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
+import tech.hongjian.oa.entity.enums.Status;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author xiahongjian
- * @since 2020-03-17
+ * @since 2021-01-12
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 public class User extends BaseEntity implements UserDetails {
 
     private static final long serialVersionUID = 1L;
@@ -37,10 +35,19 @@ public class User extends BaseEntity implements UserDetails {
     private String email;
 
     private Integer departmentId;
-    
+
+    private String mobile;
+
+    private String gender;
+
+    private Status status;
+
     @TableField(exist = false)
-    private Set<Permission> authorities = new HashSet<>(); 
-    
+    private List<Role> authorities;
+
+    @TableField(exist = false)
+    private List<String> roles;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
@@ -63,7 +70,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return Status.NORMAL == status;
     }
 
 

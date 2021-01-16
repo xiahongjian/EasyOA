@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import tech.hongjian.oa.model.RestResponse;
+import tech.hongjian.oa.model.R;
 
 /**
  * @author xiahongjian
@@ -25,7 +25,7 @@ public class IndexController {
 
     @ResponseBody
     @GetMapping("/admin/content")
-    public RestResponse<?> adminContent() {
-        return RestResponse.ok("admin");
+    public R adminContent() {
+        return R.ok("content");
     }
 }

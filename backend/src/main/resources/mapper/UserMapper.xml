@@ -4,14 +4,17 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="tech.hongjian.oa.entity.User">
-    <result column="id" property="id" />
-    <result column="create_time" property="createTime" />
-    <result column="update_time" property="updateTime" />
+        <result column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
         <result column="username" property="username" />
         <result column="password" property="password" />
         <result column="name" property="name" />
         <result column="email" property="email" />
         <result column="department_id" property="departmentId" />
+        <result column="mobile" property="mobile" />
+        <result column="gender" property="gender" />
+        <result column="status" property="status" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -19,7 +22,7 @@
         id,
         create_time,
         update_time,
-        username, password, name, email, department_id
+        username, password, name, email, department_id, mobile, gender, status
     </sql>
 
 </mapper>

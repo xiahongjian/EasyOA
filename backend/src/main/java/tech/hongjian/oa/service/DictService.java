@@ -1,0 +1,16 @@
+package tech.hongjian.oa.service;
+
+import tech.hongjian.oa.entity.Dict;
+import com.baomidou.mybatisplus.extension.service.IService;
+
+/**
+ * <p>
+ *  服务类
+ * </p>
+ *
+ * @author xiahongjian
+ * @since 2021-01-12
+ */
+public interface DictService extends IService<Dict> {
+
+}

@@ -1,12 +1,10 @@
 package tech.hongjian.oa.service.impl;
 
-import org.springframework.stereotype.Service;
-
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
 import tech.hongjian.oa.entity.Department;
 import tech.hongjian.oa.mapper.DepartmentMapper;
 import tech.hongjian.oa.service.DepartmentService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.stereotype.Service;
 
 /**
  * <p>
@@ -14,7 +12,7 @@ import tech.hongjian.oa.service.DepartmentService;
  * </p>
  *
  * @author xiahongjian
- * @since 2020-03-17
+ * @since 2021-01-12
  */
 @Service
 public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department> implements DepartmentService {

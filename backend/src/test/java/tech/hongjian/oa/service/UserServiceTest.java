@@ -6,21 +6,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import tech.hongjian.oa.TestCaseBase;
-import tech.hongjian.oa.entity.Permission;
 import tech.hongjian.oa.entity.User;
-import tech.hongjian.oa.entity.enums.Operation;
 
-/** 
+/**
  * @author xiahongjian
  * @since  2020-03-18 22:00:36
  */
 public class UserServiceTest extends TestCaseBase {
     @Autowired
     private UserService userService;
-    
-    @Autowired
-    private PermissionService permissionService;
-    
+
     @Test
     @Transactional
     public void testInsert() {
@@ -31,15 +26,11 @@ public class UserServiceTest extends TestCaseBase {
         user.setEmail("admin@hongjian.tech");
         userService.save(user);
     }
-    
-    
+
+
     @Test
-    public void testInsertPermission() {
-        Permission perm = new Permission();
-        perm.setName("user");
-        perm.setDescription("user");
-        perm.setUrl("/user/**");
-        perm.setOperation(Operation.ALL);
-        permissionService.save(perm);
+    @Transactional
+    public void testGetUserRole() {
     }
+
 }

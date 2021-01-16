@@ -4,12 +4,14 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="tech.hongjian.oa.entity.Department">
-    <result column="id" property="id" />
-    <result column="create_time" property="createTime" />
-    <result column="update_time" property="updateTime" />
+        <result column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
         <result column="name" property="name" />
         <result column="leader_id" property="leaderId" />
         <result column="parent_id" property="parentId" />
+        <result column="status" property="status" />
+        <result column="sort" property="sort" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -17,7 +19,7 @@
         id,
         create_time,
         update_time,
-        name, leader_id, parent_id
+        name, leader_id, parent_id, status, sort
     </sql>
 
 </mapper>

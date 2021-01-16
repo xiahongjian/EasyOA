@@ -1,7 +1,10 @@
 package tech.hongjian.oa.mapper;
 
-import tech.hongjian.oa.entity.Role;
+import java.util.List;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import tech.hongjian.oa.entity.Role;
 
 /**
  * <p>
@@ -9,8 +12,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author xiahongjian
- * @since 2020-03-17
+ * @since 2021-01-12
  */
 public interface RoleMapper extends BaseMapper<Role> {
+
+    List<Role> findUserRoles(Integer userId);
 
 }

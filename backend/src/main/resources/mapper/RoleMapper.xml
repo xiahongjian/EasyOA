@@ -4,11 +4,14 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="tech.hongjian.oa.entity.Role">
-    <result column="id" property="id" />
-    <result column="create_time" property="createTime" />
-    <result column="update_time" property="updateTime" />
+        <result column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
         <result column="name" property="name" />
         <result column="description" property="description" />
+        <result column="key" property="key" />
+        <result column="sort" property="sort" />
+        <result column="status" property="status" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -16,7 +19,15 @@
         id,
         create_time,
         update_time,
-        name, description
+        name, description, key, sort, status
     </sql>
+    
+    <select id="findUserRoles" resultMap="BaseResultMap">
+        select
+        r.*
+        from `role` r, `user_role_rel` ur
+        where r.id = ur.role_id and ur.user_id=#{userId} and r.status!=0
+        order by r.sort
+    </select>
 
 </mapper>

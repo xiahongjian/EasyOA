@@ -15,13 +15,19 @@
         
         $(function() {
         	$('#submit').click(function() {
-        		var username = $('[name=username]').val();
-        		var password = $('[name=password]').val();
-        		$.post('/login', {
-        			username: username,
-        			password: password
-        		}, function(data) {
-        			console.log(data);
+        		var data = {
+        			username: $('[name=username]').val(),
+        			password: $('[name=password]').val()
+        		};
+        		$.ajax({
+        			type: 'post',
+        			url: '/login',
+        			contentType: 'application/json',
+        			data: JSON.stringify(data),
+        			dataType: 'json',
+        			succes: function(data) {
+        				console.log(data);
+        			}
         		})
         	});
         })

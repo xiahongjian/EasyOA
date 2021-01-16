@@ -18,6 +18,7 @@
 
         <activiti.version>7.0.0.SR1</activiti.version>
         <mp.version>3.3.2</mp.version>
+        <jwt.version>3.10.3</jwt.version>
     </properties>
 
     <dependencies>
@@ -84,6 +85,13 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${jwt.version}</version>
+        </dependency>
+
 
     </dependencies>
 

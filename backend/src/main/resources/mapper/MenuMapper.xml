@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tech.hongjian.oa.mapper.MenuMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="tech.hongjian.oa.entity.Menu">
+        <result column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="title" property="title" />
+        <result column="icon" property="icon" />
+        <result column="sort" property="sort" />
+        <result column="type" property="type" />
+        <result column="component" property="component" />
+        <result column="route_path" property="routePath" />
+        <result column="route_name" property="routeName" />
+        <result column="parent_id" property="parentId" />
+        <result column="visible" property="visible" />
+        <result column="permission" property="permission" />
+        <result column="external_link" property="externalLink" />
+    </resultMap>
+    
+    <resultMap id="menuWithRole" type="tech.hongjian.oa.entity.Menu" extends="BaseResultMap">
+        <collection property="roles" ofType="java.lang.String">
+          <constructor>
+            <arg column="r.key"/>
+          </constructor>
+        </collection>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        create_time,
+        update_time,
+        title, icon, sort, type, component, route_path, route_name, parent_id, visible, permission, external_link, method
+    </sql>
+
+    <select id="findRoleMenus" resultMap="BaseResultMap">
+        select 
+        m.*
+        from `menu` m, `role_menu_rel` r
+        where m.id = r.menu_id
+        <if test="type != null" >
+            and m.type=#{type.value}
+        </if>
+        <if test="roleIds != null and roleIds.size > 0">
+            and r.role_id in <foreach item="id" collection="roleIds" separator="," open="(" close=")">#{id}</foreach>
+        </if>
+    </select>
+    
+    <select id="findAllMenuWithRole" resultMap="menuWithRole">
+        select
+        m.*,r.key
+        from `menu` m, `role_menu_rel` rel, `role` r
+        where m.id=rel.menu_id and rel.role_id=r.id
+    </select>
+</mapper>

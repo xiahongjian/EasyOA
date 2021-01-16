@@ -1,9 +1,13 @@
 package tech.hongjian.oa.config;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
@@ -11,12 +15,12 @@ import org.springframework.security.authentication.InsufficientAuthenticationExc
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.FilterInvocation;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 
-import tech.hongjian.oa.entity.Permission;
-import tech.hongjian.oa.entity.enums.Operation;
-import static tech.hongjian.oa.config.ConfigConsts.URL;
+import tech.hongjian.oa.config.ConfigConsts.URLs;
+import tech.hongjian.oa.entity.Menu;
+import tech.hongjian.oa.entity.Role;
+import tech.hongjian.oa.service.MenuService;
 
 /**
  * @author xiahongjian
@@ -25,27 +29,69 @@ import static tech.hongjian.oa.config.ConfigConsts.URL;
 @Component
 public class ResourceBasedDecisionManager implements AccessDecisionManager {
 
+    @Autowired
+    private MenuService menuService;
+
     @Override
     public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes)
             throws AccessDeniedException, InsufficientAuthenticationException {
         HttpServletRequest request = ((FilterInvocation) object).getRequest();
-        String uri = request.getRequestURI();
+        String path = getRquestPath(request);
         // 当请求的是登录和登出url时忽略
-        if (URL.LOGIN.equals(uri) || URL.LOGOUT.equals(uri)) {
+        if (URLs.HOME.equals(path) || URLs.LOGIN.equals(path) || URLs.LOGOUT.equals(path)) {
             return;
         }
-        for (GrantedAuthority ga : authentication.getAuthorities()) {
-            if (ga instanceof Permission) {
-                Permission permission = (Permission) ga;
-                String operation = permission.getOperation().name();
-                AntPathRequestMatcher matcher = new AntPathRequestMatcher(permission.getUrl());
-                if (matcher.matches(request)
-                        && (request.getMethod().equals(operation) || Operation.ALL.name().equals(operation))) {
-                    return;
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        if (!authorities.isEmpty()) {
+            if (authorities.iterator().next() instanceof Role) {
+                String method = request.getMethod();
+                List<Integer> roleIds = authorities.stream().map(a -> ((Role)a).getId()).collect(Collectors.toList());
+                List<Menu> interfaceMenus = menuService.getRoleInterfaceMenus(roleIds);
+                for (Menu menu : interfaceMenus) {
+                    if (checkPermission(path, method, menu)) {
+                        return;
+                    }
                 }
             }
         }
         throw new AccessDeniedException("No permission.");
+    }
+
+    protected String getRquestPath(HttpServletRequest req) {
+        String uri = req.getRequestURI();
+        String contextPath = req.getContextPath();
+        if (contextPath != null && !"".equals(contextPath) && !"/".equals(contextPath)) {
+            uri = StringUtils.removeStart(uri, contextPath);
+        }
+        if ("".equals(uri)) {
+            uri = "/";
+        }
+        if (uri.contains("?")) {
+            uri = uri.substring(0, uri.indexOf("?"));
+        }
+        return uri;
+    }
+
+    private boolean checkPermission(String uri, String method, Menu menu) {
+        if (!method.equalsIgnoreCase(menu.getMethod())) {
+            return false;
+        }
+        String path = menu.getRoutePath();
+        path = path.replaceAll("\\{[0-9a-zA-Z\\-_]+\\}", "[0-9a-zA-Z\\\\-_]+");
+        uri = trimQueryParamerterAndAncher(uri);
+        return uri.matches(path);
+    }
+
+
+    private String trimQueryParamerterAndAncher(String uri) {
+        int index = -1;
+        if ((index = uri.indexOf("?")) != -1 ) {
+            uri = uri.substring(0, index);
+        }
+        if ((index = uri.indexOf("#")) != -1) {
+            uri = uri.substring(0, index);
+        }
+        return uri;
     }
 
     @Override

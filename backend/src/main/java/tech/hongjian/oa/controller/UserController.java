@@ -1,9 +1,12 @@
 package tech.hongjian.oa.controller;
 
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import org.springframework.stereotype.Controller;
+import tech.hongjian.oa.model.R;
 
 /**
  * <p>
@@ -11,10 +14,14 @@ import org.springframework.stereotype.Controller;
  * </p>
  *
  * @author xiahongjian
- * @since 2020-03-17
+ * @since 2021-01-12
  */
-@Controller
+@RestController
 @RequestMapping("/user")
 public class UserController {
 
+    @GetMapping("/userinfo")
+    public R userInfo() {
+        return R.ok(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    }
 }

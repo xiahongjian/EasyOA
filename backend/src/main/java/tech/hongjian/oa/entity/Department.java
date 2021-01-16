@@ -1,21 +1,19 @@
 package tech.hongjian.oa.entity;
 
-import tech.hongjian.oa.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
+import tech.hongjian.oa.entity.enums.Status;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author xiahongjian
- * @since 2020-03-17
+ * @since 2021-01-12
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Accessors(chain = true)
 public class Department extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -25,6 +23,10 @@ public class Department extends BaseEntity {
     private Integer leaderId;
 
     private Integer parentId;
+
+    private Status status;
+
+    private Integer sort;
 
 
 }

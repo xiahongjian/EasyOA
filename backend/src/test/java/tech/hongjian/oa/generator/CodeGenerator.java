@@ -22,7 +22,7 @@ import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
 import tech.hongjian.oa.entity.BaseEntity;
 
-/** 
+/**
  * @author xiahongjian
  * @time   2020-01-15 20:50:11
  */
@@ -32,8 +32,8 @@ public class CodeGenerator {
     private static final String DATA_SOURCE_DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String DB_USERANME = "root";
     private static final String DB_PASSWORD = "root";
-    
-    
+
+
     /**
      * <p>
      * 读取控制台内容
@@ -68,6 +68,7 @@ public class CodeGenerator {
         gc.setBaseResultMap(true);
         gc.setDateType(DateType.TIME_PACK);
         gc.setServiceName("%sService");
+//        gc.setFileOverride(true);
         // gc.setSwagger2(true); 实体属性 Swagger2 注解
         mpg.setGlobalConfig(gc);
 
@@ -131,13 +132,14 @@ public class CodeGenerator {
         // templateConfig.setService();
         // templateConfig.setController();
         templateConfig.setXml(null);
+//        templateConfig.disable(TemplateType.SERVICE);
         mpg.setTemplate(templateConfig);
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
-        strategy.setSuperEntityClass(BaseEntity.class.getName());
+        strategy.setSuperEntityClass(BaseEntity.class);
         strategy.setEntityLombokModel(true);
 //        strategy.setRestControllerStyle(true);
         // 公共父类

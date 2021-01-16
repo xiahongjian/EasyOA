@@ -1,5 +1,5 @@
 package tech.hongjian.oa.entity;
-/** 
+/**
  * @author xiahongjian
  * @since  2020-03-16 20:42:53
  */
@@ -18,7 +18,7 @@ import lombok.Setter;
 public abstract class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @TableId(type = IdType.AUTO)
-    private Long id;
+    private Integer id;
     private LocalDateTime createTime = LocalDateTime.now();
     private LocalDateTime updateTime = LocalDateTime.now();
 }

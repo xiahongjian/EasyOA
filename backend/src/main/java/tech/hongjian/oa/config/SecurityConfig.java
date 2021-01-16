@@ -2,6 +2,7 @@ package tech.hongjian.oa.config;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -12,30 +13,29 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AccountExpiredException;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.CredentialsExpiredException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.LockedException;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
-import tech.hongjian.oa.entity.User;
-import tech.hongjian.oa.model.RestResponse;
+import tech.hongjian.oa.config.ConfigConsts.URLs;
+import tech.hongjian.oa.config.handler.JWTRefreshSuccessHandler;
+import tech.hongjian.oa.config.handler.LoginAuthSuccessHandler;
+import tech.hongjian.oa.config.handler.TokenClearLogoutHandler;
+import tech.hongjian.oa.model.R;
 import tech.hongjian.oa.service.UserService;
+import tech.hongjian.oa.service.UserTokenService;
+import tech.hongjian.oa.service.impl.JWTAuthenticationProvider;
 import tech.hongjian.oa.util.JSONUtil;
 import tech.hongjian.oa.util.WebUtil;
 
@@ -44,18 +44,36 @@ import tech.hongjian.oa.util.WebUtil;
  * @time 2020-01-15 22:37:28
  */
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity(debug = false)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserTokenService tokenService;
 
     @Autowired
     private ResourceBasedDecisionManager customUrlDecisionManager;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return NoOpPasswordEncoder.getInstance();
+//        return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        final UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource =
+                new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addAllowedMethod("*");
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        return new CorsFilter(urlBasedCorsConfigurationSource);
+    }
+
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -65,11 +83,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService);
+        auth.authenticationProvider(new JWTAuthenticationProvider(tokenService));
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http.cors().and()
+            .authorizeRequests()
             .anyRequest().authenticated()
             .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                 @Override
@@ -78,78 +98,47 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     return object;
                 }})
             .and()
-            .formLogin()
-            .usernameParameter(ConfigConsts.PARAM_USERNAME)
-            .passwordParameter(ConfigConsts.PARAM_PASSWORD)
-            .loginProcessingUrl(ConfigConsts.URL.LOGIN)
-            .successHandler(new AuthenticationSuccessHandler() {
-                @Override
-                public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                        Authentication authentication) throws IOException, ServletException {
-                    response.setContentType(ConfigConsts.CONTENT_TYPE);
-                    User user = (User) authentication.getPrincipal();
-                    user.setPassword(null);
-                    PrintWriter out = response.getWriter();
-                    out.print(JSONUtil.toJSON(RestResponse.ok(user)));
-                    out.close();
-                }
-            })
-            .failureHandler(new AuthenticationFailureHandler() {
-                @Override
-                public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-                        AuthenticationException exception) throws IOException, ServletException {
-                    response.setContentType(ConfigConsts.CONTENT_TYPE);
-                    PrintWriter out = response.getWriter();
-                    String msg = null;
-                    if (exception instanceof LockedException) {
-                        msg = "账户被锁定，请联系管理员!";
-                    } else if (exception instanceof CredentialsExpiredException) {
-                        msg = "密码过期，请联系管理员!";
-                    } else if (exception instanceof AccountExpiredException) {
-                        msg = "账户过期，请联系管理员!";
-                    } else if (exception instanceof DisabledException) {
-                        msg = "账户被禁用，请联系管理员!";
-                    } else if (exception instanceof BadCredentialsException) {
-                        msg = "用户名或者密码输入错误，请重新输入!";
-                    }
-                    out.print(JSONUtil.toJSON(RestResponse.fail(Code.LONGIN_ERROR, msg)));
-                    out.close();
-                }
-            })
-            .permitAll()
+            .csrf().disable()
+            .formLogin().disable()
+            .sessionManagement().disable()
+            .cors()
+            .and()
+            // 配置登录请求数据以JSON格式传到后端时的认证处理
+            .apply(new AdvancedLoginConfigurer<>())
+                .loginSuccessHanlder(new LoginAuthSuccessHandler(tokenService))
+            .and()
+            // 配置JWT的认证处理
+            .apply(new JWTAuthConfigurer<>())
+                .permissiveRquestUrls(URLs.LOGIN)
+                .tokenValidSuccessHandler(new JWTRefreshSuccessHandler(tokenService))
             .and()
             .logout()
-            .logoutUrl(ConfigConsts.URL.LOGOUT)
-            .logoutSuccessHandler(new LogoutSuccessHandler() {
-                @Override
-                public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
-                        Authentication authentication) throws IOException, ServletException {
-                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                    PrintWriter out = response.getWriter();
-                    out.print(JSONUtil.toJSON(RestResponse.ok()));
-                    out.close();
-                }
-            })
-            .permitAll()
+                .logoutUrl(URLs.LOGOUT)
+                .logoutSuccessHandler(new TokenClearLogoutHandler(tokenService))
+                .permitAll()
             .and()
-            .csrf().disable().exceptionHandling()
-            .authenticationEntryPoint(new AuthenticationEntryPoint() {
-                @Override
-                public void commence(HttpServletRequest request, HttpServletResponse response,
-                        AuthenticationException authException) throws IOException, ServletException {
-                    // AJAX请求
-                    if (WebUtil.isAjaxRequest(request)) {
-                        response.setContentType(ConfigConsts.CONTENT_TYPE);
-                        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                        PrintWriter out = response.getWriter();
-                        out.print(JSONUtil.toJSON(RestResponse.fail(Code.NOT_LOGIN, "Unauthorized")));
-                        out.close();
-                        return;
-                    }
-                    // 非AJAX请求
-                    response.sendRedirect(ConfigConsts.URL.LOGIN);
-                }
-            });
+            .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint());
     }
 
+    private AuthenticationEntryPoint authenticationEntryPoint() {
+        return new AuthenticationEntryPoint() {
+            @SuppressWarnings("deprecation")
+            @Override
+            public void commence(HttpServletRequest request, HttpServletResponse response,
+                    AuthenticationException authException) throws IOException, ServletException {
+                // AJAX请求
+                if (WebUtil.isAjaxRequest(request)) {
+                    response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    PrintWriter out = response.getWriter();
+                    out.print(JSONUtil.toJSON(R.error(Code.UNAUTHORIZED, "Unauthorized")));
+                    out.close();
+                    return;
+                }
+                // 非AJAX请求
+                response.sendRedirect("/login?redirect=" + URLEncoder.encode(request.getRequestURI(), "UTF-8"));
+            }
+        };
+    }
 }
