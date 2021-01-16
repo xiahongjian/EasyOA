@@ -1,6 +1,8 @@
+.DS_Store
 .classpath
 .project
 .bak
+.factorypath
 .settings/
 target/
-module/
+node_modules/
