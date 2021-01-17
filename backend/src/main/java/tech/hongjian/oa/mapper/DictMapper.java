@@ -1,5 +1,6 @@
 package tech.hongjian.oa.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
 import tech.hongjian.oa.entity.Dict;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 

@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface DictValueService extends IService<DictValue> {
 
+    void deleteAllValues(Integer id);
 }

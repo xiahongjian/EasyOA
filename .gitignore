@@ -6,3 +6,4 @@
 .settings/
 target/
 node_modules/
+*.iml

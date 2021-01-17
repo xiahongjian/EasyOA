@@ -17,4 +17,14 @@ import tech.hongjian.oa.entity.enums.Status;
 public interface DictService extends IService<Dict> {
 
     public IPage<Dict> getDict(String name, String key, Status status, int start, int limit);
+
+    Dict getDictByKey(String dictKey);
+
+    Dict create(Dict dict);
+
+    Dict update(Dict dict);
+
+    Dict delete(String dictKey);
+
+    boolean exists(String dictKey);
 }

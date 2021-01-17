@@ -1,22 +1,20 @@
 package tech.hongjian.oa.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
 import tech.hongjian.oa.entity.Role;
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.mapper.UserMapper;
 import tech.hongjian.oa.service.RoleService;
 import tech.hongjian.oa.service.UserService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -26,18 +24,16 @@ import tech.hongjian.oa.service.UserService;
  * @author xiahongjian
  * @since 2021-01-12
  */
+@Setter(onMethod_ = {@Autowired})
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
-    @Autowired
     private UserMapper userMapper;
-
-    @Autowired
     private RoleService roleService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userMapper
-                .selectOne(Wrappers.lambdaQuery(User.class).eq(User::getUsername, username));
+                .selectOne(lambdaQuery().eq(User::getUsername, username));
         if (user == null) {
             throw new UsernameNotFoundException("User[" + username + "] not existed.");
         }

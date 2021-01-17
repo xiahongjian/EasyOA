@@ -1,13 +1,13 @@
 package tech.hongjian.oa.config;
 
-import javax.servlet.http.HttpServletResponse;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import lombok.extern.slf4j.Slf4j;
+import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.model.R;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author xiahongjian
@@ -20,7 +20,14 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(Exception.class)
     public R globalException(HttpServletResponse response, Exception e) {
-        log.info("Exception: ", e);
+        log.info(e.getMessage(), e);
         return R.error(e.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(CommonServiceException.class)
+    public R serviceException(HttpServletResponse response, CommonServiceException e) {
+        log.info(e.getMessage(), e);
+        return R.error(e.getCode(), e.getMessage());
     }
 }

@@ -1,33 +1,29 @@
 package tech.hongjian.oa.service.impl;
 
-import java.util.Date;
-
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.service.CacheService;
 import tech.hongjian.oa.service.UserService;
 import tech.hongjian.oa.service.UserTokenService;
 
+import java.util.Date;
+
 /**
  * @author xiahongjian
  * @since 2021-01-16 14:29:39
  */
+@Setter(onMethod_ = {@Autowired})
 @Service
 public class UserTokenServiceImpl implements UserTokenService {
-
-    @Autowired
     private CacheService cacheService;
-
-    @Autowired
     private UserService userService;
 
     @Override
@@ -63,8 +59,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         if (decode.getExpiresAt().before(now)) {
             throw new CredentialsExpiredException(msg);
         }
-        User user = (User) userService.loadUserByUsername(decode.getSubject());
-        return user;
+        return userService.loadUserByUsername(decode.getSubject());
     }
 
     @Override

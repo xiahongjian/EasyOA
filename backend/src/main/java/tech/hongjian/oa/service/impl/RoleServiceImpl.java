@@ -1,16 +1,15 @@
 package tech.hongjian.oa.service.impl;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
 import tech.hongjian.oa.entity.Role;
 import tech.hongjian.oa.mapper.RoleMapper;
 import tech.hongjian.oa.service.RoleService;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * <p>
@@ -20,10 +19,9 @@ import tech.hongjian.oa.service.RoleService;
  * @author xiahongjian
  * @since 2021-01-12
  */
+@Setter(onMethod_ = {@Autowired})
 @Service
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements RoleService {
-
-    @Autowired
     private RoleMapper roleMapper;
 
     @Override

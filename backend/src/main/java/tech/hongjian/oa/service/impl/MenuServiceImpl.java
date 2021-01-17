@@ -1,21 +1,16 @@
 package tech.hongjian.oa.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
 import tech.hongjian.oa.entity.Menu;
 import tech.hongjian.oa.entity.enums.MenuType;
 import tech.hongjian.oa.mapper.MenuMapper;
 import tech.hongjian.oa.service.MenuService;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -25,10 +20,9 @@ import tech.hongjian.oa.service.MenuService;
  * @author xiahongjian
  * @since 2021-01-12
  */
+@Setter(onMethod_ = {@Autowired})
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements MenuService {
-
-    @Autowired
     private MenuMapper menuMapper;
 
     @Override

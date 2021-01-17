@@ -10,11 +10,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author xiahongjian
- * @since  2021-01-16 14:32:04
+ * @since 2021-01-16 14:32:04
  */
 // TODO 暂时使用map缓存
 @Service
-public class MemeoryCacheServiceImpl implements CacheService {
+public class MemoryCacheServiceImpl implements CacheService {
 
     private static final Map<String, Object> CACHE = new ConcurrentHashMap<>();
 
@@ -30,7 +30,7 @@ public class MemeoryCacheServiceImpl implements CacheService {
 
     @Override
     public boolean contains(String key) {
-        return key == null ? false : CACHE.containsKey(key);
+        return key != null && CACHE.containsKey(key);
     }
 
     @Override
