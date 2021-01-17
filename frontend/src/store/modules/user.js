@@ -64,7 +64,7 @@ const actions = {
 
         commit('SET_ROLES', roles)
         commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
+        commit('SET_AVATAR', avatar || state.avatar)
         commit('SET_INTRODUCTION', introduction)
         resolve(data)
       }).catch(error => {
@@ -100,6 +100,14 @@ const actions = {
       commit('SET_ROLES', [])
       removeToken()
       resolve()
+    })
+  },
+
+  refreshToken({ commit }, token) {
+    return new Promise(resolve => {
+      commit('SET_TOKEN', token)
+      setToken(token)
+      resolve(token)
     })
   },
 

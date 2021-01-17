@@ -1,5 +1,7 @@
 package tech.hongjian.oa.service.impl;
 
+import java.util.Set;
+
 import tech.hongjian.oa.service.CacheService;
 
 /**
@@ -29,6 +31,24 @@ public class RedisCacheServiceImpl implements CacheService {
     @Override
     public Object remove(String key) {
         // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setSet(String key, Object vlaue) {
+    }
+
+    @Override
+    public void setSet(String key, Object... values) {
+    }
+
+    @Override
+    public Object removeSet(String key, Object value) {
+        return null;
+    }
+
+    @Override
+    public Set<Object> removeSet(String key, Object... values) {
         return null;
     }
 

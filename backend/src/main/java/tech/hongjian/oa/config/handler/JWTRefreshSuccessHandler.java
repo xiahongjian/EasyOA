@@ -36,10 +36,11 @@ public class JWTRefreshSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
-        DecodedJWT decoded = JWT.decode((String) ((JWTAuthenticationToken) authentication).getCredentials());
+        String token = (String) ((JWTAuthenticationToken) authentication).getCredentials();
+        DecodedJWT decoded = JWT.decode(token);
         boolean shouldRefresh = shouldTokenRefresh(decoded.getIssuedAt());
         if (shouldRefresh) {
-            String newToken = tokenService.createToken((User) authentication.getPrincipal());
+            String newToken = tokenService.refreshToken(token, (User) authentication.getPrincipal());
             response.setHeader(JWTAuthenticationFilter.DEFAULT_AUTHENTICATION_HEADER, newToken);
         }
     }

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken, setToken } from '@/utils/auth'
+import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -48,7 +48,7 @@ service.interceptors.response.use(
     const token = response.headers['Authorization']
     // 刷新token
     if (token && oldToken !== token) {
-      setToken(token)
+      store.dispatch('user/refreshToken')
     }
     // if the custom code is not 20000, it is judged as an error.
     if (res.success !== true || res.code !== 20000) {
@@ -58,7 +58,7 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
 
-      // 30000: 未登录 30002: token过期 30006: token格式不正确
+      // 30000: 未登录 30002: token过期 30006: token无效
       if (res.code === 30000 || res.code === 30002 || res.code === 30006) {
         // to re-login
         MessageBox.confirm(res.message, 'Confirm logout', {

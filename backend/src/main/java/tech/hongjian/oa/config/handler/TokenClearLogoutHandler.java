@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
-import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.service.UserTokenService;
 
 /**
@@ -27,28 +26,7 @@ public class TokenClearLogoutHandler implements LogoutSuccessHandler {
         if (authentication == null) {
             return;
         }
-        User user = (User) authentication.getPrincipal();
-        tokenService.removeToken((String) authentication.getCredentials(), user);
-
-//        Object credentials = authentication.getCredentials();
-//        if (credentials instanceof String) {
-//            String token = (String) credentials;
-//            User user = (User) authentication.getPrincipal();
-//            String salt = tokenService.getSalt(user);
-//            // cache中没有salt则不处理
-//            if (salt == null) {
-//                return;
-//            }
-//            // 校验token签名
-//            try {
-//                JWT.require(Algorithm.HMAC256(salt)).build().verify(token);
-//            } catch(Exception e) {
-//                // 校验签名未通过
-//                return;
-//            }
-//            // 验证通过则清除token
-//            tokenService.removeToken(token, user);
-//        }
+        tokenService.removeToken((String) authentication.getCredentials());
     }
 
     @Override
