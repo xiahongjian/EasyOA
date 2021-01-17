@@ -6,7 +6,16 @@ const state = {
     withoutAnimation: false
   },
   device: 'desktop',
-  size: Cookies.get('size') || 'medium'
+  size: Cookies.get('size') || 'medium',
+  itemStatus: [{
+    id: 1,
+    label: '正常',
+    value: 1
+  }, {
+    id: 2,
+    label: '停用',
+    value: 0
+  }]
 }
 
 const mutations = {

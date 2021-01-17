@@ -60,8 +60,31 @@ export function filterAsyncPathRoutes(routes, paths) {
   return res
 }
 
-export function generateMenu(routes, data) {
+export function checkPermission(canAccRoles, hasRoles) {
+  if (!canAccRoles || canAccRoles.length === 0) {
+    return false
+  }
+  if (!hasRoles || hasRoles.length === 0) {
+    return false
+  }
+  return canAccRoles.some(r => hasRoles.includes(r))
+}
+
+export function generateMenu(routes, data, roles) {
+  const actionPermissons = []
   data.forEach(item => {
+    // 没有权限的跳过
+    if (!checkPermission(item.roles, roles)) {
+      return
+    }
+    // 当menu的permission不为空时，记录下permission
+    if (item.permission) {
+      actionPermissons.push(item.permission)
+    }
+    // menu的类型不是目录和菜单的跳过
+    if (!(item.type === 1 || item.type === 2)) {
+      return
+    }
     const menu = {
       path: item.routePath,
       component: item.component === 'Layout' ? Layout : loadView(item.component),
@@ -75,10 +98,14 @@ export function generateMenu(routes, data) {
       }
     }
     if (item.children) {
-      generateMenu(menu.children, item.children)
+      const temp = generateMenu(menu.children, item.children, roles)
+      if (temp.length !== 0) {
+        actionPermissons.push(...temp)
+      }
     }
     routes.push(menu)
   })
+  return actionPermissons
 }
 
 export const loadView = (view) => {
@@ -87,13 +114,17 @@ export const loadView = (view) => {
 
 const state = {
   routes: [],
-  addRoutes: []
+  addRoutes: [],
+  permissions: []
 }
 
 const mutations = {
   SET_ROUTES: (state, routes) => {
     state.addRoutes = routes
     state.routes = constantRoutes.concat(routes)
+  },
+  SET_PERMISSION: (state, permissions) => {
+    state.permissions = permissions
   }
 }
 
@@ -106,9 +137,11 @@ const actions = {
         const { data } = resp
         Object.assign(loadMenuData, data)
 
-        generateMenu(asyncRoutes, loadMenuData)
+        const actionPerms = generateMenu(asyncRoutes, loadMenuData, roles)
         asyncRoutes.push({ path: '*', redirect: '/', hidden: true })
         commit('SET_ROUTES', asyncRoutes)
+        commit('SET_PERMISSONS', actionPerms)
+
         resolve(asyncRoutes)
       })
     })
