@@ -15,10 +15,10 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id,
-        create_time,
-        update_time,
-        name, key, status, remark
+        `id`,
+        `create_time`,
+        `update_time`,
+        `name`, `key`, `status`, `remark`
     </sql>
 
 </mapper>

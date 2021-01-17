@@ -1,7 +1,10 @@
 package tech.hongjian.oa.service;
 
-import tech.hongjian.oa.entity.Dict;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import tech.hongjian.oa.entity.Dict;
+import tech.hongjian.oa.entity.enums.Status;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface DictService extends IService<Dict> {
 
+    public IPage<Dict> getDict(String name, String key, Status status, int start, int limit);
 }

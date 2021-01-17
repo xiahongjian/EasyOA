@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
@@ -47,5 +48,10 @@ public class MybatisConfig {
                                 DateTimeFormatter.ofPattern(JSONUtil.DATE_FORMAT)))
                 .deserializerByType(LocalTime.class, new LocalTimeDeserializer(
                         DateTimeFormatter.ofPattern(JSONUtil.TIME_FORMAT)));
+    }
+
+    @Bean
+    public PaginationInterceptor paginationInterceptor() {
+        return new PaginationInterceptor();
     }
 }

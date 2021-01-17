@@ -1,6 +1,7 @@
 package tech.hongjian.oa.entity.enums;
 
 import com.baomidou.mybatisplus.core.enums.IEnum;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.Getter;
 
@@ -21,6 +22,7 @@ public enum MenuStatus implements IEnum<Integer> {
         this.description = description;
     }
 
+    @JsonValue
     @Override
     public Integer getValue() {
         return value;

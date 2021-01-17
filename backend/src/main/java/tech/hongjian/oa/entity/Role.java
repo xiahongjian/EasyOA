@@ -2,6 +2,8 @@ package tech.hongjian.oa.entity;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import tech.hongjian.oa.entity.enums.Status;
@@ -24,6 +26,7 @@ public class Role extends BaseEntity implements GrantedAuthority {
 
     private String description;
 
+    @TableField("`key`")
     private String key;
 
     private Integer sort;

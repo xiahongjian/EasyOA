@@ -1,5 +1,7 @@
 package tech.hongjian.oa.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import tech.hongjian.oa.entity.enums.Status;
@@ -20,6 +22,7 @@ public class Dict extends BaseEntity {
 
     private String name;
 
+    @TableField("`key`")
     private String key;
 
     private Status status;
