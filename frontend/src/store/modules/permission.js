@@ -94,7 +94,8 @@ export function generateMenu(routes, data, roles) {
       meta: {
         title: item.title,
         icon: item.icon,
-        noCache: true
+        noCache: true,
+        redirect: item.type === 2
       }
     }
     if (item.children) {
