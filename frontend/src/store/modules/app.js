@@ -7,14 +7,14 @@ const state = {
   },
   device: 'desktop',
   size: Cookies.get('size') || 'medium',
-  itemStatus: [{
+  statusOptions: [{
     id: 1,
-    label: '正常',
-    value: 1
+    dictLabel: '正常',
+    dictValue: '1'
   }, {
     id: 2,
-    label: '停用',
-    value: 0
+    dictLabel: '停用',
+    dictValue: '0'
   }]
 }
 

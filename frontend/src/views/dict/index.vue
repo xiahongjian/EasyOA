@@ -32,10 +32,10 @@
               style="width: 240px"
             >
               <el-option
-                v-for="s in itemStatus"
+                v-for="s in statusOptions"
                 :key="s.id"
-                :label="s.label"
-                :value="s.value"
+                :label="s.dictLabel"
+                :value="s.dictValue"
               />
             </el-select>
           </el-form-item>
@@ -45,6 +45,100 @@
             <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
           </el-form-item>
         </el-form>
+
+        <el-row :gutter="10" class="mb8">
+          <el-col :span="1.5">
+            <el-button
+              v-permisaction="['sys:dicttype:add']"
+              type="primary"
+              icon="el-icon-plus"
+              size="mini"
+              @click="handleAdd"
+            >新增</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+              v-permisaction="['sys:dicttype:update']"
+              type="success"
+              icon="el-icon-edit"
+              size="mini"
+              :disabled="single"
+              @click="handleUpdate"
+            >修改</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+              v-permisaction="['sys:dicttype:delete']"
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              :disabled="multiple"
+              @click="handleDelete"
+            >删除</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button
+              v-permisaction="['sys:dicttype:export']"
+              type="warning"
+              icon="el-icon-download"
+              size="mini"
+              @click="handleExport"
+            >导出</el-button>
+          </el-col>
+        </el-row>
+
+        <el-table v-loading="loading" :data="records" @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55" align="center" />
+          <el-table-column label="字典编号" width="80" align="center" prop="id" />
+          <el-table-column label="字典名称" align="center" prop="name" :show-overflow-tooltip="true" />
+          <el-table-column label="字典类型" align="center" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <router-link :to="{name: 'DictData', params: {id: scope.row.id}}" class="link-type">
+                <span>{{ scope.row.key }}</span>
+              </router-link>
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" align="center">
+            <template slot-scope="scope">
+              <el-tag
+                :type="scope.row.status === 0 ? 'danger' : 'success'"
+                disable-transitions
+              >{{ statusFormat(scope.row) }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
+          <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+            <template slot-scope="scope">
+              <span>{{ parseTime(scope.row.createTime) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <el-button
+                v-permisaction="['sys:dicttype:update']"
+                size="mini"
+                type="text"
+                icon="el-icon-edit"
+                @click="handleUpdate(scope.row)"
+              >修改</el-button>
+              <el-button
+                v-permisaction="['sys:dicttype:delete']"
+                size="mini"
+                type="text"
+                icon="el-icon-delete"
+                @click="handleDelete(scope.row)"
+              >删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <pagination
+          v-show="total>0"
+          :total="total"
+          :page.sync="queryParams.page"
+          :limit.sync="queryParams.limit"
+          @pagination="getList"
+        />
       </el-card>
     </template>
   </BasicLayout>
@@ -68,7 +162,7 @@ export default {
       open: false,
 
       queryParams: {
-        start: 0,
+        page: 1,
         limit: 10,
         name: undefined,
         key: undefined,
@@ -86,10 +180,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['itemStatus'])
+    ...mapGetters(['statusOptions'])
   },
   created() {
-
+    this.getList()
   },
   methods: {
     getList() {
@@ -101,9 +195,34 @@ export default {
         this.loading = false
       })
     },
+    // 字典状态字典翻译
+    statusFormat(row, column) {
+      return this.selectDictLabel(this.statusOptions, row.status)
+    },
+    /** 重置按钮操作 */
+    resetQuery() {
+      this.dateRange = []
+      this.resetForm('queryForm')
+      this.handleQuery()
+    },
     handleQuery() {
       this.queryParams.start = 0
       this.getList()
+    },
+    handleAdd() {
+
+    },
+    handleUpdate() {
+
+    },
+    handleDelete() {
+
+    },
+    handleExport() {
+
+    },
+    handleSelectionChange() {
+
     }
   }
 }
