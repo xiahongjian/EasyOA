@@ -123,7 +123,7 @@ const mutations = {
     state.addRoutes = routes
     state.routes = constantRoutes.concat(routes)
   },
-  SET_PERMISSION: (state, permissions) => {
+  SET_PERMISSIONS: (state, permissions) => {
     state.permissions = permissions
   }
 }
@@ -140,7 +140,7 @@ const actions = {
         const actionPerms = generateMenu(asyncRoutes, loadMenuData, roles)
         asyncRoutes.push({ path: '*', redirect: '/', hidden: true })
         commit('SET_ROUTES', asyncRoutes)
-        commit('SET_PERMISSONS', actionPerms)
+        commit('SET_PERMISSIONS', actionPerms)
 
         resolve(asyncRoutes)
       })
