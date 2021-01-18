@@ -16,10 +16,18 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id,
-        create_time,
-        update_time,
-        dict_id, label, value, remark, status
+        `id`,
+        `create_time`,
+        `update_time`,
+        `dict_id`, `label`, `value`, `remark`, `status`
     </sql>
+    <select id="findValueByDictKey" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from `dict_value`
+        <where>
+            <if test="status != null">and `status`=#{status}</if>
+        </where>
+    </select>
 
 </mapper>

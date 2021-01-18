@@ -1,8 +1,6 @@
 package tech.hongjian.oa.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -56,15 +54,12 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         if (status != null) {
             query.eq(Dict::getStatus, status);
         }
-        return query.page(new Page<>(limit * (page - 1), limit));
+        return query.page(new Page<>(limit * (page - 1L), limit));
     }
 
     @Override
-    public Dict getDictByKey(String dictKey) {
-        if (dictKey == null) {
-            return null;
-        }
-        return lambdaQuery().eq(Dict::getKey, dictKey).one();
+    public Dict getDictById(Integer id) {
+        return getBaseMapper().selectById(id);
     }
 
     @Override
@@ -93,8 +88,8 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
     }
 
     @Override
-    public Dict delete(String dictKey) {
-        Dict dict = getDictByKey(dictKey);
+    public Dict delete(Integer id) {
+        Dict dict = getDictById(id);
         if (dict == null) {
             throw new CommonServiceException(M.NOT_EXISTED);
         }
@@ -105,11 +100,19 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
     }
 
     @Override
-    public boolean exists(String dictKey) {
-        if (dictKey == null) {
+    public boolean exists(Integer id) {
+        if (id == null) {
             return false;
         }
-        return getDictByKey(dictKey) != null;
+        return getDictById(id) != null;
+    }
+
+    @Override
+    public boolean exists(String key) {
+        if (key == null) {
+            return false;
+        }
+        return lambdaQuery().eq(Dict::getKey, key).count() > 0;
     }
 
 }

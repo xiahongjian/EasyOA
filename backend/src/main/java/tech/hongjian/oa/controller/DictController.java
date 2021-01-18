@@ -17,22 +17,22 @@ import tech.hongjian.oa.util.JSONUtil;
  * @since 2021-01-12
  */
 @RestController
-@RequestMapping("/dict")
+@RequestMapping("/dict/type")
 public class DictController {
 
     @Autowired
     private DictService dictService;
 
-    @GetMapping("/typelist")
+    @GetMapping("/list")
     public R getDictTypes(@RequestParam(required = false) String name, @RequestParam(required = false) String key,
                           @RequestParam(required = false) String status,
                           @RequestParam int page, @RequestParam int limit) {
         return R.ok(dictService.getDict(name, key, status == null ? null : JSONUtil.toBean(status, Status.class), page, limit));
     }
 
-    @GetMapping("/type/{dictKey}")
-    public R getDictType(@PathVariable String dictKey) {
-        return R.ok(dictService.getDictByKey(dictKey));
+    @GetMapping("/{id}")
+    public R getDictType(@PathVariable Integer id) {
+        return R.ok(dictService.getDictById(id));
     }
 
     @PostMapping("/type")
@@ -40,13 +40,13 @@ public class DictController {
         return R.ok(dictService.create(dict));
     }
 
-    @PutMapping("/type/{dictType}")
-    public R updateDict(@PathVariable String dictType, @RequestBody Dict dict) {
+    @PutMapping("/{id}")
+    public R updateDict(@PathVariable Integer id, @RequestBody Dict dict) {
         return R.ok(dictService.update(dict));
     }
 
-    @DeleteMapping("/type/{dictType}")
-    public R deleteDict(@PathVariable String dictType) {
-        return R.ok(dictService.delete(dictType));
+    @DeleteMapping("/{id}")
+    public R deleteDict(@PathVariable Integer id) {
+        return R.ok(dictService.delete(id));
     }
 }

@@ -1,7 +1,9 @@
 package tech.hongjian.oa.service;
 
-import tech.hongjian.oa.entity.DictValue;
 import com.baomidou.mybatisplus.extension.service.IService;
+import tech.hongjian.oa.entity.DictValue;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,4 +16,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface DictValueService extends IService<DictValue> {
 
     void deleteAllValues(Integer id);
+
+    List<DictValue> getValueByDictKey(String dictKey);
+
+    List<DictValue> getEnableValueByDictKey(String dictKey);
 }
