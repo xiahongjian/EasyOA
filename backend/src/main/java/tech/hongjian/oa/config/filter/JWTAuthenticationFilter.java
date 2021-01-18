@@ -74,8 +74,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         AuthenticationException failed = null;
         if (token != null) {
             try {
-                JWTAuthenticationToken authenToken = new JWTAuthenticationToken(token);
-                authResult = this.authenticationManager.authenticate(authenToken);
+                JWTAuthenticationToken authToken = new JWTAuthenticationToken(token);
+                authResult = this.authenticationManager.authenticate(authToken);
             } catch (JWTDecodeException e) {
                 log.error("Failed to decoded JWT, token: [{}].", token, e);
                 failed = new InsufficientAuthenticationException("JWT format error", e);

@@ -3,6 +3,7 @@ package tech.hongjian.oa.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.Setter;
@@ -39,14 +40,13 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         String PARAM_ERROR = "参数错误";
     }
 
-    private DictMapper dictMapper;
     private DictValueService dictValueService;
 
     @Override
     public IPage<Dict> getDict(String name, String key, Status status, int start,
                                int limit) {
-        LambdaQueryWrapper<Dict> query =
-                Wrappers.lambdaQuery(Dict.class).orderByAsc(Dict::getCreateTime);
+        LambdaQueryChainWrapper<Dict> query =
+                lambdaQuery().orderByAsc(Dict::getCreateTime);
         if (StringUtils.isNotBlank(name)) {
             query.like(Dict::getName, name);
         }
@@ -56,7 +56,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         if (status != null) {
             query.eq(Dict::getStatus, status);
         }
-        return dictMapper.selectPage(new Page<>(start, limit), query);
+        return query.page(new Page<>(start, limit));
     }
 
     @Override
@@ -64,8 +64,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         if (dictKey == null) {
             return null;
         }
-        return dictMapper.selectOne(lambdaQuery().eq(Dict::getKey,
-                dictKey));
+        return lambdaQuery().eq(Dict::getKey, dictKey).one();
     }
 
     @Override
@@ -85,11 +84,11 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
 
     @Override
     public Dict update(Dict dict) {
-        if (dict.getId() == null || dictMapper.selectById(dict.getId()) == null) {
+        if (dict.getId() == null || getBaseMapper().selectById(dict.getId()) == null) {
             throw new CommonServiceException(M.PARAM_ERROR);
         }
         dict.setUpdateTime(LocalDateTime.now());
-        dictMapper.updateById(dict);
+        getBaseMapper().updateById(dict);
         return dict;
     }
 
@@ -99,7 +98,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         if (dict == null) {
             throw new CommonServiceException(M.NOT_EXISTED);
         }
-        dictMapper.deleteById(dict.getId());
+        getBaseMapper().deleteById(dict.getId());
         // 删除关联的值
         dictValueService.deleteAllValues(dict.getId());
         return dict;

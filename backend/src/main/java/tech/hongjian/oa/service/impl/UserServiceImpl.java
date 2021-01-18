@@ -27,13 +27,11 @@ import java.util.stream.Collectors;
 @Setter(onMethod_ = {@Autowired})
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
-    private UserMapper userMapper;
     private RoleService roleService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userMapper
-                .selectOne(lambdaQuery().eq(User::getUsername, username));
+        User user = lambdaQuery().eq(User::getUsername, username).one();
         if (user == null) {
             throw new UsernameNotFoundException("User[" + username + "] not existed.");
         }

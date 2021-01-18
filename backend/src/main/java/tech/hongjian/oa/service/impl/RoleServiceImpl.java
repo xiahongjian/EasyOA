@@ -22,14 +22,13 @@ import java.util.List;
 @Setter(onMethod_ = {@Autowired})
 @Service
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements RoleService {
-    private RoleMapper roleMapper;
 
     @Override
     public List<Role> getUserRoles(Integer userId) {
         if (userId == null) {
             return Collections.emptyList();
         }
-        return roleMapper.findUserRoles(userId);
+        return getBaseMapper().findUserRoles(userId);
     }
 
 }

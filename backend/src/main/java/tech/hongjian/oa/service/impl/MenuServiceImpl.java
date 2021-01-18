@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 @Setter(onMethod_ = {@Autowired})
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements MenuService {
-    private MenuMapper menuMapper;
 
     @Override
     public List<Menu> getRoleInterfaceMenus(Integer roleId) {
@@ -38,12 +37,12 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         if (roleIds.isEmpty()) {
             return Collections.emptyList();
         }
-        return menuMapper.findRoleMenus(MenuType.INTERFACE, roleIds);
+        return getBaseMapper().findRoleMenus(MenuType.INTERFACE, roleIds);
     }
 
     @Override
     public List<Menu> getMenuTree() {
-        List<Menu> allMenus = menuMapper.findAllMenuWithRole();
+        List<Menu> allMenus = getBaseMapper().findAllMenuWithRole();
         if (allMenus.isEmpty()) {
             return Collections.emptyList();
         }

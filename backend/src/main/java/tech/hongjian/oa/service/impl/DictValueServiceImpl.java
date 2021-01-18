@@ -1,5 +1,6 @@
 package tech.hongjian.oa.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,12 @@ import tech.hongjian.oa.service.DictValueService;
 @Setter(onMethod_ = {@Autowired})
 @Service()
 public class DictValueServiceImpl extends ServiceImpl<DictValueMapper, DictValue> implements DictValueService {
-    private DictValueMapper dictValueMapper;
 
     @Override
     public void deleteAllValues(Integer dictId) {
         if (dictId == null) {
             return;
         }
-        dictValueMapper.delete(lambdaQuery().eq(DictValue::getDictId, dictId));
+        getBaseMapper().delete(Wrappers.lambdaQuery(DictValue.class).eq(DictValue::getDictId, dictId));
     }
 }
