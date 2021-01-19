@@ -34,8 +34,8 @@
               <el-option
                 v-for="s in statusOptions"
                 :key="s.id"
-                :label="s.dictLabel"
-                :value="s.dictValue"
+                :label="s.label"
+                :value="s.value"
               />
             </el-select>
           </el-form-item>
@@ -93,7 +93,7 @@
           <el-table-column label="字典名称" align="center" prop="name" :show-overflow-tooltip="true" />
           <el-table-column label="字典类型" align="center" :show-overflow-tooltip="true">
             <template slot-scope="scope">
-              <router-link :to="{name: 'DictData', params: {id: scope.row.id}}" class="link-type">
+              <router-link :to="{name: 'DictData', params: {dictId: scope.row.id}}" class="link-type">
                 <span>{{ scope.row.key }}</span>
               </router-link>
             </template>

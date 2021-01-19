@@ -60,7 +60,7 @@ public class JSONUtil {
 	public static <T> String toJSON(T obj) {
 		try {
 			return DEFAULT_MAPPER.writeValueAsString(obj);
-		} catch (JsonProcessingException e) {
+		} catch (Exception e) {
 			LOGGER.warn("Failed to serilize the object to JSON.", e);
 		}
 		return "";
@@ -69,7 +69,7 @@ public class JSONUtil {
 	public static <T> String toJSON(T obj, String dateFormat) {
 	    try {
             return DEFAULT_MAPPER.writer(new SimpleDateFormat(dateFormat)).writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             LOGGER.warn("Failed to serilize the object to JSON.", e);
         }
         return "";
@@ -78,7 +78,7 @@ public class JSONUtil {
 	public static <T> T toBean(String json, Class<T> clazz) {
 		try {
 			return DEFAULT_MAPPER.readValue(json, clazz);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.warn("Failed to parse the JSON string to an object, JSON: {}", json, e);
 		}
 		return null;
@@ -87,7 +87,7 @@ public class JSONUtil {
 	public static <T> T toBean(String json, Class<T> clazz, String dateFormat) {
         try {
             return new ObjectMapper().setDateFormat(new SimpleDateFormat(dateFormat)).readValue(json, clazz);
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.warn("Failed to parse the JSON string to an object, JSON: {}", json, e);
         }
         return null;
@@ -96,7 +96,7 @@ public class JSONUtil {
 	public static <T> T toBean(String json, TypeReference<T> typeRef) {
 	    try {
 	        return DEFAULT_MAPPER.readValue(json, typeRef);
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.warn("Failed to parse the JSON string to an object, JSON: {}", json, e);
         }
         return null;
@@ -106,7 +106,7 @@ public class JSONUtil {
 		JavaType type = DEFAULT_MAPPER.getTypeFactory().constructParametricType(List.class, clazz);
 		try {
 			return DEFAULT_MAPPER.readValue(json, type);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.warn("Failed to parse the JSON string to a List object, JSON: {}", json, e);
 		}
 		return null;
@@ -117,7 +117,7 @@ public class JSONUtil {
         JavaType type = mapper.getTypeFactory().constructParametricType(List.class, clazz);
         try {
             return mapper.readValue(json, type);
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.warn("Failed to parse the JSON string to a List object, JSON: {}", json, e);
         }
         return null;
@@ -128,7 +128,7 @@ public class JSONUtil {
 		JavaType type = DEFAULT_MAPPER.getTypeFactory().constructMapLikeType(HashMap.class, String.class, clazz);
 		try {
 			return DEFAULT_MAPPER.readValue(json, type);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			LOGGER.warn("Failed to parse the JSON string to a Map object, JSON: {}", json, e);
 		}
 		return null;
@@ -139,7 +139,7 @@ public class JSONUtil {
         JavaType type = mapper.getTypeFactory().constructMapLikeType(HashMap.class, String.class, clazz);
         try {
             return mapper.readValue(json, type);
-        } catch (IOException e) {
+        } catch (Exception e) {
             LOGGER.warn("Failed to parse the JSON string to a Map object, JSON: {}", json, e);
         }
         return null;

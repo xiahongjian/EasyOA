@@ -41,8 +41,8 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
     private DictValueService dictValueService;
 
     @Override
-    public IPage<Dict> getDict(String name, String key, Status status, int page,
-                               int limit) {
+    public IPage<Dict> getDict(String name, String key, Status status, Integer page,
+                               Integer limit) {
         LambdaQueryChainWrapper<Dict> query =
                 lambdaQuery().orderByAsc(Dict::getCreateTime);
         if (StringUtils.isNotBlank(name)) {
@@ -54,7 +54,10 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         if (status != null) {
             query.eq(Dict::getStatus, status);
         }
-        return query.page(new Page<>(limit * (page - 1L), limit));
+        if (page == null || limit == null) {
+            return new Page<Dict>().setRecords(query.list());
+        }
+        return query().page(new Page<>(limit * (page - 1L), limit));
     }
 
     @Override

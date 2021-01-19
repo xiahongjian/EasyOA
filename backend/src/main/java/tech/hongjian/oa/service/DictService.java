@@ -16,7 +16,7 @@ import tech.hongjian.oa.entity.enums.Status;
  */
 public interface DictService extends IService<Dict> {
 
-    IPage<Dict> getDict(String name, String key, Status status, int start, int limit);
+    IPage<Dict> getDict(String name, String key, Status status, Integer start, Integer limit);
 
     Dict getDictById(Integer id);
 

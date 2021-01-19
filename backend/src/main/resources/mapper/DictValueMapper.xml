@@ -23,10 +23,23 @@
     </sql>
     <select id="findValueByDictKey" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List" />
-        from `dict_value`
+        v.*
+        from `dict_value` v, `dict` d
         <where>
-            <if test="status != null">and `status`=#{status}</if>
+            v.dict_id=d.id
+            <if test="dictKey != null">and d.`key`=#{dictKey} </if>
+            <if test="status != null">and d.`status`=#{status} and v.`status`=#{status}</if>
+        </where>
+    </select>
+    <select id="findDictValue" resultMap="BaseResultMap">
+        select
+        v.*
+        from `dict_value` v, `dict` d
+        <where>
+            v.dict_id=d.id
+            <if test="dictKey != null">and d.`key`=#{dictKey} </if>
+            <if test="status != null">and v.`status`=#{status}</if>
+            <if test="label != null">and v.`label` like #{label}</if>
         </where>
     </select>
 

@@ -17,20 +17,20 @@ import tech.hongjian.oa.util.JSONUtil;
  * @since 2021-01-12
  */
 @RestController
-@RequestMapping("/dict/type")
+@RequestMapping("/dict")
 public class DictController {
 
     @Autowired
     private DictService dictService;
 
-    @GetMapping("/list")
+    @GetMapping("/typeList")
     public R getDictTypes(@RequestParam(required = false) String name, @RequestParam(required = false) String key,
                           @RequestParam(required = false) String status,
-                          @RequestParam int page, @RequestParam int limit) {
+                          @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit) {
         return R.ok(dictService.getDict(name, key, status == null ? null : JSONUtil.toBean(status, Status.class), page, limit));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/type/{id}")
     public R getDictType(@PathVariable Integer id) {
         return R.ok(dictService.getDictById(id));
     }
@@ -40,12 +40,12 @@ public class DictController {
         return R.ok(dictService.create(dict));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/type/{id}")
     public R updateDict(@PathVariable Integer id, @RequestBody Dict dict) {
         return R.ok(dictService.update(dict));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/type/{id}")
     public R deleteDict(@PathVariable Integer id) {
         return R.ok(dictService.delete(id));
     }

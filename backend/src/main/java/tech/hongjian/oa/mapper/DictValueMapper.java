@@ -1,5 +1,7 @@
 package tech.hongjian.oa.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import tech.hongjian.oa.entity.DictValue;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import tech.hongjian.oa.entity.enums.Status;
@@ -18,4 +20,5 @@ public interface DictValueMapper extends BaseMapper<DictValue> {
 
     List<DictValue> findValueByDictKey(String dictKey, Status status);
 
+    IPage<DictValue> findDictValue(Page<DictValue> page, String dictKey, String label, Status status);
 }

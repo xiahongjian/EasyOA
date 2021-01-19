@@ -1,10 +1,15 @@
 package tech.hongjian.oa.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.NonNull;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.DictValue;
 import tech.hongjian.oa.entity.enums.Status;
@@ -40,6 +45,11 @@ public class DictValueServiceImpl extends ServiceImpl<DictValueMapper, DictValue
             return Collections.emptyList();
         }
         return getBaseMapper().findValueByDictKey(dictKey, null);
+    }
+
+    @Override
+    public IPage<DictValue> listDictValue(@NonNull String dictKey, String label, Status status, Integer page, Integer limit) {
+        return getBaseMapper().findDictValue(new Page<>((page - 1) * limit, limit), dictKey, label == null ? null : ("%" + label + "%"), status);
     }
 
     @Override

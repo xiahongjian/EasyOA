@@ -52,12 +52,6 @@ service.interceptors.response.use(
     }
     // if the custom code is not 20000, it is judged as an error.
     if (res.success !== true || res.code !== 20000) {
-      Message({
-        message: res.message || 'Error',
-        type: 'error',
-        duration: 5 * 1000
-      })
-
       // 30000: 未登录 30002: token过期 30006: token无效
       if (res.code === 30000 || res.code === 30002 || res.code === 30006) {
         // to re-login
@@ -70,7 +64,14 @@ service.interceptors.response.use(
             location.reload()
           })
         })
+        return Promise.reject(new Error(res.message || 'Error'))
       }
+
+      Message({
+        message: res.message || 'Error',
+        type: 'error',
+        duration: 5 * 1000
+      })
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res
