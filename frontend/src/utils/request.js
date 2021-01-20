@@ -48,7 +48,7 @@ service.interceptors.response.use(
     const token = response.headers['Authorization']
     // 刷新token
     if (token && oldToken !== token) {
-      store.dispatch('user/refreshToken')
+      store.dispatch('user/refreshToken', token)
     }
     // if the custom code is not 20000, it is judged as an error.
     if (res.success !== true || res.code !== 20000) {

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapp
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,14 +28,15 @@ import java.time.LocalDateTime;
  * @author xiahongjian
  * @since 2021-01-12
  */
+@Slf4j
 @Setter(onMethod_ = {@Autowired})
 @Transactional(rollbackFor = Exception.class)
 @Service
 public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements DictService {
     public interface M {
         String KEY_CANT_NOT_BE_NULL = "字典类型不能为空";
-        String ALREADY_EXISTED = "字典类型: [{1}]已经存在";
-        String NOT_EXISTED = "字典类型: [{1}]不存在";
+        String ALREADY_EXISTED = "字典类型: [{0}]已经存在";
+        String NOT_EXISTED = "字典类型: [{0}]不存在";
         String PARAM_ERROR = "参数错误";
     }
 
@@ -77,7 +79,11 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
             throw new CommonServiceException(MessageFormat.format(M.ALREADY_EXISTED,
                     dict.getKey()));
         }
-        return null;
+        LocalDateTime now = LocalDateTime.now();
+        dict.setCreateTime(now);
+        dict.setUpdateTime(now);
+        save(dict);
+        return dict;
     }
 
     @Override
@@ -116,6 +122,15 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
             return false;
         }
         return lambdaQuery().eq(Dict::getKey, key).count() > 0;
+    }
+
+    @Override
+    public void delete(Integer[] ids) {
+        if (ids == null || ids.length == 0) {
+            return;
+        }
+        log.info("删除字典类型：[{}]", StringUtils.join(ids, ","));
+        lambdaUpdate().in(Dict::getId, ids).remove();
     }
 
 }

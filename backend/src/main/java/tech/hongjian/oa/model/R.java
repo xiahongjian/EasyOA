@@ -1,9 +1,9 @@
 package tech.hongjian.oa.model;
 
+import tech.hongjian.oa.config.Code;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import tech.hongjian.oa.config.Code;
 
 /**
  * @author xiahongjian
@@ -31,7 +31,7 @@ public class R extends HashMap<String, Object> {
     }
 
     public static R error(int code, String msg) {
-        return new R().code(code).message(msg);
+        return new R().success(false).code(code).message(msg);
     }
 
     public static R error(Code code, String msg) {

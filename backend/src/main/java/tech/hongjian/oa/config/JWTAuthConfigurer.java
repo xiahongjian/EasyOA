@@ -37,7 +37,7 @@ public class JWTAuthConfigurer<T extends JWTAuthConfigurer<T, B>, B extends Http
         return this;
     }
 
-    public JWTAuthConfigurer<T, B> permissiveRquestUrls(String... urls) {
+    public JWTAuthConfigurer<T, B> permissiveRequestUrls(String... urls) {
         authFilter.setPermissiveUrl(urls);
         return this;
     }

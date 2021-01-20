@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,12 +15,14 @@ import tech.hongjian.oa.service.CacheService;
 import tech.hongjian.oa.service.UserService;
 import tech.hongjian.oa.service.UserTokenService;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * @author xiahongjian
  * @since 2021-01-16 14:29:39
  */
+@Slf4j
 @Setter(onMethod_ = {@Autowired})
 @Service
 public class UserTokenServiceImpl implements UserTokenService {
@@ -57,6 +60,8 @@ public class UserTokenServiceImpl implements UserTokenService {
         DecodedJWT decode = JWT.decode(token);
         Date now = new Date();
         if (decode.getExpiresAt().before(now)) {
+            Date expiresAt = decode.getExpiresAt();
+            log.info("ExpiresAt: {}", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(expiresAt));
             throw new CredentialsExpiredException(msg);
         }
         return userService.loadUserByUsername(decode.getSubject());

@@ -2,7 +2,6 @@ package tech.hongjian.oa.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-
 import tech.hongjian.oa.entity.Dict;
 import tech.hongjian.oa.entity.enums.Status;
 
@@ -29,4 +28,6 @@ public interface DictService extends IService<Dict> {
     boolean exists(Integer id);
 
     boolean exists(String key);
+
+    void delete(Integer[] ids);
 }

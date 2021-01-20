@@ -10,11 +10,11 @@ const state = {
   statusOptions: [{
     id: 1,
     label: '正常',
-    value: '1'
+    value: 1
   }, {
     id: 2,
     label: '停用',
-    value: '0'
+    value: 0
   }]
 }
 

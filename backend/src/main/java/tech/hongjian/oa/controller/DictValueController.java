@@ -24,7 +24,7 @@ import tech.hongjian.oa.util.JSONUtil;
 public class DictValueController {
     private DictValueService dictValueService;
 
-    @GetMapping("/dataList")
+    @GetMapping("/datas")
     public R getDictValues(@RequestParam(required = false) String key, @RequestParam(required = false) String label,
                            @RequestParam(required = false) String status, @RequestParam(required = false) Integer page,
                            @RequestParam(required = false) Integer pageSize) {

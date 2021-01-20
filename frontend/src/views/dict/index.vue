@@ -139,13 +139,40 @@
           :limit.sync="queryParams.limit"
           @pagination="getList"
         />
+
+        <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" width="500px">
+          <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+            <el-form-item label="字典名称" prop="name">
+              <el-input v-model="form.name" placeholder="请输入字典名称" :disabled="isEdit" />
+            </el-form-item>
+            <el-form-item label="字典类型" prop="key">
+              <el-input v-model="form.key" placeholder="请输入字典类型" :disabled="isEdit" />
+            </el-form-item>
+            <el-form-item label="状态" prop="status">
+              <el-radio-group v-model="form.status">
+                <el-radio
+                  v-for="s in statusOptions"
+                  :key="s.value"
+                  :label="s.value"
+                >{{ s.label }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="备注" prop="remark">
+              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="submitForm">确定</el-button>
+            <el-button @click="cancel">取消</el-button>
+          </div>
+        </el-dialog>
       </el-card>
     </template>
   </BasicLayout>
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { listType } from '@/api/system/dict/type'
+import { listType, updateType, addType, delType, getType } from '@/api/system/dict/type'
 export default {
   name: 'Dict',
   data() {
@@ -169,7 +196,7 @@ export default {
         status: undefined
       },
       form: {},
-      roles: {
+      rules: {
         name: [
           { required: true, message: '字典名称不能为空', trigger: 'blur' }
         ],
@@ -184,6 +211,7 @@ export default {
   },
   created() {
     this.getList()
+    this.reset()
   },
   methods: {
     getList() {
@@ -210,19 +238,83 @@ export default {
       this.getList()
     },
     handleAdd() {
-
+      this.reset()
+      this.open = true
+      this.title = '添加字典类型'
+      this.isEdit = false
     },
-    handleUpdate() {
-
+    handleUpdate(row) {
+      this.reset()
+      const dictId = row.id || this.ids
+      getType(dictId).then(resp => {
+        this.form = resp.data
+        this.open = true
+        this.title = '修改字典类型'
+        this.isEdit = true
+      })
     },
-    handleDelete() {
-
+    handleDelete(row) {
+      const dictIds = row.id || this.ids
+      this.$confirm(`是否确认删除字典编号为”${dictIds}“的数据项？`, '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return delType(dictIds)
+      }).then(() => {
+        this.getList()
+        this.msgSuccess('删除成功')
+      }).catch(() => {})
     },
     handleExport() {
 
     },
-    handleSelectionChange() {
-
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.id)
+      this.single = selection.length !== 1
+      this.multiple = !selection.length
+    },
+    reset() {
+      this.form = {
+        id: undefined,
+        key: undefined,
+        type: undefined,
+        status: 1,
+        remark: undefined
+      }
+      this.resetForm('form')
+    },
+    submitForm() {
+      this.$refs['form'].validate(valid => {
+        if (!valid) {
+          return
+        }
+        if (this.form.id !== undefined) {
+          updateType(this.form.id, this.form).then(resp => {
+            if (resp.success) {
+              this.msgSuccess('修改成功')
+              this.open = false
+              this.getList()
+            } else {
+              this.msgError(resp.msg)
+            }
+          })
+        } else {
+          addType(this.form).then(resp => {
+            if (resp.success) {
+              this.msgSuccess('新增成功')
+              this.open = false
+              this.getList()
+            } else {
+              this.msgError(resp.msg)
+            }
+          })
+        }
+      })
+    },
+    cancel() {
+      this.open = false
+      this.reset()
     }
   }
 }

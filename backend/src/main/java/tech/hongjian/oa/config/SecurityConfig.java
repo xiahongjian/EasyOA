@@ -1,13 +1,6 @@
 package tech.hongjian.oa.config;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URLEncoder;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +20,6 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-
 import tech.hongjian.oa.config.ConfigConsts.URLs;
 import tech.hongjian.oa.config.handler.JWTRefreshSuccessHandler;
 import tech.hongjian.oa.config.handler.LoginAuthSuccessHandler;
@@ -39,20 +31,23 @@ import tech.hongjian.oa.service.impl.JWTAuthenticationProvider;
 import tech.hongjian.oa.util.JSONUtil;
 import tech.hongjian.oa.util.WebUtil;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URLEncoder;
+
 /**
  * @author xiahongjian
  * @time 2020-01-15 22:37:28
  */
+@Setter(onMethod_ = {@Autowired})
 @Configuration
 @EnableWebSecurity(debug = false)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
     private UserService userService;
-
-    @Autowired
     private UserTokenService tokenService;
-
-    @Autowired
     private ResourceBasedDecisionManager customUrlDecisionManager;
 
     @Bean
@@ -70,14 +65,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         corsConfiguration.addAllowedOrigin("*");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**",
+                corsConfiguration);
         return new CorsFilter(urlBasedCorsConfigurationSource);
     }
 
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/css/**", "/js/**", "/index.html", "/img/**", "/fonts/**", "/favicon.ico", "/error");
+        web.ignoring().antMatchers("/css/**", "/js/**", "/index.html", "/img/**",
+                "/fonts/**", "/favicon.ico", "/error");
     }
 
     @Override
@@ -89,35 +86,36 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()
-            .authorizeRequests()
-            .anyRequest().authenticated()
-            .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
-                @Override
-                public <O extends FilterSecurityInterceptor> O postProcess(O object) {
-                    object.setAccessDecisionManager(customUrlDecisionManager);
-                    return object;
-                }})
-            .and()
-            .csrf().disable()
-            .formLogin().disable()
-            .sessionManagement().disable()
-            .cors()
-            .and()
-            // 配置登录请求数据以JSON格式传到后端时的认证处理
-            .apply(new AdvancedLoginConfigurer<>())
+                .authorizeRequests()
+                .anyRequest().authenticated()
+                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                    @Override
+                    public <O extends FilterSecurityInterceptor> O postProcess(O object) {
+                        object.setAccessDecisionManager(customUrlDecisionManager);
+                        return object;
+                    }
+                })
+                .and()
+                .csrf().disable()
+                .formLogin().disable()
+                .sessionManagement().disable()
+                .cors()
+                .and()
+                // 配置登录请求数据以JSON格式传到后端时的认证处理
+                .apply(new AdvancedLoginConfigurer<>())
                 .loginSuccessHanlder(new LoginAuthSuccessHandler(tokenService))
-            .and()
-            // 配置JWT的认证处理
-            .apply(new JWTAuthConfigurer<>())
-                .permissiveRquestUrls(URLs.LOGIN)
+                .and()
+                // 配置JWT的认证处理
+                .apply(new JWTAuthConfigurer<>())
+                .permissiveRequestUrls(URLs.LOGIN)
                 .tokenValidSuccessHandler(new JWTRefreshSuccessHandler(tokenService))
-            .and()
-            .logout()
+                .and()
+                .logout()
                 .logoutUrl(URLs.LOGOUT)
                 .logoutSuccessHandler(new TokenClearLogoutHandler(tokenService))
                 .permitAll()
-            .and()
-            .exceptionHandling()
+                .and()
+                .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint());
     }
 
@@ -126,13 +124,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             @SuppressWarnings("deprecation")
             @Override
             public void commence(HttpServletRequest request, HttpServletResponse response,
-                    AuthenticationException authException) throws IOException, ServletException {
+                                 AuthenticationException authException) throws IOException, ServletException {
                 // AJAX请求
                 if (WebUtil.isAjaxRequest(request)) {
                     response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     PrintWriter out = response.getWriter();
-                    out.print(JSONUtil.toJSON(R.error(Code.UNAUTHORIZED, "Unauthorized")));
+                    out.print(JSONUtil.toJSON(R.error(Code.UNAUTHORIZED,
+                            "Unauthorized")));
                     out.close();
                     return;
                 }

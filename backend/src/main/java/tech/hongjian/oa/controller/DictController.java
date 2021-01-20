@@ -23,7 +23,7 @@ public class DictController {
     @Autowired
     private DictService dictService;
 
-    @GetMapping("/typeList")
+    @GetMapping("/types")
     public R getDictTypes(@RequestParam(required = false) String name, @RequestParam(required = false) String key,
                           @RequestParam(required = false) String status,
                           @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit) {
@@ -48,5 +48,11 @@ public class DictController {
     @DeleteMapping("/type/{id}")
     public R deleteDict(@PathVariable Integer id) {
         return R.ok(dictService.delete(id));
+    }
+
+    @DeleteMapping("/type/batch")
+    public R deleteDicts(@RequestParam Integer[] ids) {
+        dictService.delete(ids);
+        return R.ok();
     }
 }

@@ -26,7 +26,7 @@ export function getDicts(dictKey) {
 
 export function listData(query) {
   return request({
-    url: `/dict/dataList`,
+    url: `/dict/datas`,
     method: 'get',
     params: query
   })

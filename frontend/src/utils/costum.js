@@ -1,4 +1,3 @@
-
 // 日期格式化
 export function parseTime(time, pattern) {
   if (arguments.length === 0 || !time) {
@@ -61,7 +60,7 @@ export function addDateRange(params, dateRange) {
 export function selectDictLabel(datas, value) {
   var actions = []
   Object.keys(datas).map((key) => {
-    if (datas[key].value === ('' + value)) {
+    if (compareValue(datas[key].value, value)) {
       actions.push(datas[key].label)
       return false
     }
@@ -100,4 +99,9 @@ export function praseStrEmpty(str) {
     return ''
   }
   return str
+}
+
+// 比较两个值是否相等，忽略类型
+export function compareValue(value1, value2) {
+  return (value1 === value2) || (value1 + '' === value2) || (value1 === value2 + '')
 }

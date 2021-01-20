@@ -106,6 +106,5 @@
       "pre-commit": "lint-staged"
     }
   },
-  "repository": {
-  }
+  "repository": {}
 }
