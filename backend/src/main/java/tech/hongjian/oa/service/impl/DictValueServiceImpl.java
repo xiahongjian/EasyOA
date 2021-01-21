@@ -13,6 +13,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.DictValue;
 import tech.hongjian.oa.entity.enums.Status;
+import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.DictValueMapper;
 import tech.hongjian.oa.service.DictValueService;
 
@@ -58,5 +59,30 @@ public class DictValueServiceImpl extends ServiceImpl<DictValueMapper, DictValue
             return Collections.emptyList();
         }
         return getBaseMapper().findValueByDictKey(dictKey, Status.NORMAL);
+    }
+
+    @Override
+    public void delete(Integer id) {
+        if (id == null) {
+            return;
+        }
+        lambdaUpdate().eq(DictValue::getId, id).remove();
+    }
+
+    @Override
+    public void batchDelete(Integer[] ids) {
+        if (ids == null || ids.length == 0) {
+            return;
+        }
+        lambdaUpdate().in(DictValue::getId, ids).remove();
+    }
+
+    @Override
+    public boolean create(DictValue entity) {
+        Integer count = lambdaQuery().eq(DictValue::getDictId, entity.getDictId()).eq(DictValue::getValue, entity.getValue()).count();
+        if (count > 0) {
+            throw new CommonServiceException("字典数据键值[" + entity.getValue() +"]已经存在");
+        }
+        return save(entity);
     }
 }

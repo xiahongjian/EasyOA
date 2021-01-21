@@ -27,4 +27,6 @@ public class DictValue extends BaseEntity {
     private String remark;
 
     private Status status;
+
+    private Integer sort;
 }

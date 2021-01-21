@@ -24,4 +24,11 @@ public interface DictValueService extends IService<DictValue> {
     IPage<DictValue> listDictValue(String dictKey, String value, Status status, Integer page, Integer limit);
 
     List<DictValue> getEnableValueByDictKey(String dictKey);
+
+    void delete(Integer id);
+
+    void batchDelete(Integer[] ids);
+
+    boolean create(DictValue entity);
+
 }

@@ -14,6 +14,7 @@ import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.service.CacheService;
 import tech.hongjian.oa.service.UserService;
 import tech.hongjian.oa.service.UserTokenService;
+import tech.hongjian.oa.util.JSONUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,6 +56,8 @@ public class UserTokenServiceImpl implements UserTokenService {
     public UserDetails validate(String token) {
         String msg = "Token expires";
         if (!cacheService.contains(token)) {
+            log.info("Expired token: {}", token);
+            log.info("All token: {}", JSONUtil.toJSON(((MemoryCacheServiceImpl) cacheService).getAllData()));
             throw new CredentialsExpiredException(msg);
         }
         DecodedJWT decode = JWT.decode(token);
@@ -68,11 +71,17 @@ public class UserTokenServiceImpl implements UserTokenService {
     }
 
     @Override
-    public String refreshToken(String oldToken, User user) {
+    public synchronized String refreshToken(String oldToken, User user) {
+        // 保持两个token在缓存中，防止刷新token时，瞬间导致前端的连续请求中的后续请求token失效
         if (cacheService.contains(oldToken)) {
-            removeToken(oldToken);
+            String removeToken = (String) cacheService.get(oldToken);
+            if (removeToken != null) {
+                removeToken(removeToken);
+            }
         }
-        return createToken(user);
+        String newToken = createToken(user);
+        cacheService.set(newToken, oldToken);
+        return newToken;
     }
 
 }

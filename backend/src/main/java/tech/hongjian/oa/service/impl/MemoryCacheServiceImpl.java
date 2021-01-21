@@ -94,4 +94,7 @@ public class MemoryCacheServiceImpl implements CacheService {
         return null;
     }
 
+    public Map<String, Object> getAllData() {
+        return CACHE;
+    }
 }

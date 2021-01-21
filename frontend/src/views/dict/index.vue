@@ -229,12 +229,11 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
-      this.dateRange = []
       this.resetForm('queryForm')
       this.handleQuery()
     },
     handleQuery() {
-      this.queryParams.start = 0
+      this.queryParams.page = 1
       this.getList()
     },
     handleAdd() {

@@ -12,6 +12,7 @@
         <result column="value" property="value" />
         <result column="remark" property="remark" />
         <result column="status" property="status" />
+        <result column="sort" property="sort" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -19,7 +20,7 @@
         `id`,
         `create_time`,
         `update_time`,
-        `dict_id`, `label`, `value`, `remark`, `status`
+        `dict_id`, `label`, `value`, `remark`, `status`, `sort`
     </sql>
     <select id="findValueByDictKey" resultMap="BaseResultMap">
         select
@@ -30,6 +31,7 @@
             <if test="dictKey != null">and d.`key`=#{dictKey} </if>
             <if test="status != null">and d.`status`=#{status} and v.`status`=#{status}</if>
         </where>
+        order by v.sort
     </select>
     <select id="findDictValue" resultMap="BaseResultMap">
         select
@@ -41,6 +43,7 @@
             <if test="status != null">and v.`status`=#{status}</if>
             <if test="label != null">and v.`label` like #{label}</if>
         </where>
+        order by v.sort
     </select>
 
 </mapper>
