@@ -36,11 +36,72 @@
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
             <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            <el-button
+              v-permisaction="['sys:menu:create']"
+              type="primary"
+              icon="el-icon-plus"
+              size="mini"
+              @click="handleCreate"
+            >新增</el-button>
           </el-form-item>
         </el-form>
 
         <!-- 数据表格 -->
-
+        <el-table
+          v-loading="loading"
+          :data="records"
+          row-key="id"
+          :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+        >
+          <el-table-column prop="title" label="菜单名称" :show-overflow-tooltip="true" width="220px" />
+          <el-table-column prop="icon" label="图标" align="center" width="100px">
+            <template slot-scope="scope">
+              <svg-icon :icon-class="scope.row.icon" />
+            </template>
+          </el-table-column>
+          <el-table-column prop="sort" label="排序" align="center" width="60px" />
+          <el-table-column prop="permission" label="权限标识" :show-overflow-tooltip="true" />
+          <el-table-column prop="routePath" label="路径" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <span v-if="scope.row.type == 4">{{ scope.row.routePath }}</span>
+              <span v-else>{{ scope.row.component }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="visible" label="可见" :formatter="visibleFormat" width="80">
+            <template slot-scope="scope">
+              <el-tag
+                :type="scope.row.visible === false ? 'danger' : 'success'"
+                disable-transitions
+              >{{ visibleFormat(scope.row) }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="创建时间" align="center" prop="createTime" width="180" />
+          <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="220">
+            <template slot-scope="scope">
+              <el-button
+                v-permisaction="['sys:menu:update']"
+                size="mini"
+                type="text"
+                icon="el-icon-edit"
+                @click="handleUpdate(scope.row)"
+              >修改</el-button>
+              <el-button
+                v-permisaction="['sys:menu:create']"
+                size="mini"
+                type="text"
+                icon="el-icon-plus"
+                @click="handleCreate(scope.row)"
+              >新增</el-button>
+              <el-button
+                v-permisaction="['sys:menu:delete']"
+                size="mini"
+                type="text"
+                icon="el-icon-delete"
+                @click="handleDelete(scope.row)"
+              >删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
       </el-card>
     </template>
   </basic-layout>
@@ -86,9 +147,25 @@ export default {
     handleQuery() {
       this.listMenu()
     },
-    // 字典状态字典翻译
-    statusFormat(row, column) {
-      return this.selectDictLabel(this.statusOptions, row.status)
+
+    handleCreate() {
+
+    },
+
+    handleUpdate() {
+
+    },
+
+    handleDelete() {
+
+    },
+
+    visibleFormat(row) {
+      // 如果是按钮则显示 ‘-- --’
+      if (row.type === 3) {
+        return '-- --'
+      }
+      return this.selectDictLabel(this.visibleOptions, row.visible)
     },
     /** 重置按钮操作 */
     resetQuery() {
