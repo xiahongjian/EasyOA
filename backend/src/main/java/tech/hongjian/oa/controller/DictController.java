@@ -6,7 +6,6 @@ import tech.hongjian.oa.entity.Dict;
 import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.model.R;
 import tech.hongjian.oa.service.DictService;
-import tech.hongjian.oa.util.JSONUtil;
 
 /**
  * <p>
@@ -25,9 +24,9 @@ public class DictController {
 
     @GetMapping("/types")
     public R getDictTypes(@RequestParam(required = false) String name, @RequestParam(required = false) String key,
-                          @RequestParam(required = false) String status,
+                          @RequestParam(required = false) Integer status,
                           @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit) {
-        return R.ok(dictService.getDict(name, key, status == null ? null : JSONUtil.toBean(status, Status.class), page, limit));
+        return R.ok(dictService.getDict(name, key, Status.of(status), page, limit));
     }
 
     @GetMapping("/type/{id}")

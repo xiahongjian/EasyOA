@@ -28,4 +28,16 @@ public enum Status implements IEnum<Integer> {
         return value;
     }
 
+    public static Status of(Integer value) {
+        if (value == null) {
+            return null;
+        }
+        for (Status s : values()) {
+            if (s.value == value) {
+                return s;
+            }
+        }
+        return null;
+    }
+
 }

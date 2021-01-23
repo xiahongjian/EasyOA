@@ -1,7 +1,6 @@
 package tech.hongjian.oa.controller;
 
 
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +8,6 @@ import tech.hongjian.oa.entity.DictValue;
 import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.model.R;
 import tech.hongjian.oa.service.DictValueService;
-import tech.hongjian.oa.util.JSONUtil;
 
 /**
  * <p>
@@ -27,10 +25,9 @@ public class DictValueController {
 
     @GetMapping("/datas")
     public R getDictValues(@RequestParam(required = false) String key, @RequestParam(required = false) String label,
-                           @RequestParam(required = false) String status, @RequestParam(required = false) Integer page,
+                           @RequestParam(required = false) Integer status, @RequestParam(required = false) Integer page,
                            @RequestParam(required = false) Integer limit) {
-        Status s = StringUtils.isBlank(status) ? null : JSONUtil.toBean(status, Status.class);
-        return R.ok(dictValueService.listDictValue(key, label, s, page, limit));
+        return R.ok(dictValueService.listDictValue(key, label, Status.of(status), page, limit));
     }
 
     @GetMapping("/dataEnable")

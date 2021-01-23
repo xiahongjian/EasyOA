@@ -53,6 +53,14 @@
         select
         m.*,r.key
         from `menu` m, `role_menu_rel` rel, `role` r
-        where m.id=rel.menu_id and rel.role_id=r.id
+        <where>
+            m.id=rel.menu_id and rel.role_id=r.id
+            <if test="query != null">
+                and m.`name` like #{query}
+            </if>
+            <if test="status != null">
+                and m.`status` = #{status}
+            </if>
+        </where>
     </select>
 </mapper>

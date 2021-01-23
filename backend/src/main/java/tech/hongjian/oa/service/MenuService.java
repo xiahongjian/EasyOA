@@ -1,10 +1,10 @@
 package tech.hongjian.oa.service;
 
-import java.util.List;
-
 import com.baomidou.mybatisplus.extension.service.IService;
-
 import tech.hongjian.oa.entity.Menu;
+import tech.hongjian.oa.entity.enums.Status;
+
+import java.util.List;
 
 /**
  * <p>
@@ -21,4 +21,10 @@ public interface MenuService extends IService<Menu> {
     List<Menu> getRoleInterfaceMenus(List<Integer> roleIds);
 
     List<Menu> getMenuTree();
+
+    void updateMenu(Integer id, Menu menu);
+
+    List<Menu> getMenuTree(String query, Status status);
+
+    void deleteMenu(Integer id);
 }
