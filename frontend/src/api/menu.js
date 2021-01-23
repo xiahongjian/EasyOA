@@ -9,14 +9,11 @@ export function getRoutes() {
   })
 }
 
-export function listMenu(query, status) {
+export function listMenu(queryForm) {
   return request({
     url: '/menus',
     method: 'get',
-    params: {
-      query,
-      status
-    }
+    params: queryForm
   })
 }
 

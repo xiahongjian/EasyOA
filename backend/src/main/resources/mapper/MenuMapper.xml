@@ -56,10 +56,10 @@
         <where>
             m.id=rel.menu_id and rel.role_id=r.id
             <if test="query != null">
-                and m.`name` like #{query}
+                and m.`title` like #{query}
             </if>
-            <if test="status != null">
-                and m.`status` = #{status}
+            <if test="visible != null">
+                and m.`visible` = #{visible}
             </if>
         </where>
     </select>

@@ -15,6 +15,15 @@ const state = {
     id: 2,
     label: '停用',
     value: 0
+  }],
+  visibleOptions: [{
+    id: 1,
+    label: '显示',
+    value: true
+  }, {
+    id: 2,
+    label: '隐藏',
+    value: false
   }]
 }
 

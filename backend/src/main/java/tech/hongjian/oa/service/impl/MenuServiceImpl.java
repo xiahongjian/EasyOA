@@ -7,13 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.Menu;
 import tech.hongjian.oa.entity.enums.MenuType;
-import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.MenuMapper;
 import tech.hongjian.oa.service.MenuService;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -52,8 +56,8 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 
 
     @Override
-    public List<Menu> getMenuTree(String query, Status status) {
-        List<Menu> allMenus = getBaseMapper().findAllMenuWithRole(query == null ? null : ("%" + query + "%"), status);
+    public List<Menu> getMenuTree(String query, Boolean visible) {
+        List<Menu> allMenus = getBaseMapper().findAllMenuWithRole(query == null ? null : ("%" + query + "%"), visible);
         return toMenuTree(allMenus);
     }
 
@@ -74,13 +78,31 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         List<Menu> tree = new ArrayList<>();
 
         for (Menu menu : allMenus) {
-            if (menu.getParentId() == null || !idMenuMap.containsKey(menu.getParentId())) {
+            if (menu.getParentId() == null) { // 只处理顶级菜单
                 tree.add(menu);
-            } else {
+                continue;
+            }
+            if (idMenuMap.containsKey(menu.getParentId())){
                 idMenuMap.get(menu.getParentId()).getChildren().add(menu);
             }
         }
-        return tree;
+        // 按sort排序
+        return sortMenu(tree);
+    }
+
+    private List<Menu> sortMenu(List<Menu> menus) {
+        if (menus == null || menus.isEmpty()) {
+            return menus;
+        }
+        return menus.stream().map(m -> {
+            m.setChildren(sortMenu(m.getChildren()));
+            return m;
+        }).sorted(new Comparator<Menu>() {
+            @Override
+            public int compare(Menu o1, Menu o2) {
+                return o1.getSort().compareTo(o2.getSort());
+            }
+        }).collect(Collectors.toList());
     }
 
 
