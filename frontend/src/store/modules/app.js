@@ -24,6 +24,23 @@ const state = {
     id: 2,
     label: '隐藏',
     value: false
+  }],
+  menuTypeOptions: [{
+    id: 1,
+    label: '目录',
+    value: 1
+  }, {
+    id: 2,
+    label: '菜单',
+    value: 2
+  }, {
+    id: 3,
+    label: '按钮',
+    value: 3
+  }, {
+    id: 4,
+    label: '接口',
+    value: 4
   }]
 }
 

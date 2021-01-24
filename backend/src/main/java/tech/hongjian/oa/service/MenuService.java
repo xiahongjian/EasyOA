@@ -26,4 +26,6 @@ public interface MenuService extends IService<Menu> {
     List<Menu> getMenuTree(String query, Boolean visible);
 
     void deleteMenu(Integer id);
+
+    Menu createMenu(Menu menu);
 }

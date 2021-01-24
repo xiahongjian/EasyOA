@@ -52,9 +52,8 @@
     <select id="findAllMenuWithRole" resultMap="menuWithRole">
         select
         m.*,r.key
-        from `menu` m, `role_menu_rel` rel, `role` r
+        from `menu` m left join `role_menu_rel` rel on m.`id`=rel.`menu_id` left join `role` r on rel.`role_id`=r.`id`
         <where>
-            m.id=rel.menu_id and rel.role_id=r.id
             <if test="query != null">
                 and m.`title` like #{query}
             </if>
@@ -63,4 +62,17 @@
             </if>
         </where>
     </select>
+
+<!--    <select id="findAllMenu" resultMap="BaseResultMap">-->
+<!--        select -->
+<!--        <include refid="Base_Column_List"></include>-->
+<!--        <where>-->
+<!--            <if test="query != null">-->
+<!--                and `title` like #{query}-->
+<!--            </if>-->
+<!--            <if test="visible != null">-->
+<!--                and `visible` = #{visible}-->
+<!--            </if>-->
+<!--        </where>-->
+<!--    </select>-->
 </mapper>

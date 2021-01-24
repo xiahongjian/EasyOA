@@ -46,7 +46,7 @@ public class MenuController {
 
     @PostMapping("/menu")
     public R createMenu(@RequestBody Menu menu) {
-        menuService.save(menu);
+        menuService.createMenu(menu);
         return R.ok();
     }
 

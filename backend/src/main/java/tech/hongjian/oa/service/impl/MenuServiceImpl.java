@@ -70,6 +70,34 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         getBaseMapper().deleteById(id);
     }
 
+    @Override
+    public Menu createMenu(Menu menu) {
+        // 清楚不必要的数据
+        setDefaultValueByType(menu, menu.getType());
+        save(menu);
+        return menu;
+    }
+
+    private Menu setDefaultValueByType(Menu menu, MenuType type) {
+        // 当parentId为-1时则表示为一级菜单，没有父级菜单，将parentId置为null
+        if (menu.getParentId() != null && menu.getParentId().intValue() == -1) {
+            menu.setParentId(null);
+        }
+        if (type == MenuType.BUTTON) {
+            menu.setComponent(null);
+            menu.setRoutePath(null);
+            menu.setRouteName(null);
+            menu.setMethod(null);
+        } else if (type == MenuType.DIRECTORY || type == MenuType.MENU) {
+            menu.setMethod(null);
+        } else if (type == MenuType.INTERFACE) {
+            menu.setComponent(null);
+            menu.setRouteName(null);
+            menu.setPermission(null);
+        }
+        return menu;
+    }
+
     private List<Menu> toMenuTree(List<Menu> allMenus) {
         if (allMenus.isEmpty()) {
             return Collections.emptyList();
@@ -111,6 +139,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         if (id == null || getById(id) == null) {
             throw new CommonServiceException("ID为[" + id + "]的菜单不存在。");
         }
+        setDefaultValueByType(menu, menu.getType());
         menu.setUpdateTime(LocalDateTime.now());
         updateById(menu);
     }

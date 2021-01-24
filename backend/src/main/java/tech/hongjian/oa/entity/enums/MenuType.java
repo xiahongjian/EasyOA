@@ -1,8 +1,8 @@
 package tech.hongjian.oa.entity.enums;
 
 import com.baomidou.mybatisplus.core.enums.IEnum;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-
 import lombok.Getter;
 
 /**
@@ -28,5 +28,18 @@ public enum MenuType implements IEnum<Integer> {
     @Override
     public Integer getValue() {
         return value;
+    }
+
+    @JsonCreator
+    public static MenuType of(Integer value) {
+        if (value == null) {
+            return null;
+        }
+        for (MenuType type : values()) {
+            if (type.value.equals(value)) {
+                return type;
+            }
+        }
+        return null;
     }
 }
