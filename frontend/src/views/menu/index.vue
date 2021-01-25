@@ -193,19 +193,19 @@
               </el-col>
 
               <el-col :span="12">
-                <el-form-item v-if="form.type !== 4" label="路由地址" prop="routePath">
-                  <el-input v-model="form.path" placeholder="请输入路由地址" />
+                <el-form-item v-if="!isButton" label="路由地址" prop="routePath">
+                  <el-input v-model="form.routePath" placeholder="请输入路由地址" />
                 </el-form-item>
               </el-col>
 
               <el-col :span="12">
-                <el-form-item v-if="form.type === 2 || form.type === 3" label="权限标识">
+                <el-form-item v-if="isMenu || isButton" label="权限标识">
                   <el-input v-model="form.permission" placeholder="权限标识" maxlength="50" />
                 </el-form-item>
               </el-col>
 
               <el-col :span="24">
-                <el-form-item v-if="form.type !== 3" label="菜单状态">
+                <el-form-item v-if="!isButton" label="菜单状态">
                   <el-radio-group v-model="form.visible">
                     <el-radio
                       v-for="o in visibleOptions"
@@ -276,7 +276,19 @@ export default {
   computed: {
     ...mapGetters(['visibleOptions', 'menuTypeOptions']),
     isMenuOrDir() {
-      return this.form.type === 1 || this.form.type === 2
+      return this.isDir || this.menu
+    },
+    isDir() {
+      return this.form.type === 1
+    },
+    isMenu() {
+      return this.form.type === 2
+    },
+    isButton() {
+      return this.form.type === 3
+    },
+    isInterface() {
+      return this.form.type === 4
     }
   },
   created() {
@@ -366,7 +378,7 @@ export default {
         sort: 0,
         permission: undefined,
         visible: true,
-        method: 'GET',
+        method: undefined,
         component: undefined,
         routeName: undefined,
         routePath: undefined,
