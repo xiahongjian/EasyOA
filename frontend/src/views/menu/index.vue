@@ -265,6 +265,7 @@ export default {
               if (this.form.id === value) {
                 callback(new Error('不能以自己作为父级菜单'))
               }
+              callback()
             },
             trigger: 'blur'
           }
@@ -334,6 +335,7 @@ export default {
     },
 
     submitForm() {
+      debugger
       this.$refs['form'].validate(valid => {
         if (!valid) {
           return

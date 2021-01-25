@@ -1,38 +1,39 @@
 import request from '@/utils/request'
 
-export function getRoutes() {
+export function listRole(query) {
   return request({
-    url: '/vue-element-admin/routes',
-    method: 'get'
+    url: '/roles',
+    method: 'get',
+    params: query
   })
 }
 
-export function getRoles() {
+export function createRole(form) {
   return request({
-    url: '/vue-element-admin/roles',
-    method: 'get'
-  })
-}
-
-export function addRole(data) {
-  return request({
-    url: '/vue-element-admin/role',
+    url: '/role',
     method: 'post',
-    data
+    data: form
   })
 }
 
-export function updateRole(id, data) {
+export function getRole(id) {
   return request({
-    url: `/vue-element-admin/role/${id}`,
+    url: `/role/${id}`,
+    method: 'get'
+  })
+}
+
+export function updateRole(id, form) {
+  return request({
+    url: `/role/${id}`,
     method: 'put',
-    data
+    data: form
   })
 }
 
 export function deleteRole(id) {
   return request({
-    url: `/vue-element-admin/role/${id}`,
+    url: `/role/${id}`,
     method: 'delete'
   })
 }
