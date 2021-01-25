@@ -23,9 +23,9 @@ public class DictController {
     private DictService dictService;
 
     @GetMapping("/types")
-    public R getDictTypes(@RequestParam(required = false) String name, @RequestParam(required = false) String key,
-                          @RequestParam(required = false) Integer status,
-                          @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit) {
+    public R listDictTypes(@RequestParam(required = false) String name, @RequestParam(required = false) String key,
+                           @RequestParam(required = false) Integer status,
+                           @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit) {
         return R.ok(dictService.getDict(name, key, Status.of(status), page, limit));
     }
 

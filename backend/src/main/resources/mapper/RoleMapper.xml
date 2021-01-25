@@ -16,10 +16,10 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id,
-        create_time,
-        update_time,
-        name, description, key, sort, status
+        `id`,
+        `create_time`,
+        `update_time`,
+        `name`, `description`, `key`, `sort`, `status`
     </sql>
     
     <select id="findUserRoles" resultMap="BaseResultMap">
@@ -28,6 +28,17 @@
         from `role` r, `user_role_rel` ur
         where r.id = ur.role_id and ur.user_id=#{userId} and r.status!=0
         order by r.sort
+    </select>
+    <select id="findRoles" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from `role`
+        <where>
+            <if test="name != null">and `name` like #{name}</if>
+            <if test="permission != null">and `key` like #{key}</if>
+            <if test="status != null">and `status` = #{status}</if>
+        </where>
+        order by `sort`
     </select>
 
 </mapper>

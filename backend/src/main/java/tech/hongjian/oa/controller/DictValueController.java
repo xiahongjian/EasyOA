@@ -24,9 +24,9 @@ public class DictValueController {
     private DictValueService dictValueService;
 
     @GetMapping("/datas")
-    public R getDictValues(@RequestParam(required = false) String key, @RequestParam(required = false) String label,
-                           @RequestParam(required = false) Integer status, @RequestParam(required = false) Integer page,
-                           @RequestParam(required = false) Integer limit) {
+    public R listDictValues(@RequestParam(required = false) String key, @RequestParam(required = false) String label,
+                            @RequestParam(required = false) Integer status, @RequestParam(required = false) Integer page,
+                            @RequestParam(required = false) Integer limit) {
         return R.ok(dictValueService.listDictValue(key, label, Status.of(status), page, limit));
     }
 
