@@ -60,6 +60,12 @@ public class RoleController {
         return R.ok();
     }
 
+    @DeleteMapping("/roles")
+    public R deleteRoles(@RequestParam Integer[] ids) {
+        roleService.deleteRoles(ids);
+        return R.ok();
+    }
+
     @PostMapping("/user")
     public R createRole(@RequestBody Role role) {
         return R.ok(roleService.createRole(role));

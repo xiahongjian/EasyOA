@@ -14,8 +14,10 @@ import tech.hongjian.oa.service.RoleService;
 import tech.hongjian.oa.util.CommonUtil;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -57,6 +59,14 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     public int deleteRole(Integer id) {
         checkExisted(id);
         return getBaseMapper().deleteById(id);
+    }
+
+    @Override
+    public int deleteRoles(Integer[] ids) {
+        if (ids == null || ids.length == 0) {
+            return 0;
+        }
+        return getBaseMapper().deleteBatchIds(Arrays.stream(ids).collect(Collectors.toList()));
     }
 
     @Override

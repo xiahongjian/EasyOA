@@ -25,5 +25,7 @@ public interface RoleService extends IService<Role> {
 
     int deleteRole(Integer id);
 
+    int deleteRoles(Integer[] ids);
+
     Role createRole(Role role);
 }
