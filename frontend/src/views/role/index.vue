@@ -2,7 +2,7 @@
   <basic-layout>
     <template #wrapper>
       <el-card class="box-card">
-        <!-- <el-form ref="queryForm" :model="queryParams" :inline="true">
+        <el-form ref="queryForm" :model="queryParams" :inline="true">
           <el-form-item label="角色名称" prop="name">
             <el-input
               v-model="queryParams.name"
@@ -17,7 +17,7 @@
             <el-input
               v-model="queryParams.key"
               placeholder="请输入权限字符"
-              clear
+              clearable
               size="width: 240px"
               @keyup.enter.native="handleQuery"
             />
@@ -26,7 +26,7 @@
             <el-select
               v-model="queryParams.status"
               placeholder="角色状态"
-              clearable,
+              clearable
               size="small"
               style="width: 240px"
             >
@@ -42,9 +42,9 @@
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
             </el-form-item>
           </el-form-item>
-        </el-form> -->
+        </el-form>
 
-        <!-- <el-row :gutter="10" class="mb8">
+        <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
             <el-button
               v-permisaction="['sys:role:create']"
@@ -83,9 +83,9 @@
               @click="handleExport"
             >导出</el-button>
           </el-col>
-        </el-row> -->
+        </el-row>
 
-        <!-- <el-table v-loading="loading" :data="records" @selection-change="handleSelectionChange">
+        <el-table v-loading="loading" :data="records" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" align="center" />
           <el-table-column label="角色编号" prop="id" width="120" />
           <el-table-column label="角色名称" prop="name" :show-overflow-tooltip="true" width="150" />
@@ -101,7 +101,7 @@
               />
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" align="center" prop="createTime" width="100" />
+          <el-table-column label="创建时间" align="center" prop="createTime" width="200" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
@@ -122,13 +122,13 @@
           </el-table-column>
         </el-table>
 
-        <el-pagination
+        <pagination
           v-show="total > 0"
           :total="total"
           :page.sync="queryParams.page"
-          :limit.sync="queryForm.limit"
+          :limit.sync="queryParams.limit"
           @pagination="getList"
-        /> -->
+        />
       </el-card>
     </template>
   </basic-layout>
