@@ -35,7 +35,7 @@
         from `role`
         <where>
             <if test="name != null">and `name` like #{name}</if>
-            <if test="permission != null">and `key` like #{key}</if>
+            <if test="key != null">and `key` like #{key}</if>
             <if test="status != null">and `status` = #{status}</if>
         </where>
         order by `sort`

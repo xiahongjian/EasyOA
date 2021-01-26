@@ -276,7 +276,7 @@ export default {
   computed: {
     ...mapGetters(['visibleOptions', 'menuTypeOptions']),
     isMenuOrDir() {
-      return this.isDir || this.menu
+      return this.form.type === 1 || this.form.type === 2
     },
     isDir() {
       return this.form.type === 1
@@ -347,7 +347,6 @@ export default {
     },
 
     submitForm() {
-      debugger
       this.$refs['form'].validate(valid => {
         if (!valid) {
           return

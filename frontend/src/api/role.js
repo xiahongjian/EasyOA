@@ -32,6 +32,15 @@ export function updateRole(id, form) {
 }
 
 export function deleteRole(id) {
+  if (id instanceof Array) {
+    return request({
+      url: '/roles',
+      method: 'delete',
+      params: {
+        ids: id + ''
+      }
+    })
+  }
   return request({
     url: `/role/${id}`,
     method: 'delete'

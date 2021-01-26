@@ -2,7 +2,7 @@
   <basic-layout>
     <template #wrapper>
       <el-card class="box-card">
-        <el-form ref="queryForm" :model="queryParams" :inline="true">
+        <!-- <el-form ref="queryForm" :model="queryParams" :inline="true">
           <el-form-item label="角色名称" prop="name">
             <el-input
               v-model="queryParams.name"
@@ -42,7 +42,7 @@
               <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
             </el-form-item>
           </el-form-item>
-        </el-form>
+        </el-form> -->
 
         <!-- <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
