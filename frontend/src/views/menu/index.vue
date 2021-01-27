@@ -63,7 +63,10 @@
           <el-table-column prop="permission" label="权限标识" :show-overflow-tooltip="true" />
           <el-table-column prop="routePath" label="路径" :show-overflow-tooltip="true">
             <template slot-scope="scope">
-              <span v-if="scope.row.type == 4">{{ scope.row.routePath }}</span>
+              <el-tag
+                v-if="scope.row.type == 4 && scope.row.routePath"
+                type="primay"
+              >{{ scope.row.method ? (scope.row.method + ' ' + scope.row.routePath) : scope.row.routePath }}</el-tag>
               <span v-else>{{ scope.row.component }}</span>
             </template>
           </el-table-column>
