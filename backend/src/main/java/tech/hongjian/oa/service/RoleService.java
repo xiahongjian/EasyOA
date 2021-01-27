@@ -28,4 +28,6 @@ public interface RoleService extends IService<Role> {
     int deleteRoles(Integer[] ids);
 
     Role createRole(Role role);
+
+    void changeStatus(Integer id, Status status);
 }

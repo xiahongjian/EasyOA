@@ -18,7 +18,8 @@
               v-model="queryParams.key"
               placeholder="请输入权限字符"
               clearable
-              size="width: 240px"
+              size="small"
+              style="width: 240px"
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
@@ -37,10 +38,10 @@
                 :value="s.value"
               />
             </el-select>
-            <el-form-item>
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-            </el-form-item>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
           </el-form-item>
         </el-form>
 
@@ -136,7 +137,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { listRole, getRole, createRole, updateRole, deleteRole } from '@/api/role'
+import { listRole, getRole, createRole, updateRole, deleteRole, changeStatus } from '@/api/role'
 export default {
   name: 'Role',
   data() {
@@ -151,7 +152,7 @@ export default {
       title: '',
 
       records: [],
-      total: undefined,
+      total: 0,
       queryParams: {
         page: 1,
         limit: 10,
@@ -220,6 +221,20 @@ export default {
     },
     handleExport() {
 
+    },
+    handleStatusChange(row) {
+      const text = row.status === 0 ? '停用' : '启用'
+      this.$confirm(`确认要${text}"${row.name}"角色吗？`, '警告', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return changeStatus(row.id, row.status)
+      }).then(() => {
+        this.msgSuccess(`${text}成功`)
+      }).catch(() => {
+        row.status = row.status === 0 ? 1 : 0
+      })
     },
     submitForm() {
       this.$refs['form'].validate(valid => {

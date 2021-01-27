@@ -46,3 +46,13 @@ export function deleteRole(id) {
     method: 'delete'
   })
 }
+
+export function changeStatus(id, status) {
+  return request({
+    url: `/role/${id}/status`,
+    method: 'put',
+    params: {
+      status
+    }
+  })
+}
