@@ -89,8 +89,8 @@
         <el-table v-loading="loading" :data="records" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" align="center" />
           <el-table-column label="角色编号" prop="id" width="120" />
-          <el-table-column label="角色名称" prop="name" :show-overflow-tooltip="true" width="150" />
-          <el-table-column label="权限字符" prop="key" :show-overflow-tooltip="true" width="150" />
+          <el-table-column label="角色名称" prop="name" :show-overflow-tooltip="true" width="220" />
+          <el-table-column label="权限字符" prop="key" :show-overflow-tooltip="true" width="220" />
           <el-table-column label="显示排序" prop="sort" width="100" />
           <el-table-column label="状态" align="center" width="100">
             <template slot-scope="scope">
@@ -102,7 +102,7 @@
               />
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" align="center" prop="createTime" width="200" />
+          <el-table-column label="创建时间" align="center" prop="createTime" width="300" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
@@ -117,7 +117,7 @@
                 size="mini"
                 type="text"
                 icon="el-icon-delete"
-                @click="handleDelete(scope.row.id)"
+                @click="handleDelete(scope.row)"
               >删除</el-button>
             </template>
           </el-table-column>
