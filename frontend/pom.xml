@@ -7,7 +7,7 @@
     <parent>
         <groupId>tech.hongjian</groupId>
         <artifactId>oa</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
     <artifactId>frontent</artifactId>
     <name>frontent</name>
@@ -44,7 +44,7 @@
                         </goals>
                         optional: default phase is "generate-resources"
                         <phase>generate-resources</phase>
-                        Optional configuration which provides for running 
+                        Optional configuration which provides for running
                             any npm command
                         <configuration>
                             <arguments>install</arguments>
