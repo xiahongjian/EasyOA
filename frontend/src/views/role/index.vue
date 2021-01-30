@@ -129,6 +129,47 @@
           :limit.sync="queryParams.limit"
           @pagination="getList"
         />
+
+        <!-- 添加、修改角色对话框 -->
+        <el-dialog v-if="open" :title="title" :visible.sync="open" width="500px">
+          <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+            <el-form-item label="角色名称" prop="name">
+              <el-input v-model="form.name" placeholder="请输入角色名称" :disabled="isEdit" />
+            </el-form-item>
+            <el-form-item label="权限字符" prop="key">
+              <el-input v-model="form.key" placeholder="请输入权限字符" :disabled="isEdit" />
+            </el-form-item>
+            <el-form-item label="角色排序" prop="sort">
+              <el-input-number v-model="form.sort" controls-position="right" :min="0" />
+            </el-form-item>
+            <el-form-item :label="状态">
+              <el-radio-group v-model="form.status">
+                <el-radio
+                  v-for="s in statusOptions"
+                  :key="s.value"
+                  :label="s.label"
+                >{{ s.label }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="菜单权限">
+              <el-tree
+                ref="menu"
+                :data="menuOptions"
+                show-checkbox
+                node-key="id"
+                :empty-text="menuOptionAlert"
+                :props="defaultProps"
+              />
+            </el-form-item>
+            <el-form-item label="备注">
+              <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="submitForm">确定</el-button>
+            <el-button @click="cancel">取消</el-button>
+          </div>
+        </el-dialog>
       </el-card>
     </template>
   </basic-layout>
@@ -151,7 +192,7 @@ export default {
       title: '',
 
       records: [],
-      total: undefined,
+      total: 0,
       queryParams: {
         page: 1,
         limit: 10,
@@ -163,7 +204,15 @@ export default {
       // form
       form: {},
       rules: {
-
+        name: [{
+          required: true, message: '角色名称不能为空', trigger: 'blur'
+        }],
+        key: [{
+          required: true, message: '权限字符不能为空', trigger: 'blur'
+        }],
+        sort: [{
+          required: true, message: '角色排序不能为空', trigger: 'blur'
+        }]
       }
     }
   },
@@ -219,7 +268,7 @@ export default {
       }).catch(() => {})
     },
     handleExport() {
-
+      // TODO
     },
     submitForm() {
       this.$refs['form'].validate(valid => {
