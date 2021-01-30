@@ -18,7 +18,8 @@
               v-model="queryParams.key"
               placeholder="请输入权限字符"
               clearable
-              size="width: 240px"
+              size="small"
+              style="width: 240px"
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
@@ -37,10 +38,10 @@
                 :value="s.value"
               />
             </el-select>
-            <el-form-item>
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-              <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-            </el-form-item>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
           </el-form-item>
         </el-form>
 
@@ -88,8 +89,8 @@
         <el-table v-loading="loading" :data="records" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" align="center" />
           <el-table-column label="角色编号" prop="id" width="120" />
-          <el-table-column label="角色名称" prop="name" :show-overflow-tooltip="true" width="150" />
-          <el-table-column label="权限字符" prop="key" :show-overflow-tooltip="true" width="150" />
+          <el-table-column label="角色名称" prop="name" :show-overflow-tooltip="true" width="220" />
+          <el-table-column label="权限字符" prop="key" :show-overflow-tooltip="true" width="220" />
           <el-table-column label="显示排序" prop="sort" width="100" />
           <el-table-column label="状态" align="center" width="100">
             <template slot-scope="scope">
@@ -101,7 +102,7 @@
               />
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" align="center" prop="createTime" width="200" />
+          <el-table-column label="创建时间" align="center" prop="createTime" width="300" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
@@ -116,7 +117,7 @@
                 size="mini"
                 type="text"
                 icon="el-icon-delete"
-                @click="handleDelete(scope.row.id)"
+                @click="handleDelete(scope.row)"
               >删除</el-button>
             </template>
           </el-table-column>
@@ -177,7 +178,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { listRole, getRole, createRole, updateRole, deleteRole } from '@/api/role'
+import { listRole, getRole, createRole, updateRole, deleteRole, changeStatus } from '@/api/role'
 export default {
   name: 'Role',
   data() {
@@ -269,6 +270,20 @@ export default {
     },
     handleExport() {
       // TODO
+    },
+    handleStatusChange(row) {
+      const text = row.status === 0 ? '停用' : '启用'
+      this.$confirm(`确认要${text}"${row.name}"角色吗？`, '警告', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return changeStatus(row.id, row.status)
+      }).then(() => {
+        this.msgSuccess(`${text}成功`)
+      }).catch(() => {
+        row.status = row.status === 0 ? 1 : 0
+      })
     },
     submitForm() {
       this.$refs['form'].validate(valid => {

@@ -80,6 +80,15 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         return role;
     }
 
+    @Override
+    public void changeStatus(Integer id, Status status) {
+        if (status == null) {
+            throw new CommonServiceException("角色状态不能为空");
+        }
+        checkExisted(id);
+        lambdaUpdate().eq(Role::getId, id).set(Role::getStatus, status).update();
+    }
+
     private Role checkExisted(Integer id) {
         Role existed = getById(id);
         if (existed == null) {

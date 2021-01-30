@@ -18,6 +18,7 @@
         <result column="visible" property="visible" />
         <result column="permission" property="permission" />
         <result column="external_link" property="externalLink" />
+        <result column="method" property="method" />
     </resultMap>
     
     <resultMap id="menuWithRole" type="tech.hongjian.oa.entity.Menu" extends="BaseResultMap">
@@ -30,10 +31,12 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id,
-        create_time,
-        update_time,
-        title, icon, sort, type, component, route_path, route_name, parent_id, visible, permission, external_link, method
+        `id`,
+        `create_time`,
+        `update_time`,
+        `title`, `icon`, `sort`, `type`, `component`,
+        `route_path`, `route_name`, `parent_id`, `visible`, `permission`,
+        `external_link`, `method`
     </sql>
 
     <select id="findRoleMenus" resultMap="BaseResultMap">

@@ -66,8 +66,14 @@ public class RoleController {
         return R.ok();
     }
 
-    @PostMapping("/user")
+    @PostMapping("/role")
     public R createRole(@RequestBody Role role) {
         return R.ok(roleService.createRole(role));
+    }
+
+    @PutMapping("/role/{id}/status")
+    public R changeRoleStatus(@PathVariable Integer id, @RequestParam Integer status) {
+        roleService.changeStatus(id, Status.of(status));
+        return R.ok();
     }
 }
