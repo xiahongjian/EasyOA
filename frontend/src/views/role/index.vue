@@ -143,12 +143,12 @@
             <el-form-item label="角色排序" prop="sort">
               <el-input-number v-model="form.sort" controls-position="right" :min="0" />
             </el-form-item>
-            <el-form-item :label="状态">
+            <el-form-item label="状态" prop="status">
               <el-radio-group v-model="form.status">
                 <el-radio
                   v-for="s in statusOptions"
                   :key="s.value"
-                  :label="s.label"
+                  :label="s.value"
                 >{{ s.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
@@ -179,6 +179,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { listRole, getRole, createRole, updateRole, deleteRole, changeStatus } from '@/api/role'
+import { listMenu } from '@/api/menu'
 export default {
   name: 'Role',
   data() {
@@ -191,6 +192,14 @@ export default {
       loading: false,
       open: false,
       title: '',
+
+      menuOptions: [],
+      deptOptions: [],
+      menuOptionAlert: '加载中，请稍后',
+      defaultProps: {
+        children: 'children',
+        label: 'title'
+      },
 
       records: [],
       total: 0,
@@ -242,6 +251,7 @@ export default {
     },
     handleCreate() {
       this.reset()
+      this.getMenuTree()
       this.open = true
       this.title = '添加角色'
       this.isEdit = false
@@ -287,7 +297,7 @@ export default {
     },
     submitForm() {
       this.$refs['form'].validate(valid => {
-        if (valid) {
+        if (!valid) {
           return
         }
         const isUpdate = this.form.id !== undefined
@@ -295,9 +305,10 @@ export default {
           ? (form) => updateRole(this.form.id, form)
           : createRole
         const successMsg = isUpdate ? '修改成功' : '新增成功'
+        this.form.menuIds = this.getMenuAllCheckedKeys()
         actionFunc(this.form).then(resp => {
           if (resp.success === true) {
-            this.$msgSuccess(successMsg)
+            this.msgSuccess(successMsg)
             this.open = false
             this.getList()
           } else {
@@ -315,16 +326,33 @@ export default {
       this.open = false
     },
     reset() {
-      // TODO
+      if (this.$refs.menu !== undefined) {
+        this.$refs.menu.setCheckedKeys([])
+      }
 
       this.form = {
         id: undefined,
         name: undefined,
         key: undefined,
         sort: 0,
-        status: 0,
+        status: 1,
+        menuIds: [],
         remark: undefined
       }
+      this.resetForm('form')
+    },
+    // 返回菜单树
+    getMenuTree() {
+      listMenu().then(resp => {
+        this.menuOptions = resp.data
+      })
+    },
+    // 获取选中的菜单节点
+    getMenuAllCheckedKeys() {
+      const helfCheckedKeys = this.$refs.menu.getHalfCheckedKeys()
+      const checkedKeys = this.$refs.menu.getCheckedKeys()
+      checkedKeys.push(...helfCheckedKeys)
+      return checkedKeys
     }
   }
 }

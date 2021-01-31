@@ -6,10 +6,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tech.hongjian.oa.controller.vo.RoleVO;
 import tech.hongjian.oa.entity.Role;
+import tech.hongjian.oa.entity.RoleMenuRel;
 import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.RoleMapper;
+import tech.hongjian.oa.service.RoleMenuRelService;
 import tech.hongjian.oa.service.RoleService;
 import tech.hongjian.oa.util.CommonUtil;
 
@@ -30,6 +33,7 @@ import java.util.stream.Collectors;
 @Setter(onMethod_ = {@Autowired})
 @Service
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements RoleService {
+    private RoleMenuRelService roleMenuRelService;
 
     @Override
     public List<Role> getUserRoles(Integer userId) {
@@ -58,6 +62,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     @Override
     public int deleteRole(Integer id) {
         checkExisted(id);
+        // 删除角色菜单关联
+        roleMenuRelService.lambdaUpdate().eq(RoleMenuRel::getRoleId, id).remove();
         return getBaseMapper().deleteById(id);
     }
 
@@ -66,6 +72,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         if (ids == null || ids.length == 0) {
             return 0;
         }
+        // 删除角色菜单关联
+        roleMenuRelService.lambdaUpdate().in(RoleMenuRel::getRoleId, ids).remove();
         return getBaseMapper().deleteBatchIds(Arrays.stream(ids).collect(Collectors.toList()));
     }
 
@@ -77,6 +85,15 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         role.setCreateTime(LocalDateTime.now());
         role.setUpdateTime(LocalDateTime.now());
         save(role);
+        return role;
+    }
+
+    @Override
+    public Role createRoleWithPermissions(RoleVO role) {
+        Role entity = createRole(role);
+        for (Integer menuId : role.getMenuIds()) {
+            roleMenuRelService.createRel(entity.getId(), menuId);
+        }
         return role;
     }
 

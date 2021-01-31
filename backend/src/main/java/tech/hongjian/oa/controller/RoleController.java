@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tech.hongjian.oa.controller.vo.RoleVO;
 import tech.hongjian.oa.entity.Role;
 import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.model.R;
@@ -49,7 +50,7 @@ public class RoleController {
     }
 
     @PutMapping("/role/{id}")
-    public R updateRole(@PathVariable Integer id, @RequestBody Role role) {
+    public R updateRole(@PathVariable Integer id, @RequestBody RoleVO role) {
         roleService.updateRole(id, role);
         return R.ok();
     }
@@ -67,7 +68,7 @@ public class RoleController {
     }
 
     @PostMapping("/role")
-    public R createRole(@RequestBody Role role) {
+    public R createRole(@RequestBody RoleVO role) {
         return R.ok(roleService.createRole(role));
     }
 

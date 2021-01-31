@@ -2,6 +2,7 @@ package tech.hongjian.oa.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import tech.hongjian.oa.controller.vo.RoleVO;
 import tech.hongjian.oa.entity.Role;
 import tech.hongjian.oa.entity.enums.Status;
 
@@ -28,6 +29,8 @@ public interface RoleService extends IService<Role> {
     int deleteRoles(Integer[] ids);
 
     Role createRole(Role role);
+
+    Role createRoleWithPermissions(RoleVO role);
 
     void changeStatus(Integer id, Status status);
 }

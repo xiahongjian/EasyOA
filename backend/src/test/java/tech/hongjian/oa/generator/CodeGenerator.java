@@ -1,9 +1,5 @@
 package tech.hongjian.oa.generator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
 import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -19,8 +15,11 @@ import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-
 import tech.hongjian.oa.entity.BaseEntity;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * @author xiahongjian
@@ -30,7 +29,7 @@ public class CodeGenerator {
     private static final String BASE_PACKAGE = "tech.hongjian.oa";
     private static final String DATA_SOURCE_URL = "jdbc:mysql://localhost:3306/oa?useUnicode=true&useSSL=false&characterEncoding=utf8";
     private static final String DATA_SOURCE_DRIVER = "com.mysql.cj.jdbc.Driver";
-    private static final String DB_USERANME = "root";
+    private static final String DB_USERNAME = "root";
     private static final String DB_PASSWORD = "root";
 
 
@@ -61,7 +60,7 @@ public class CodeGenerator {
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
         String projectPath = System.getProperty("user.dir");
-        gc.setOutputDir(projectPath + "/src/main/java");
+        gc.setOutputDir(projectPath + "/backend/src/main/java");
         gc.setAuthor("xiahongjian");
         gc.setOpen(false);
         gc.setBaseColumnList(true);
@@ -77,7 +76,7 @@ public class CodeGenerator {
         dsc.setUrl(DATA_SOURCE_URL);
         // dsc.setSchemaName("public");
         dsc.setDriverName(DATA_SOURCE_DRIVER);
-        dsc.setUsername(DB_USERANME);
+        dsc.setUsername(DB_USERNAME);
         dsc.setPassword(DB_PASSWORD);
         mpg.setDataSource(dsc);
 
