@@ -56,3 +56,10 @@ export function changeStatus(id, status) {
     }
   })
 }
+
+export function roleTreeSelect(id) {
+  return request({
+    url: `/role/${id}/treeSelect`,
+    method: 'get'
+  })
+}

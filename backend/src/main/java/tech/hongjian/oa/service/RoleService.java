@@ -33,4 +33,10 @@ public interface RoleService extends IService<Role> {
     Role createRoleWithPermissions(RoleVO role);
 
     void changeStatus(Integer id, Status status);
+
+    RoleVO getRoleWithPermission(Integer id);
+
+    boolean updateRoleAndPermission(Integer id, RoleVO role);
+
+    List<Integer> getRoleTreeSelect(Integer id);
 }

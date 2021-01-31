@@ -178,7 +178,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { listRole, getRole, createRole, updateRole, deleteRole, changeStatus } from '@/api/role'
+import { listRole, getRole, createRole, updateRole, deleteRole, changeStatus, roleTreeSelect } from '@/api/role'
 import { listMenu } from '@/api/menu'
 export default {
   name: 'Role',
@@ -258,11 +258,12 @@ export default {
     },
     handleUpdate(row) {
       this.reset()
-      const id = row.id || this.ids
+      const id = row.id || this.ids[0]
       getRole(id).then(resp => {
         this.form = resp.data
         this.open = true
         this.title = '修改角色'
+        this.getRoleMnueTreeSelect(id)
       })
     },
     handleDelete(row) {
@@ -343,7 +344,7 @@ export default {
     },
     // 返回菜单树
     getMenuTree() {
-      listMenu().then(resp => {
+      return listMenu().then(resp => {
         this.menuOptions = resp.data
       })
     },
@@ -353,6 +354,15 @@ export default {
       const checkedKeys = this.$refs.menu.getCheckedKeys()
       checkedKeys.push(...helfCheckedKeys)
       return checkedKeys
+    },
+    getRoleMnueTreeSelect(id) {
+      this.getMenuTree().then(() => {
+        return roleTreeSelect(id)
+      }).then((resp) => {
+        this.$nextTick(() => {
+          this.$refs.menu.setCheckedKeys(resp.data || [])
+        })
+      })
     }
   }
 }

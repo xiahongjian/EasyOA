@@ -40,5 +40,11 @@
         </where>
         order by `sort`
     </select>
+    <select id="findSelectTreeChecked" resultType="java.lang.Integer">
+        select
+          r.menu_id
+        from `role_menu_rel` r left join `menu` m on r.menu_id=m.id
+        where r.role_id=#{roleId} and not exists (select * from `menu` where parent_id=m.id)
+    </select>
 
 </mapper>

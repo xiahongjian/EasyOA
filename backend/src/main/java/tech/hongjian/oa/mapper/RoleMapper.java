@@ -21,4 +21,6 @@ public interface RoleMapper extends BaseMapper<Role> {
     List<Role> findUserRoles(Integer userId);
 
     IPage<Role> findRoles(Page<Role> p, String name, String key, Status status);
+
+    List<Integer> findSelectTreeChecked(Integer roleId);
 }

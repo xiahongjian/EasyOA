@@ -1,6 +1,7 @@
 package tech.hongjian.oa.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.Setter;
@@ -20,11 +21,12 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author xiahongjian
@@ -106,10 +108,57 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         lambdaUpdate().eq(Role::getId, id).set(Role::getStatus, status).update();
     }
 
+    @Override
+    public RoleVO getRoleWithPermission(Integer id) {
+        if (id == null) {
+            return null;
+        }
+        Role role = getById(id);
+        if (role == null) {
+            return null;
+        }
+        List<Integer> menuIds =
+                roleMenuRelService.lambdaQuery().eq(RoleMenuRel::getRoleId, id).list()
+                        .stream().map(RoleMenuRel::getMenuId).collect(Collectors.toList());
+        return new RoleVO(role, menuIds);
+    }
+
+    @Override
+    public boolean updateRoleAndPermission(Integer id, RoleVO role) {
+        boolean res = updateRole(id, role);
+        if (!res) {
+            return false;
+        }
+        Set<Integer> origin =
+                roleMenuRelService.lambdaQuery().eq(RoleMenuRel::getRoleId, id).list()
+                        .stream().map(RoleMenuRel::getMenuId).collect(Collectors.toSet());
+
+        List<Integer> needCreated =
+                role.getMenuIds().stream().filter(e -> !origin.contains(e)).collect(Collectors.toList());
+        // 删除已经不存在的关联
+        LambdaUpdateChainWrapper<RoleMenuRel> updateChainWrapper =
+                roleMenuRelService.lambdaUpdate().eq(RoleMenuRel::getRoleId, id);
+        if (!role.getMenuIds().isEmpty()) {
+            updateChainWrapper.notIn(RoleMenuRel::getMenuId, role.getMenuIds());
+        }
+        updateChainWrapper.remove();
+
+        // 创建新增的关联
+        for (Integer menuId : needCreated) {
+            roleMenuRelService.createRel(id, menuId);
+        }
+        return true;
+    }
+
+    @Override
+    public List<Integer> getRoleTreeSelect(Integer id) {
+        return baseMapper.findSelectTreeChecked(id);
+    }
+
     private Role checkExisted(Integer id) {
         Role existed = getById(id);
         if (existed == null) {
-            throw new CommonServiceException("ID为[" + id +"]的角色不存在。");
+            throw new CommonServiceException("ID为[" + id + "]的角色不存在。");
         }
         return existed;
     }

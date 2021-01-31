@@ -46,12 +46,17 @@ public class RoleController {
 
     @GetMapping("/role/{id}")
     public R getRole(@PathVariable Integer id) {
-        return R.ok(roleService.getById(id));
+        return R.ok(roleService.getRoleWithPermission(id));
+    }
+
+    @GetMapping("/role/{id}/treeSelect")
+    public R getRoleTreeSelect(@PathVariable Integer id) {
+        return R.ok(roleService.getRoleTreeSelect(id));
     }
 
     @PutMapping("/role/{id}")
     public R updateRole(@PathVariable Integer id, @RequestBody RoleVO role) {
-        roleService.updateRole(id, role);
+        roleService.updateRoleAndPermission(id, role);
         return R.ok();
     }
 
