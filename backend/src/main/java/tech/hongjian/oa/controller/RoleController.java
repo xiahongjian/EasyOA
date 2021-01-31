@@ -69,7 +69,7 @@ public class RoleController {
 
     @PostMapping("/role")
     public R createRole(@RequestBody RoleVO role) {
-        return R.ok(roleService.createRole(role));
+        return R.ok(roleService.createRoleWithPermissions(role));
     }
 
     @PutMapping("/role/{id}/status")

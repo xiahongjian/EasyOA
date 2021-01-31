@@ -48,7 +48,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
                                  Integer page, Integer limit) {
         name = CommonUtil.wrapWith(name, "%");
         key = CommonUtil.wrapWith(key, "%");
-        Page<Role> p = new Page<>((page - 1) * limit, limit);
+        Page<Role> p = new Page<>((page - 1L) * limit, limit);
         return getBaseMapper().findRoles(p, name, key, status);
     }
 
