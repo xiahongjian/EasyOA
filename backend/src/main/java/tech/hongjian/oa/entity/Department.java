@@ -1,8 +1,12 @@
 package tech.hongjian.oa.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import tech.hongjian.oa.entity.enums.Status;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -28,5 +32,7 @@ public class Department extends BaseEntity {
 
     private Integer sort;
 
+    @TableField(exist = false)
+    private List<Department> children = new ArrayList<>();
 
 }

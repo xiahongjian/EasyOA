@@ -1,7 +1,10 @@
 package tech.hongjian.oa.service;
 
-import tech.hongjian.oa.entity.Department;
 import com.baomidou.mybatisplus.extension.service.IService;
+import tech.hongjian.oa.entity.Department;
+import tech.hongjian.oa.entity.enums.Status;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface DepartmentService extends IService<Department> {
 
+    Department getDepartmentById(Integer id);
+
+    List<Department> getDepartmentTree(String query, Status status);
+
+    Department getDepartmentWithLeader(Integer id);
 }
