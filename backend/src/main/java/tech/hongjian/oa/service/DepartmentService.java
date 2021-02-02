@@ -21,4 +21,14 @@ public interface DepartmentService extends IService<Department> {
     List<Department> getDepartmentTree(String query, Status status);
 
     Department getDepartmentWithLeader(Integer id);
+
+    Department create(Department department);
+
+    Department getDepartmentByName(String name);
+
+    Department update(Integer id, Department department);
+
+    void delete(Integer id);
+
+    void delete(Integer[] ids);
 }

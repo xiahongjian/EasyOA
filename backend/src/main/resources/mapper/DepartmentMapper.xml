@@ -14,6 +14,17 @@
         <result column="sort" property="sort" />
     </resultMap>
 
+    <resultMap id="withLeader" type="tech.hongjian.oa.entity.Department" extends="BaseResultMap">
+        <association property="leader" javaType="tech.hongjian.oa.entity.User">
+            <result column="id" property="id" />
+            <result column="username" property="username" />
+            <result column="name" property="name" />
+            <result column="email" property="email" />
+            <result column="mobile" property="mobile" />
+            <result column="gender" property="gender" />
+        </association>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id,
@@ -21,5 +32,12 @@
         update_time,
         name, leader_id, parent_id, status, sort
     </sql>
+    <select id="selectByIdWithLeader" resultMap="withLeader">
+        select
+        *
+        from `department` d left join `user` u on d.leader_id=u.id
+        where d.id=#{id}
+    </select>
+
 
 </mapper>

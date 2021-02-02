@@ -35,4 +35,7 @@ public class Department extends BaseEntity {
     @TableField(exist = false)
     private List<Department> children = new ArrayList<>();
 
+    @TableField(exist = false)
+    private User leader;
+
 }

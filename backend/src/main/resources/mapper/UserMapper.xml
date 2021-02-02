@@ -15,7 +15,7 @@
         <result column="mobile" property="mobile" />
         <result column="gender" property="gender" />
         <result column="status" property="status" />
-        <result column="status" property="avatar" />
+        <result column="avatar" property="avatar" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
