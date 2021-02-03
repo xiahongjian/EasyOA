@@ -36,7 +36,7 @@
           :data="records"
           row-key="id"
           default-expand-all
-          :tree-props="{children, hasChildren}"
+          :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         >
           <el-table-column prop="name" label="部门名称" />
           <el-table-column prop="sort" label="排序" />
@@ -83,7 +83,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { listDept/*, getDept, createDept, updateDept, deleteDept*/ } from '@/api/dept'
+import { listDept, getDept/*, createDept, updateDept, deleteDept*/ } from '@/api/dept'
 // import Treeselect from '@riophae/vue-treeselect'
 // import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {
@@ -127,7 +127,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['visibleOptions', 'menuTypeOptions'])
+    ...mapGetters(['statusOptions'])
   },
   created() {
     this.listDept()
@@ -141,13 +141,16 @@ export default {
       })
     },
     handleQuery() {
-
+      listDept(this.queryParams)
     },
     handleCreate() {
 
     },
-    handleUpdate() {
+    handleUpdate(row) {
+      const id = row.id
+      getDept(id).then(resp => {
 
+      })
     },
     handleDelete() {
 

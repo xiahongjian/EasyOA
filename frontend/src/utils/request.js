@@ -45,7 +45,7 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     const oldToken = getToken()
-    const token = response.headers['Authorization']
+    const token = response.headers['Authorization'] || response.headers['authorization'] // 后端返回header自动变为小写，此处做兼容处理
     // 刷新token
     if (token && oldToken !== token) {
       store.dispatch('user/refreshToken', token)
