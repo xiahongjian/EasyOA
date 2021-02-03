@@ -1,12 +1,6 @@
 package tech.hongjian.oa.config.handler;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,11 +10,15 @@ import org.springframework.security.authentication.InsufficientAuthenticationExc
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-
-import lombok.extern.slf4j.Slf4j;
 import tech.hongjian.oa.config.Code;
 import tech.hongjian.oa.model.R;
 import tech.hongjian.oa.util.JSONUtil;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * @author xiahongjian
@@ -34,7 +32,7 @@ public class LoginAuthFailureHandler implements AuthenticationFailureHandler {
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException exception) throws IOException, ServletException {
         response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
-        log.error(exception.getMessage(), exception);
+        // log.error(exception.getMessage(), exception);
         PrintWriter out = response.getWriter();
         R r = null;
         if (exception instanceof LockedException) {

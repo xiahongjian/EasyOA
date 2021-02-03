@@ -4,6 +4,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import tech.hongjian.oa.entity.User;
 
+import java.util.Date;
+
 /**
  * @author xiahongjian
  * @since  2021-01-16 14:27:36
@@ -15,6 +17,7 @@ public interface UserTokenService {
 
     String refreshToken(String oldToken, User user);
 
-    String removeToken(String token);
+    void removeToken(String token);
 
+    boolean shouldTokenRefresh(Integer userId, Date issuedAt);
 }

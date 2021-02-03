@@ -51,8 +51,18 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-freemarker</artifactId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!--<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>-->
 
         <!-- <dependency> <groupId>org.activiti</groupId> <artifactId>activiti-spring-boot-starter</artifactId> 
             <version>${activiti.version}</version> <exclusions> <exclusion> <dependency> 
@@ -97,13 +107,19 @@
 
 
     <build>
-        <finalName>activiti-oa</finalName>
+        <finalName>EasyOA</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <finalName>${project.name}</finalName>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                        </exclude>
+                    </excludes>
                 </configuration>
                 <!--解决打包后，执行java -jar 命令，找不到主清单属性 -->
                 <executions>

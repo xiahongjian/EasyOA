@@ -6,14 +6,17 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
-  freemarker:
-    suffix: .ftl
-    expose-request-attributes: true
-    expose-session-attributes: true
-    request-context-attribute: request
-  activiti:
-    check-process-definitions: true
-    database-schema-update: true
+  redis:
+    host: localhost
+    port: 6379
+    password:
+
+#  freemarker:
+#    suffix: .ftl
+#    expose-request-attributes: true
+#    expose-session-attributes: true
+#    request-context-attribute: request
+
 
 mybatis-plus:
   type-enums-package: tech.hongjian.oa.entity.enums
@@ -21,3 +24,9 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
+
+sys:
+  token:
+    expire: 30 # token有效时长，单位分钟
+    refresh-interval: 5 # token刷新周期，单位分钟
+

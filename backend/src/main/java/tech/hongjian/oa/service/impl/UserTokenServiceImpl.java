@@ -6,18 +6,23 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import tech.hongjian.oa.config.SysTokenConfig;
 import tech.hongjian.oa.entity.User;
-import tech.hongjian.oa.service.CacheService;
 import tech.hongjian.oa.service.UserService;
 import tech.hongjian.oa.service.UserTokenService;
-import tech.hongjian.oa.util.JSONUtil;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author xiahongjian
@@ -27,7 +32,8 @@ import java.util.Date;
 @Setter(onMethod_ = {@Autowired})
 @Service
 public class UserTokenServiceImpl implements UserTokenService {
-    private CacheService cacheService;
+    private SysTokenConfig tokenConfig;
+    private StringRedisTemplate redisTemplate;
     private UserService userService;
 
     @Override
@@ -35,36 +41,49 @@ public class UserTokenServiceImpl implements UserTokenService {
         if (user == null) {
             return null;
         }
+        String token = generateToken(user);
+        ValueOperations<String, String> operations = redisTemplate.opsForValue();
+        operations.set(token, LocalDateTime.now().format(DateTimeFormatter.ofPattern(
+                "yyyy-MM-dd HH:mm:ss")), tokenConfig.getExpire(), TimeUnit.MINUTES);
+        operations.set(generateLatestTokenKey(user.getId()), token,
+                tokenConfig.getExpire(), TimeUnit.MINUTES);
+        return token;
+    }
+
+    private String generateToken(User user) {
         String salt = BCrypt.gensalt();
-        // 1小时候过期
-        Date expire = new Date(System.currentTimeMillis() + 3600 * 1000);
+        // 设置过期时间
+        Date expire =
+                new Date(System.currentTimeMillis() + tokenConfig.getExpire() * 60000);
         String token = JWT.create().withSubject(user.getUsername()).withExpiresAt(expire)
                 .withIssuedAt(new Date()).sign(Algorithm.HMAC256(salt));
-        cacheService.set(token, salt);
         return token;
     }
 
     @Override
-    public String removeToken(String token) {
-        if (cacheService.contains(token)) {
-            return (String) cacheService.remove(token);
+    public void removeToken(String token) {
+        ValueOperations<String, String> operations = redisTemplate.opsForValue();
+        if (operations.get(token) == null) {
+            return;
         }
-        return null;
+        redisTemplate.delete(token);
     }
 
     @Override
     public UserDetails validate(String token) {
         String msg = "Token expires";
-        if (!cacheService.contains(token)) {
+        ValueOperations<String, String> operations =
+                redisTemplate.opsForValue();
+        if (operations.get(token) == null) {
             log.info("Expired token: {}", token);
-            log.info("All token: {}", JSONUtil.toJSON(((MemoryCacheServiceImpl) cacheService).getAllData()));
             throw new CredentialsExpiredException(msg);
         }
         DecodedJWT decode = JWT.decode(token);
         Date now = new Date();
         if (decode.getExpiresAt().before(now)) {
             Date expiresAt = decode.getExpiresAt();
-            log.info("ExpiresAt: {}", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(expiresAt));
+            log.info("ExpiresAt: {}",
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(expiresAt));
             throw new CredentialsExpiredException(msg);
         }
         return userService.loadUserByUsername(decode.getSubject());
@@ -72,16 +91,45 @@ public class UserTokenServiceImpl implements UserTokenService {
 
     @Override
     public synchronized String refreshToken(String oldToken, User user) {
-        // 保持两个token在缓存中，防止刷新token时，瞬间导致前端的连续请求中的后续请求token失效
-        if (cacheService.contains(oldToken)) {
-            String removeToken = (String) cacheService.get(oldToken);
-            if (removeToken != null) {
-                removeToken(removeToken);
-            }
+        DecodedJWT decode = JWT.decode(oldToken);
+        if (!shouldTokenRefresh(user.getId(), decode.getIssuedAt())) {
+            return null;
         }
-        String newToken = createToken(user);
-        cacheService.set(newToken, oldToken);
+        ValueOperations<String, String> operations = redisTemplate.opsForValue();
+        String newToken = generateToken(user);
+        // 缓存新token
+        operations.set(newToken,
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd " +
+                        "HH:mm:ss")), tokenConfig.getExpire(), TimeUnit.MINUTES);
+        // 设置旧token过期时间
+        redisTemplate.expire(oldToken, tokenConfig.getRefreshInterval(),
+                TimeUnit.MINUTES);
+        // 设置最新token
+        operations.set(generateLatestTokenKey(user.getId()), newToken,
+                tokenConfig.getExpire(), TimeUnit.MINUTES);
         return newToken;
     }
 
+    @Override
+    public boolean shouldTokenRefresh(Integer userId, Date issueAt) {
+        LocalDateTime issueTime =
+                LocalDateTime.ofInstant(issueAt.toInstant(), ZoneId.systemDefault());
+        if (!LocalDateTime.now().minusMinutes(tokenConfig.getRefreshInterval()).isAfter(issueTime)) {
+            return false;
+        }
+        ValueOperations<String, String> operations = redisTemplate.opsForValue();
+        String latestToken = operations.get(generateLatestTokenKey(userId));
+        if (latestToken == null) {
+            return true;
+        }
+        DecodedJWT decode = JWT.decode(latestToken);
+        Date createTime = decode.getIssuedAt();
+        return LocalDateTime.now().minusMinutes(tokenConfig.getRefreshInterval())
+                .isAfter(LocalDateTime.ofInstant(createTime.toInstant(),
+                        ZoneId.systemDefault()));
+    }
+
+    private String generateLatestTokenKey(Integer id) {
+        return "UserToken#" + id;
+    }
 }

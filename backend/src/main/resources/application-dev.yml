@@ -4,3 +4,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
+  redis:
+    host: pi.home
+    port: 6379
+    password: redis
