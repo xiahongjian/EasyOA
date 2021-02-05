@@ -17,6 +17,14 @@
         <result column="status" property="status" />
         <result column="avatar" property="avatar" />
     </resultMap>
+    <resultMap id="UserSelectOptMap" type="tech.hongjian.oa.entity.User">
+        <result column="id" property="id" />
+        <result column="username" property="username" />
+        <result column="name" property="name" />
+        <result column="email" property="email" />
+        <result column="mobile" property="mobile" />
+        <result column="gender" property="gender" />
+    </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
@@ -25,5 +33,18 @@
         update_time,
         username, password, name, email, department_id, mobile, gender, status
     </sql>
+    <select id="selectByParams" resultMap="UserSelectOptMap">
+        select
+        id, username, name, email, mobile, gender
+        from `user`
+        <where>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="keyword != null">
+                and (email like #{keyword} or username like #{keyword} or name like #{keyword})
+            </if>
+        </where>
+    </select>
 
 </mapper>

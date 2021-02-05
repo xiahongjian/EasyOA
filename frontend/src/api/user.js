@@ -21,3 +21,24 @@ export function logout() {
     method: 'get'
   })
 }
+
+export function listUsers(query) {
+  return request({
+    url: '/users',
+    method: 'get',
+    params: query
+  })
+}
+
+export function userSelectQuery(query) {
+  return request({
+    url: '/users',
+    method: 'get',
+    params: {
+      keyword: query,
+      status: 1,
+      page: 0,
+      limit: 20
+    }
+  })
+}

@@ -1,27 +1,39 @@
 package tech.hongjian.oa.controller;
 
 
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.model.R;
+import tech.hongjian.oa.service.UserService;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author xiahongjian
  * @since 2021-01-12
  */
+@Setter(onMethod_ = {@Autowired})
 @RestController
-@RequestMapping("/user")
 public class UserController {
+    private UserService userService;
 
-    @GetMapping("/userinfo")
+    @GetMapping("/user/userinfo")
     public R userInfo() {
         return R.ok(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    }
+
+    @GetMapping("/users")
+    public R listUsers(@RequestParam(required = false) String keyword,
+                       @RequestParam(required = false) Integer status,
+                       @RequestParam Integer page,
+                       @RequestParam Integer limit) {
+        return R.ok(userService.listUser(keyword, Status.of(status), page, limit));
     }
 }

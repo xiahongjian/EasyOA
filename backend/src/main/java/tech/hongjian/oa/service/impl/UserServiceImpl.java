@@ -1,5 +1,7 @@
 package tech.hongjian.oa.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.Role;
 import tech.hongjian.oa.entity.User;
+import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.mapper.UserMapper;
 import tech.hongjian.oa.service.RoleService;
 import tech.hongjian.oa.service.UserService;
@@ -44,4 +47,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return user;
     }
 
+    @Override
+    public IPage<User> listUser(String keyword, Status status, Integer page, Integer limit) {
+        if (keyword != null) {
+            keyword = "%" + keyword + "%";
+        }
+        return baseMapper.selectByParams(new Page<>(page, (page - 1) * limit), keyword, status);
+    }
 }

@@ -77,23 +77,110 @@
           </el-table-column>
         </el-table>
       </el-card>
+
+      <!-- 添加或更新部门 -->
+      <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" width="600px">
+        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="上级部门" prop="parentId">
+                <treeselect
+                  v-model="form.parentId"
+                  :options="deptOptions"
+                  :normalizer="normalizer"
+                  :show-count="true"
+                  placeholder="选择上级部门"
+                />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="部门名称" prop="name">
+                <el-input v-model="form.name" placeholder="请输入部门名称" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="显示排序" prop="orderNum">
+                <el-input-number v-model="form.sort" controls-position="right" :min="0" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="负责人" prop="leaderId">
+                <el-select
+                  v-model="form.selectedUser"
+                  placeholder="请输入负责人姓名"
+                  clearable
+                  filterable
+                  remote
+                  :remote-method="selectUser"
+                  :loading="userSelectLoading"
+                  @clear="userClear"
+                  @change="userChange"
+                >
+                  <el-option
+                    v-for="o of userSelectOpts"
+                    :key="o.id"
+                    :label="o.name"
+                    :value="o"
+                  >
+                    <span>{{ o.name }} ({{ o.email }})</span>
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="联系电话" prop="phone">
+                <el-input v-model="form.phone" maxlength="11" :disabled="true" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="邮箱" prop="email">
+                <el-input v-model="form.email" maxlength="50" :disabled="true" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="部门状态">
+                <el-radio-group v-model="form.status">
+                  <el-radio
+                    v-for="o in statusOptions"
+                    :key="o.value"
+                    :label="o.value"
+                  >{{ o.label }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button @click="cancel">取 消</el-button>
+        </div>
+      </el-dialog>
     </template>
   </basic-layout>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { listDept, getDept/*, createDept, updateDept, deleteDept*/ } from '@/api/dept'
-// import Treeselect from '@riophae/vue-treeselect'
-// import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import { userSelectQuery } from '@/api/user'
+import { listDept, getDept, createDept, updateDept/*, deleteDept*/ } from '@/api/dept'
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {
   name: 'Dept',
-  // components: { Treeselect },
+  components: { Treeselect },
   data() {
     return {
       loading: true,
       records: [],
       deptOptions: [],
+      userSelectLoading: true,
+      userSelectOpts: [],
 
       title: '',
       isEdit: false,
@@ -144,7 +231,11 @@ export default {
       listDept(this.queryParams)
     },
     handleCreate() {
-
+      this.reset()
+      this.getTreeselect()
+      this.open = true
+      this.title = '添加部门'
+      this.isEdit = false
     },
     handleUpdate(row) {
       const id = row.id
@@ -156,13 +247,79 @@ export default {
 
     },
     submitForm() {
-
+      this.$refs.form.validate(valid => {
+        if (!valid) {
+          return
+        }
+        const action = this.form.id ? (form) => updateDept(this.form.id, form) : createDept
+        const msg = this.form.id ? '修改成功' : '新增成功'
+        action(this.form).then(resp => {
+          if (resp.success) {
+            this.msgSuccess(msg)
+            this.open = false
+            this.listDept()
+          } else {
+            this.msgErrot(resp.message)
+          }
+        })
+      })
     },
     reset() {
-
+      this.form = {
+        id: undefined,
+        parentId: undefined,
+        name: undefined,
+        sort: 0,
+        leaderId: undefined,
+        mobile: undefined,
+        email: undefined,
+        status: 1
+      }
     },
     statusFormat(row, column) {
       return this.selectDictLabel(this.statusOptions, row.status)
+    },
+    cancel() {
+      this.open = false
+      this.reset()
+    },
+    selectUser(query) {
+      this.userSelectLoading = true
+      userSelectQuery(query).then(resp => {
+        this.userSelectOpts = resp.data.records
+        this.userSelectLoading = false
+      })
+    },
+    getTreeselect() {
+      listDept().then(resp => {
+        this.deptOptions = []
+        const dept = {
+          id: -1,
+          name: '主类目',
+          children: resp.data.records
+        }
+        this.deptOptions.push(dept)
+      })
+    },
+    normalizer(node) {
+      if (node.children && node.children.length === 0) {
+        delete node.children
+      }
+      return {
+        id: node.id,
+        label: node.name,
+        children: node.children
+      }
+    },
+    userChange(row) {
+      this.form.leaderId = row.id
+      this.form.email = row.email
+      this.form.mobile = row.mobile
+    },
+    userClear() {
+      this.form.leaderId = undefined
+      this.form.email = undefined
+      this.form.mobile = undefined
     }
   }
 }

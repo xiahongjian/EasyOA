@@ -1,10 +1,12 @@
 package tech.hongjian.oa.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import tech.hongjian.oa.entity.User;
+import tech.hongjian.oa.entity.enums.Status;
 
 /**
  * <p>
@@ -16,4 +18,5 @@ import tech.hongjian.oa.entity.User;
  */
 public interface UserService extends IService<User>, UserDetailsService {
 
+    IPage<User> listUser(String keyword, Status status, Integer page, Integer limit);
 }

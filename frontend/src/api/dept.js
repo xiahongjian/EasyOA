@@ -17,7 +17,8 @@ export function getDept(id) {
 
 export function createDept(form) {
   return request({
-    url: '/deparment',
+    url: '/department',
+    method: 'post',
     data: form
   })
 }
