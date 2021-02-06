@@ -39,8 +39,8 @@
           :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         >
           <el-table-column prop="name" label="部门名称" />
-          <el-table-column prop="sort" label="排序" />
-          <el-table-column prop="status" label="状态" width="100" align="center">
+          <el-table-column prop="sort" label="排序" width="100px" align="center" />
+          <el-table-column prop="status" label="状态" width="100px" align="center">
             <template slot-scope="scope">
               <el-tag
                 :type="scope.row.status === 0 ? 'danger' : 'success'"
@@ -48,7 +48,8 @@
               >{{ statusFormat(scope.row) }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" align="center" prop="createTime" width="200" />
+          <el-table-column label="创建时间" align="center" prop="createTime" width="200px" />
+          <el-table-column label="更新时间" align="center" prop="updateTime" width="200px" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button
@@ -226,16 +227,19 @@ export default {
   methods: {
     listDept() {
       this.loading = true
-      listDept(this.form).then(resp => {
+      listDept(this.queryParams).then(resp => {
         this.records = resp.data
         this.loading = false
       })
     },
     handleQuery() {
-      listDept(this.queryParams)
+      this.listDept()
     },
-    handleCreate() {
+    handleCreate(row) {
       this.reset()
+      if (row.id) {
+        this.form.parentId = row.id
+      }
       this.getTreeselect()
       this.open = true
       this.title = '添加部门'
@@ -260,13 +264,16 @@ export default {
       })
     },
     handleDelete(row) {
-      this.$$confirm(`是否确认删除部门"${row.name}"？`, '警告', {
+      this.$confirm(`是否确认删除部门"${row.name}"？`, '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         return deleteDept(row.id)
-      })
+      }).then(() => {
+        this.listDept()
+        this.msgSuccess('删除成功')
+      }).catch(() => {})
     },
     submitForm() {
       this.$refs.form.validate(valid => {
@@ -320,7 +327,7 @@ export default {
         const dept = {
           id: -1,
           name: '主类目',
-          children: resp.data.records
+          children: resp.data
         }
         this.deptOptions.push(dept)
       })
