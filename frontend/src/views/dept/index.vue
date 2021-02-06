@@ -39,8 +39,8 @@
           :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
         >
           <el-table-column prop="name" label="部门名称" />
-          <el-table-column prop="sort" label="排序" width="100px" align="center" />
-          <el-table-column prop="status" label="状态" width="100px" align="center">
+          <el-table-column prop="sort" label="排序" width="150px" align="center" />
+          <el-table-column prop="status" label="状态" width="150px" align="center">
             <template slot-scope="scope">
               <el-tag
                 :type="scope.row.status === 0 ? 'danger' : 'success'"
@@ -48,9 +48,9 @@
               >{{ statusFormat(scope.row) }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" align="center" prop="createTime" width="200px" />
-          <el-table-column label="更新时间" align="center" prop="updateTime" width="200px" />
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <el-table-column label="创建时间" align="center" prop="createTime" width="250px" />
+          <el-table-column label="更新时间" align="center" prop="updateTime" width="250px" />
+          <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="300">
             <template slot-scope="scope">
               <el-button
                 v-permisaction="['sys:dept:update']"
