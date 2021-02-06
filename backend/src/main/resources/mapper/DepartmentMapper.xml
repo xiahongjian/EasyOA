@@ -4,7 +4,7 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="tech.hongjian.oa.entity.Department">
-        <result column="id" property="id" />
+        <id column="id" property="id" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
         <result column="name" property="name" />
@@ -18,7 +18,7 @@
         <association property="leader" javaType="tech.hongjian.oa.entity.User">
             <result column="id" property="id" />
             <result column="username" property="username" />
-            <result column="name" property="name" />
+            <result column="leader_name" property="name" />
             <result column="email" property="email" />
             <result column="mobile" property="mobile" />
             <result column="gender" property="gender" />
@@ -32,9 +32,10 @@
         update_time,
         name, leader_id, parent_id, status, sort
     </sql>
+
     <select id="selectByIdWithLeader" resultMap="withLeader">
         select
-        *
+        d.*, u.id, u.username, u.name leader_name, u.email, u.mobile, u.gender
         from `department` d left join `user` u on d.leader_id=u.id
         where d.id=#{id}
     </select>

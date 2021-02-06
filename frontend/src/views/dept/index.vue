@@ -40,10 +40,10 @@
         >
           <el-table-column prop="name" label="部门名称" />
           <el-table-column prop="sort" label="排序" />
-          <el-table-column prop="”status“" label="状态" width="100">
+          <el-table-column prop="status" label="状态" width="100" align="center">
             <template slot-scope="scope">
               <el-tag
-                :type="scope.row.status === '1' ? 'danger' : 'success'"
+                :type="scope.row.status === 0 ? 'danger' : 'success'"
                 disable-transitions
               >{{ statusFormat(scope.row) }}</el-tag>
             </template>
@@ -110,11 +110,13 @@
             <el-col :span="12">
               <el-form-item label="负责人" prop="leaderId">
                 <el-select
-                  v-model="form.selectedUser"
+                  v-model="form.leader"
+                  value-key="id"
                   placeholder="请输入负责人姓名"
                   clearable
                   filterable
                   remote
+                  :default-first-option="true"
                   :remote-method="selectUser"
                   :loading="userSelectLoading"
                   @clear="userClear"
@@ -132,15 +134,15 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="联系电话" prop="phone">
-                <el-input v-model="form.phone" maxlength="11" :disabled="true" />
+              <el-form-item label="联系电话" prop="mobile">
+                <el-input v-model="form.leader.mobile" maxlength="11" :disabled="true" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
               <el-form-item label="邮箱" prop="email">
-                <el-input v-model="form.email" maxlength="50" :disabled="true" />
+                <el-input v-model="form.leader.email" maxlength="50" :disabled="true" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -168,7 +170,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { userSelectQuery } from '@/api/user'
-import { listDept, getDept, createDept, updateDept/*, deleteDept*/ } from '@/api/dept'
+import { listDept, getDept, createDept, updateDept, deleteDept } from '@/api/dept'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {
@@ -191,7 +193,9 @@ export default {
         status: undefined
       },
 
-      form: {},
+      form: {
+        leader: {}
+      },
       rules: {
         parentId: [{
           required: true, message: '上级部门不能为空', trigger: 'blur'
@@ -239,12 +243,30 @@ export default {
     },
     handleUpdate(row) {
       const id = row.id
+      this.loading = true
+      this.getTreeselect()
       getDept(id).then(resp => {
-
+        this.loading = false
+        this.form = resp.data || {}
+        if (this.form.parentId === null) {
+          this.form.parentId = -1
+        }
+        if (this.form.leader === null) {
+          this.form.leader = {}
+        } else {
+          this.userSelectOpts = [this.form.leader]
+        }
+        this.open = true
       })
     },
-    handleDelete() {
-
+    handleDelete(row) {
+      this.$$confirm(`是否确认删除部门"${row.name}"？`, '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return deleteDept(row.id)
+      })
     },
     submitForm() {
       this.$refs.form.validate(valid => {
@@ -271,8 +293,10 @@ export default {
         name: undefined,
         sort: 0,
         leaderId: undefined,
-        mobile: undefined,
-        email: undefined,
+        leader: {
+          email: undefined,
+          mobile: undefined
+        },
         status: 1
       }
     },
@@ -313,13 +337,10 @@ export default {
     },
     userChange(row) {
       this.form.leaderId = row.id
-      this.form.email = row.email
-      this.form.mobile = row.mobile
     },
     userClear() {
       this.form.leaderId = undefined
-      this.form.email = undefined
-      this.form.mobile = undefined
+      this.form.leader = {}
     }
   }
 }

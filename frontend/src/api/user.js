@@ -42,3 +42,10 @@ export function userSelectQuery(query) {
     }
   })
 }
+
+export function getUser(id) {
+  return request({
+    url: `/user/${id}`,
+    method: 'get'
+  })
+}
