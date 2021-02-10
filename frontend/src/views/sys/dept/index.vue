@@ -182,7 +182,7 @@ export default {
       loading: true,
       records: [],
       deptOptions: [],
-      userSelectLoading: true,
+      userSelectLoading: false,
       userSelectOpts: [],
 
       title: '',
@@ -210,7 +210,7 @@ export default {
           trigger: 'blur'
         }],
         name: [{
-          required: true, message: '不猛名称不能为空', trigger: 'blur'
+          required: true, message: '部门名称不能为空', trigger: 'blur'
         }],
         sort: [{
           required: true, message: '排序值不能为空', trigger: 'blur'

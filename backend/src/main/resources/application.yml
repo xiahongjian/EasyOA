@@ -1,15 +1,17 @@
+server:
+  port: 8080
 spring:
   profiles:
-    active: dev
+#    active: dev
   datasource:
-    url: jdbc:mysql://localhost:3306/oa?useUnicode=true&useSSL=false&characterEncoding=utf8
+    url: jdbc:mysql://127.0.0.1:3306/oa?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
   redis:
-    host: localhost
+    host: 127.0.0.1
     port: 6379
-    password:
+    password: redis
 
 #  freemarker:
 #    suffix: .ftl
