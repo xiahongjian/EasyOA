@@ -259,7 +259,7 @@ export default {
     },
     handleUpdate(row) {
       this.reset()
-      const id = row.id || this.ids[0]
+      const id = row ? row.id : this.ids[0]
       getRole(id).then(resp => {
         this.form = resp.data
         this.open = true

@@ -26,6 +26,7 @@
           <!-- 按钮 -->
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+            <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
             <el-button v-permisaction="['sys:dept:create']" type="primary" icon="el-icon-plus" size="mini" @click="handleCreate">新增</el-button>
           </el-form-item>
         </el-form>
