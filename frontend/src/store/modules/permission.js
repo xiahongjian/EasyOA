@@ -1,6 +1,6 @@
 import Layout from '@/layout'
 import { asyncRoutes, constantRoutes } from '@/router'
-import { getRoutes } from '@/api/menu'
+import { getRoutes } from '@/api/sys/menu'
 
 /**
  * Use meta.role to determine if the current user has permission

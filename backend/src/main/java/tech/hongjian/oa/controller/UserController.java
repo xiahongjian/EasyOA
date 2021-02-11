@@ -33,9 +33,10 @@ public class UserController {
     @GetMapping("/users")
     public R listUsers(@RequestParam(required = false) String keyword,
                        @RequestParam(required = false) Integer status,
+                       @RequestParam(required = false) Integer dept,
                        @RequestParam Integer page,
                        @RequestParam Integer limit) {
-        return R.ok(userService.listUser(keyword, Status.of(status), page, limit));
+        return R.ok(userService.listUser(keyword, Status.of(status), dept, page, limit));
     }
 
     @GetMapping("/user/{id}")

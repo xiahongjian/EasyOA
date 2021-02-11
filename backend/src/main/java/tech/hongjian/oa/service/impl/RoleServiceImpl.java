@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tech.hongjian.oa.controller.vo.RoleVO;
+import tech.hongjian.oa.model.RoleWithMenu;
 import tech.hongjian.oa.entity.Role;
 import tech.hongjian.oa.entity.RoleMenuRel;
 import tech.hongjian.oa.entity.enums.Status;
@@ -91,7 +91,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     }
 
     @Override
-    public Role createRoleWithPermissions(RoleVO role) {
+    public Role createRoleWithPermissions(RoleWithMenu role) {
         Role entity = createRole(role);
         for (Integer menuId : role.getMenuIds()) {
             roleMenuRelService.createRel(entity.getId(), menuId);
@@ -109,7 +109,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     }
 
     @Override
-    public RoleVO getRoleWithPermission(Integer id) {
+    public RoleWithMenu getRoleWithPermission(Integer id) {
         if (id == null) {
             return null;
         }
@@ -120,11 +120,11 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         List<Integer> menuIds =
                 roleMenuRelService.lambdaQuery().eq(RoleMenuRel::getRoleId, id).list()
                         .stream().map(RoleMenuRel::getMenuId).collect(Collectors.toList());
-        return new RoleVO(role, menuIds);
+        return new RoleWithMenu(role, menuIds);
     }
 
     @Override
-    public boolean updateRoleAndPermission(Integer id, RoleVO role) {
+    public boolean updateRoleAndPermission(Integer id, RoleWithMenu role) {
         boolean res = updateRole(id, role);
         if (!res) {
             return false;

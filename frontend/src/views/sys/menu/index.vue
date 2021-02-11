@@ -235,7 +235,7 @@ import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { mapGetters } from 'vuex'
 import { createMenu, deleteMenu, getMenu, listMenu, /*, createMenu, updateMenu, deleteMenu, getMenu*/
-  updateMenu } from '@/api/menu'
+  updateMenu } from '@/api/sys/menu'
 export default {
   name: 'Menu',
   components: { IconSelect, Treeselect },

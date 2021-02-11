@@ -170,8 +170,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { userSelectQuery } from '@/api/user'
-import { listDept, getDept, createDept, updateDept, deleteDept } from '@/api/dept'
+import { userSelectQuery } from '@/api/sys/user'
+import { listDept, getDept, createDept, updateDept, deleteDept } from '@/api/sys/dept'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {

@@ -39,7 +39,10 @@
         from `user`
         <where>
             <if test="status != null">
-                and status = #{status}
+                and status=#{status}
+            </if>
+            <if test="dept != null">
+                and department_id=#{dept}
             </if>
             <if test="keyword != null">
                 and (email like #{keyword} or username like #{keyword} or name like #{keyword})

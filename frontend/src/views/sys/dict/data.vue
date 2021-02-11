@@ -153,8 +153,8 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { listData, getData, updateData, createData, deleteData } from '@/api/system/dict/data'
-import { listType, getType } from '@/api/system/dict/type'
+import { listData, getData, updateData, createData, deleteData } from '@/api/sys/dict/data'
+import { listType, getType } from '@/api/sys/dict/type'
 import BasicLayout from '@/layout/BasicLayout.vue'
 export default {
   name: 'Data',

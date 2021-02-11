@@ -48,10 +48,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public IPage<User> listUser(String keyword, Status status, Integer page, Integer limit) {
+    public IPage<User> listUser(String keyword, Status status, Integer dept, Integer page, Integer limit) {
         if (keyword != null) {
             keyword = "%" + keyword + "%";
         }
-        return baseMapper.selectByParams(new Page<>(page, (page - 1) * limit), keyword, status);
+        return baseMapper.selectByParams(new Page<>(page, (page - 1) * limit), keyword, status, dept);
     }
 }

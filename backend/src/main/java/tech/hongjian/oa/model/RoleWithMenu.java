@@ -1,4 +1,4 @@
-package tech.hongjian.oa.controller.vo;
+package tech.hongjian.oa.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,10 +16,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class RoleVO extends Role {
+public class RoleWithMenu extends Role {
     private List<Integer> menuIds = new ArrayList<>();
 
-    public RoleVO(Role role, List<Integer> menuIds) {
+    public RoleWithMenu(Role role, List<Integer> menuIds) {
         BeanUtils.copyProperties(role, this);
         this.menuIds = menuIds;
     }

@@ -18,5 +18,5 @@ import tech.hongjian.oa.entity.enums.Status;
  */
 public interface UserService extends IService<User>, UserDetailsService {
 
-    IPage<User> listUser(String keyword, Status status, Integer page, Integer limit);
+    IPage<User> listUser(String keyword, Status status, Integer dept, Integer page, Integer limit);
 }

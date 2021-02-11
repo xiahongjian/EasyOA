@@ -89,7 +89,7 @@
         <el-table v-loading="loading" :data="records" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" align="center" />
           <el-table-column label="角色编号" prop="id" width="120" />
-          <el-table-column label="角色名称" prop="name" :show-overflow-tooltip="true" width="220" />
+          <el-table-column label="角色名称" prop="name" :show-overflow-tooltip="true" min-width="220" />
           <el-table-column label="权限字符" prop="key" :show-overflow-tooltip="true" width="220" />
           <el-table-column label="显示排序" prop="sort" width="100" />
           <el-table-column label="状态" align="center" width="100">
@@ -102,9 +102,9 @@
               />
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" align="center" prop="createTime" width="300" />
-          <el-table-column label="更新时间" align="center" prop="updateTime" width="300" />
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <el-table-column label="创建时间" align="center" prop="createTime" width="200" />
+          <el-table-column label="更新时间" align="center" prop="updateTime" width="200" />
+          <el-table-column label="操作" align="center" class-name="small-padding " width="150">
             <template slot-scope="scope">
               <el-button
                 v-permisaction="['sys:role:update']"
@@ -179,8 +179,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { listRole, getRole, createRole, updateRole, deleteRole, changeStatus, roleTreeSelect } from '@/api/role'
-import { listMenu } from '@/api/menu'
+import { listRole, getRole, createRole, updateRole, deleteRole, changeStatus, roleTreeSelect } from '@/api/sys/role'
+import { listMenu } from '@/api/sys/menu'
 export default {
   name: 'Role',
   data() {

@@ -172,7 +172,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import { listType, updateType, addType, delType, getType } from '@/api/system/dict/type'
+import { listType, updateType, addType, delType, getType } from '@/api/sys/dict/type'
 export default {
   name: 'Dict',
   data() {

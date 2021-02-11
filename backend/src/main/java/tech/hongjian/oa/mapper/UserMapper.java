@@ -16,5 +16,5 @@ import tech.hongjian.oa.entity.enums.Status;
  */
 public interface UserMapper extends BaseMapper<User> {
 
-    IPage<User> selectByParams(Page<User> objectPage, String keyword, Status status);
+    IPage<User> selectByParams(Page<User> objectPage, String keyword, Status status, Integer dept);
 }
