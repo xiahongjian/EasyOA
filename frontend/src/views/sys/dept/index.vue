@@ -308,6 +308,10 @@ export default {
         status: 1
       }
     },
+    resetQuery() {
+      this.resetForm('queryForm')
+      this.handleQuery()
+    },
     statusFormat(row, column) {
       return this.selectDictLabel(this.statusOptions, row.status)
     },
