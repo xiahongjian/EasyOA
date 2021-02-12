@@ -81,7 +81,68 @@
             >导出</el-button>
           </el-col>
         </el-row>
+
+        <el-table
+          v-loading="loading"
+          :data="records"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection" width="55" align="center" />
+          <el-table-column label="姓名" prop="name" width="90" />
+          <el-table-column label="性别" prop="gender" align="center" width="80">
+            <template slot-scope="scope">
+              {{ genderFormat(scope.row) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="用户名" prop="username" :show-overflow-tooltip="true" width="150" />
+          <el-table-column prop="status" label="状态" width="150px" align="center">
+            <template slot-scope="scope">
+              <el-tag
+                :type="scope.row.status === 0 ? 'danger' : 'success'"
+                disable-transitions
+              >{{ statusFormat(scope.row) }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="部门" prop="department" :show-overflow-tooltip="true" width="120" align="center" />
+          <el-table-column label="邮箱" prop="email" :show-overflow-tooltip="true" />
+          <!-- <el-table-column label="手机号码" prop="mobile" /> -->
+          <!-- <el-table-column label="创建时间" align="center" prop="createTime" width="200px" /> -->
+          <el-table-column label="更新时间" align="center" prop="updateTime" width="200px" />
+          <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="250">
+            <template slot-scope="scope">
+              <el-button
+                v-permisaction="['sys:user:update']"
+                size="mini"
+                type="text"
+                icon="el-icon-edit"
+                @click="handleUpdate(scope.row)"
+              >修改</el-button>
+              <el-button
+                v-permisaction="['sys:user:delete']"
+                size="mini"
+                type="text"
+                icon="el-icon-delete"
+                @click="handleDelete(scope.row)"
+              >删除</el-button>
+              <el-button
+                size="mini"
+                type="text"
+                icon="el-icon-info"
+                @click="handleShowInfo(scope.row)"
+              >详情
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <pagination
+          v-show="total > 0"
+          :total="total"
+          :page.sync="queryParams.page"
+          :limit.sync="queryParams.limit"
+          @pagination="listUsers"
+        />
       </el-card>
+
     </template>
   </basic-layout>
 </template>
@@ -92,6 +153,7 @@ import { getDicts } from '@/api/sys/dict/data'
 import { getUser, listUsers } from '@/api/sys/user'
 import { listDept } from '@/api/sys/dept'
 import Treeselect from '@riophae/vue-treeselect'
+import { /* createUser, updateUser,*/ deleteUser, resetPassword } from '@/api/sys/user'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 export default {
@@ -102,6 +164,7 @@ export default {
       loading: true,
       idEdit: false,
       open: false,
+      infoOpen: false,
       title: '',
       ids: [],
       single: true,
@@ -120,7 +183,8 @@ export default {
       records: [],
       total: 0,
 
-      form: {}
+      form: {},
+      userInfo: {}
     }
   },
   computed: {
@@ -137,9 +201,9 @@ export default {
     listUsers() {
       const params = this.queryParams
       if (params.dept === -1) {
-        params.dept == null
+        params.dept = null
       }
-      listUsers(this.queryParams).then(resp => {
+      listUsers(params).then(resp => {
         const data = resp.data
         this.records = data.records
         this.total = data.total
@@ -156,7 +220,7 @@ export default {
     },
     handleUpdate(row) {
       this.reset()
-      const userId = row ? row.id : this.ids[0]
+      const userId = row.id || this.ids[0]
       getUser(userId).then(resp => {
         this.form = resp.data
         this.open = true
@@ -165,7 +229,16 @@ export default {
       })
     },
     handleDelete(row) {
-
+      this.$confirm(`是否确认删除部门"${row.name}"？`, '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return deleteUser(row.id)
+      }).then(() => {
+        this.listDept()
+        this.msgSuccess('删除成功')
+      }).catch(() => {})
     },
     submitForm() {
 
@@ -173,6 +246,18 @@ export default {
     resetQuery() {
       this.restForm('queryForm')
       this.handleQuery()
+    },
+    handleRestPassword() {
+      this.$confirm(`是否确认重置用户名为"${this.userInfo.username}"的用户密码？`, '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return resetPassword(this.userInfo.id)
+      }).then(() => {
+        this.listUsers()
+        this.msgSuccess('删除成功')
+      }).catch(() => {})
     },
     handleExport() {
 
@@ -219,6 +304,19 @@ export default {
         label: node.name,
         children: node.children
       }
+    },
+    handleSelectionChange(row) {
+
+    },
+    genderFormat(row) {
+      let label = '-'
+      this.genderOpts.forEach(opt => {
+        if (opt.value === row.gender) {
+          label = opt.label
+          return
+        }
+      })
+      return label
     }
   }
 }

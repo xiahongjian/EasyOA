@@ -1,16 +1,14 @@
 package tech.hongjian.oa.entity;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import com.baomidou.mybatisplus.annotation.TableField;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import tech.hongjian.oa.entity.enums.Status;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * <p>
@@ -35,6 +33,9 @@ public class User extends BaseEntity implements UserDetails {
     private String email;
 
     private Integer departmentId;
+
+    @TableField(exist = false)
+    private String department;
 
     private String mobile;
 

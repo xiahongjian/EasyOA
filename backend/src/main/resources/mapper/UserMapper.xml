@@ -24,6 +24,7 @@
         <result column="email" property="email" />
         <result column="mobile" property="mobile" />
         <result column="gender" property="gender" />
+        <result column="department" property="department" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -35,8 +36,8 @@
     </sql>
     <select id="selectByParams" resultMap="UserSelectOptMap">
         select
-        id, username, name, email, mobile, gender
-        from `user`
+        u.id, u.username, u.name, u.email, u.mobile, u.gender, u.status, d.name as department
+        from `user` u left join department d on u.department_id=d.id
         <where>
             <if test="status != null">
                 and status=#{status}

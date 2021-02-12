@@ -19,7 +19,6 @@ spring:
 #    expose-session-attributes: true
 #    request-context-attribute: request
 
-
 mybatis-plus:
   type-enums-package: tech.hongjian.oa.entity.enums
   type-aliases-package: tech.hongjian.oa.entity
@@ -31,4 +30,6 @@ sys:
   token:
     expire: 30 # token有效时长，单位分钟
     refresh-interval: 5 # token刷新周期，单位分钟
-
+logging:
+  level:
+    tech.hongjian.oa.mapper: debug

@@ -19,4 +19,16 @@ import tech.hongjian.oa.entity.enums.Status;
 public interface UserService extends IService<User>, UserDetailsService {
 
     IPage<User> listUser(String keyword, Status status, Integer dept, Integer page, Integer limit);
+
+    User getUserById(Integer id);
+
+    void deleteById(Integer id);
+
+    void batchDelete(Integer[] ids);
+
+    User createUser(User user);
+
+    void updateUser(Integer id, User user);
+
+    void resetPassword(Integer id);
 }
