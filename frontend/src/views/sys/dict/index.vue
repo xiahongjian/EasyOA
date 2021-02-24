@@ -295,7 +295,7 @@ export default {
               this.open = false
               this.getList()
             } else {
-              this.msgError(resp.msg)
+              this.msgError(resp.message)
             }
           })
         } else {
@@ -305,7 +305,7 @@ export default {
               this.open = false
               this.getList()
             } else {
-              this.msgError(resp.msg)
+              this.msgError(resp.message)
             }
           })
         }

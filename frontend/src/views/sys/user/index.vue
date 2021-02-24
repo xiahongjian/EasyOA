@@ -108,7 +108,7 @@
           <!-- <el-table-column label="手机号码" prop="mobile" /> -->
           <!-- <el-table-column label="创建时间" align="center" prop="createTime" width="200px" /> -->
           <el-table-column label="更新时间" align="center" prop="updateTime" width="200px" />
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="250">
+          <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="300">
             <template slot-scope="scope">
               <el-button
                 v-permisaction="['sys:user:update']"
@@ -131,6 +131,14 @@
                 @click="handleShowInfo(scope.row)"
               >详情
               </el-button>
+              <el-button
+                v-permisaction="['sys:user:update']"
+                size="mini"
+                type="text"
+                icon="el-icon-refresh"
+                @click="handleResetPassword(scope.row)"
+              >重置密码
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -142,7 +150,29 @@
           @pagination="listUsers"
         />
       </el-card>
-
+      <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" width="500px">
+        <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="form.name" placeholder="请输入姓名" :disabled="isEdit" />
+          </el-form-item>
+          <el-form-item label="账号" prop="username">
+            <el-input v-model="form.key" placeholder="请输入账号" :disabled="isEdit" />
+          </el-form-item>
+          <el-form-item label="状态" prop="status">
+            <el-radio-group v-model="form.status">
+              <el-radio
+                v-for="s in statusOptions"
+                :key="s.value"
+                :label="s.value"
+              >{{ s.label }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="submitForm">确定</el-button>
+          <el-button @click="cancel">取消</el-button>
+        </div>
+      </el-dialog>
     </template>
   </basic-layout>
 </template>
@@ -150,10 +180,9 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getDicts } from '@/api/sys/dict/data'
-import { getUser, listUsers } from '@/api/sys/user'
+import { createUser, getUser, listUsers, updateUser, deleteUser, resetPassword } from '@/api/sys/user'
 import { listDept } from '@/api/sys/dept'
 import Treeselect from '@riophae/vue-treeselect'
-import { /* createUser, updateUser,*/ deleteUser, resetPassword } from '@/api/sys/user'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
 export default {
@@ -162,7 +191,7 @@ export default {
   data() {
     return {
       loading: true,
-      idEdit: false,
+      isEdit: false,
       open: false,
       infoOpen: false,
       title: '',
@@ -184,7 +213,15 @@ export default {
       total: 0,
 
       form: {},
-      userInfo: {}
+      userInfo: {},
+      rules: {
+        name: [{
+          required: true, message: '姓名不能为空', trigger: 'blur'
+        }],
+        username: [{
+          required: true, message: '账号不能为空', trigger: 'blur'
+        }]
+      }
     }
   },
   computed: {
@@ -216,7 +253,9 @@ export default {
       this.listUsers()
     },
     handleCreate() {
-
+      this.reset()
+      this.open = true
+      this.title = '新增用户'
     },
     handleUpdate(row) {
       this.reset()
@@ -229,19 +268,36 @@ export default {
       })
     },
     handleDelete(row) {
-      this.$confirm(`是否确认删除部门"${row.name}"？`, '警告', {
+      const id = row.id || this.ids
+      this.$confirm(`是否确认删除编号为”${id}“部门？`, '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        return deleteUser(row.id)
+        return deleteUser(id)
       }).then(() => {
         this.listDept()
         this.msgSuccess('删除成功')
       }).catch(() => {})
     },
     submitForm() {
-
+      this.$refs['form'].validate(valid => {
+        if (!valid) {
+          return
+        }
+        const isUpdate = this.form.id !== undefined
+        const action = isUpdate ? (form) => updateUser(this.form.id, form) : createUser
+        const msg = isUpdate ? '修改成功' : '新增成功'
+        action(this.form).then(resp => {
+          if (resp.success) {
+            this.msgSuccess(msg)
+            this.open = false
+            this.listUsers()
+          } else {
+            this.msgError(resp.message)
+          }
+        })
+      })
     },
     resetQuery() {
       this.restForm('queryForm')
@@ -278,7 +334,7 @@ export default {
       this.resetForm('form')
     },
     cancel() {
-      this.rest()
+      this.reset()
       this.open = false
     },
     getDeptTreeselect() {
@@ -305,8 +361,10 @@ export default {
         children: node.children
       }
     },
-    handleSelectionChange(row) {
-
+    handleSelectionChange(selection) {
+      this.ids = selection.map(item => item.id)
+      this.single = selection.length !== 1
+      this.multiple = !selection.length
     },
     genderFormat(row) {
       let label = '-'
