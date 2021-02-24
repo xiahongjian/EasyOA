@@ -39,9 +39,11 @@ public class UserController {
     public R listUsers(@RequestParam(required = false) String keyword,
                        @RequestParam(required = false) Integer status,
                        @RequestParam(required = false) Integer dept,
+                       @RequestParam(required = false) String prop,
+                       @RequestParam(required = false) String order,
                        @RequestParam Integer page,
                        @RequestParam Integer limit) {
-        return R.ok(userService.listUser(keyword, Status.of(status), dept, page, limit));
+        return R.ok(userService.listUser(keyword, Status.of(status), dept, prop, order, page, limit));
     }
 
     @PostMapping("/user")

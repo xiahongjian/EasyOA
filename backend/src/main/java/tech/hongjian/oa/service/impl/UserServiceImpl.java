@@ -55,12 +55,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public IPage<User> listUser(String keyword, Status status, Integer dept,
-                                Integer page, Integer limit) {
+                                String prop, String order, Integer page, Integer limit) {
         if (keyword != null) {
             keyword = "%" + keyword + "%";
         }
+        if (prop == null || order == null) {
+            prop = "id";
+            order = "asc";
+        }
         return baseMapper.selectByParams(new Page<>((page - 1) * limit, limit), keyword
-                , status, dept);
+                , status, dept, prop, order);
     }
 
     @Override

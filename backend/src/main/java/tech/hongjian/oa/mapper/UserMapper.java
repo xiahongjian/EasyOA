@@ -8,7 +8,7 @@ import tech.hongjian.oa.entity.enums.Status;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author xiahongjian
@@ -16,5 +16,6 @@ import tech.hongjian.oa.entity.enums.Status;
  */
 public interface UserMapper extends BaseMapper<User> {
 
-    IPage<User> selectByParams(Page<User> objectPage, String keyword, Status status, Integer dept);
+    IPage<User> selectByParams(Page<User> objectPage, String keyword, Status status,
+                               Integer dept, String prop, String order);
 }

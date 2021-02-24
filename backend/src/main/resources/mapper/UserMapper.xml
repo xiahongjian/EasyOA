@@ -49,6 +49,7 @@
                 and (email like #{keyword} or username like #{keyword} or name like #{keyword})
             </if>
         </where>
+        order by ${prop} ${order}
     </select>
 
 </mapper>

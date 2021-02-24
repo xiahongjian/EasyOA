@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
   profiles:
-#    active: dev
+    active: dev
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/oa?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver

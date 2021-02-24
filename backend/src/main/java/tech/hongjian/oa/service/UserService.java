@@ -10,7 +10,7 @@ import tech.hongjian.oa.entity.enums.Status;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author xiahongjian
@@ -18,7 +18,8 @@ import tech.hongjian.oa.entity.enums.Status;
  */
 public interface UserService extends IService<User>, UserDetailsService {
 
-    IPage<User> listUser(String keyword, Status status, Integer dept, Integer page, Integer limit);
+    IPage<User> listUser(String keyword, Status status, Integer dept, String prop,
+                         String order, Integer page, Integer limit);
 
     User getUserById(Integer id);
 
