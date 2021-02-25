@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.model.R;
+import tech.hongjian.oa.model.UserParam;
 import tech.hongjian.oa.service.UserService;
 
 /**
@@ -47,8 +48,8 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public R createUser(@RequestBody User user) {
-        userService.createUser(user);
+    public R createUser(@RequestBody UserParam formData) {
+        userService.createUser(formData);
         return R.ok();
     }
 

@@ -65,6 +65,15 @@ export function validEmail(email) {
 }
 
 /**
+ * 验证手机号码是否正确
+ * @param {string} mobile 手机号码
+ */
+export function validMobile(mobile) {
+  const reg = /^1[3-9]\d{9}$/
+  return reg.test(mobile)
+}
+
+/**
  * @param {string} str
  * @returns {Boolean}
  */

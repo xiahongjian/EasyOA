@@ -45,6 +45,8 @@ public class User extends BaseEntity implements UserDetails {
 
     private String avatar;
 
+    private String post;
+
     @TableField(exist = false)
     private List<Role> authorities;
 

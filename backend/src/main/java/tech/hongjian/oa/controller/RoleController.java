@@ -44,6 +44,11 @@ public class RoleController {
         return R.ok(result);
     }
 
+    @GetMapping("/roles/all")
+    public R listAllRoles() {
+        return R.ok(roleService.findAllRoles());
+    }
+
     @GetMapping("/role/{id}")
     public R getRole(@PathVariable Integer id) {
         return R.ok(roleService.getRoleWithPermission(id));

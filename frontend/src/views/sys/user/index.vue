@@ -152,23 +152,90 @@
           @pagination="listUsers"
         />
       </el-card>
-      <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" width="500px">
+      <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" width="600px">
         <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-          <el-form-item label="姓名" prop="name">
-            <el-input v-model="form.name" placeholder="请输入姓名" :disabled="isEdit" />
-          </el-form-item>
-          <el-form-item label="账号" prop="username">
-            <el-input v-model="form.key" placeholder="请输入账号" :disabled="isEdit" />
-          </el-form-item>
-          <el-form-item label="状态" prop="status">
-            <el-radio-group v-model="form.status">
-              <el-radio
-                v-for="s in statusOptions"
-                :key="s.value"
-                :label="s.value"
-              >{{ s.label }}</el-radio>
-            </el-radio-group>
-          </el-form-item>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="姓名" prop="name">
+                <el-input v-model="form.name" placeholder="请输入姓名" :disabled="isEdit" />
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="12">
+              <el-form-item label="账号" prop="username">
+                <el-input v-model="form.key" placeholder="请输入账号" :disabled="isEdit" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="性别" prop="gender">
+                <el-select v-model="form.gender">
+                  <el-option
+                    v-for="o in genderOptions"
+                    :key="o.id"
+                    :label="o.label"
+                    :value="o.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="状态" prop="status">
+                <el-radio-group v-model="form.status">
+                  <el-radio
+                    v-for="s in statusOptions"
+                    :key="s.value"
+                    :label="s.value"
+                  >{{ s.label }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item label="邮箱地址" prop="email">
+                <el-input v-model="form.email" placeholder="请输入邮箱" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item label="手机号码" prop="mobile">
+                <el-input v-model="form.mobile" placeholder="请输入手机号码" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="隶属部门" prop="departmentId">
+                <treeselect
+                  v-model="form.departmentId"
+                  :options="deptOptions"
+                  :normalizer="normalizer"
+                  :show-count="true"
+                  placeholder="请选择部门"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="岗位" prop="post">
+                <el-select v-model="form.post" clearable placeholder="请选择岗位">
+                  <el-option
+                    v-for="o in postOptions"
+                    :key="o.id"
+                    :label="o.label"
+                    :value="o.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="24">
+              <el-form-item label="角色" prop="roles" placeholder="请选择角色">
+                <el-select v-model="form.roles" multiple collapse-tags>
+                  <el-option
+                    v-for="r in roleOptions"
+                    :key="r.id"
+                    :label="r.name"
+                    :value="r.id"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" @click="submitForm">确定</el-button>
@@ -186,6 +253,8 @@ import { createUser, getUser, listUsers, updateUser, deleteUser, resetPassword }
 import { listDept } from '@/api/sys/dept'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import { validEmail, validMobile } from '@/utils/validate'
+import { listAllRole } from '@/api/sys/role'
 
 export default {
   name: 'User',
@@ -202,7 +271,9 @@ export default {
       multiple: true,
 
       deptOptions: [],
-      genderOpts: [],
+      genderOptions: [],
+      roleOptions: [],
+      postOptions: [],
 
       queryParams: {
         keyword: undefined,
@@ -224,6 +295,32 @@ export default {
         }],
         username: [{
           required: true, message: '账号不能为空', trigger: 'blur'
+        }],
+        gender: [{
+          required: true, message: '性别不能为空', trigger: 'blur'
+        }],
+        email: [{
+          required: true, message: '邮箱不能为空', trigger: 'blur'
+        }, {
+          validator: (rule, value, callback) => {
+            if (!validEmail(value)) {
+              callback(new Error('邮箱格式错误'))
+              return
+            }
+            callback()
+          },
+          trigger: 'blur'
+        }],
+        mobile: [{
+          validator: (rule, value, callback) => {
+            if (value === '' || value === undefined) {
+              return callback()
+            }
+            if (!validMobile(value)) {
+              return callback(new Error('手机号码格式错误'))
+            }
+            callback()
+          }
         }]
       }
     }
@@ -233,7 +330,10 @@ export default {
   },
   created() {
     getDicts('sys_gender').then(resp => {
-      this.genderOpts = resp.data
+      this.genderOptions = resp.data
+    })
+    getDicts('sys_post').then(resp => {
+      this.postOptions = resp.data
     })
     this.listUsers()
     this.getDeptTreeselect()
@@ -260,6 +360,9 @@ export default {
       this.reset()
       this.open = true
       this.title = '新增用户'
+      listAllRole().then(resp => {
+        this.roleOptions = resp.data
+      })
     },
     handleUpdate(row) {
       this.reset()
@@ -269,6 +372,9 @@ export default {
         this.open = true
         this.title = '修改用户'
         // 部门树初始化
+      })
+      listAllRole().then(resp => {
+        this.roleOptions = resp.data
       })
     },
     handleDelete(row) {
@@ -381,7 +487,7 @@ export default {
     },
     genderFormat(row) {
       let label = '-'
-      this.genderOpts.forEach(opt => {
+      this.genderOptions.forEach(opt => {
         if (opt.value === row.gender) {
           label = opt.label
           return

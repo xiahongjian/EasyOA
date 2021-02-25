@@ -1,6 +1,7 @@
 package tech.hongjian.oa.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.Setter;
@@ -10,12 +11,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import tech.hongjian.oa.config.ConfigConsts;
 import tech.hongjian.oa.entity.Role;
 import tech.hongjian.oa.entity.User;
+import tech.hongjian.oa.entity.UserRoleRel;
 import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.UserMapper;
+import tech.hongjian.oa.model.UserParam;
 import tech.hongjian.oa.service.RoleService;
+import tech.hongjian.oa.service.UserRoleRelService;
 import tech.hongjian.oa.service.UserService;
 
 import java.time.LocalDateTime;
@@ -37,6 +42,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private static final String DEFAULT_PASSWORD = "123456";
     private RoleService roleService;
     private PasswordEncoder passwordEncoder;
+    private UserRoleRelService userRoleRelService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -78,7 +84,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public void deleteById(Integer id) {
-        User user = checkeUserExisted(id);
+        User user = checkUserExisted(id);
         this.removeById(id);
     }
 
@@ -94,20 +100,74 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public User createUser(UserParam formData) {
+        // 检查username是否重复
+        if (usernameIsExisted(formData.getUsername(), null)) {
+            throw new CommonServiceException("用户名为[" + formData.getUsername() +
+                    "]的用户已存在。");
+        }
+        // 检查email是否重复
+        if (emailIsExisted(formData.getEmail(), null)) {
+            throw new CommonServiceException("邮箱地址为[" + formData.getEmail() + "]的用户已存在。");
+        }
+        // 创建user对象
+        User user = new User();
+        user.setUsername(formData.getUsername());
+        user.setName(formData.getName());
+        user.setEmail(formData.getEmail());
+        user.setMobile(formData.getMobile());
+        user.setPost(formData.getPost());
+        user.setGender(formData.getGender());
+        user.setDepartmentId(formData.getDepartmentId() == -1 ? null : formData.getDepartmentId());
+        user.setPassword(passwordEncoder.encode(ConfigConsts.DEFAULT_PASSWORD));
+        baseMapper.insert(user);
+
+        // 创建用户角色关联
+        List<Integer> roles = formData.getRoles();
+        if (roles != null && !roles.isEmpty()) {
+            for (Integer id : roles) {
+                UserRoleRel rel = new UserRoleRel(user.getId(), id);
+                userRoleRelService.save(rel);
+            }
+        }
+
+        return user;
+    }
+
+    @Override
     public void updateUser(Integer id, User user) {
-        checkeUserExisted(id);
+        checkUserExisted(id);
         user.setUpdateTime(LocalDateTime.now());
         this.updateById(user);
     }
 
     @Override
     public void resetPassword(Integer id) {
-        User user = checkeUserExisted(id);
+        User user = checkUserExisted(id);
         user.setPassword(passwordEncoder.encode(DEFAULT_PASSWORD));
         this.updateById(user);
     }
 
-    private User checkeUserExisted(Integer id) {
+    @Override
+    public boolean usernameIsExisted(String username, Integer excludeId) {
+        LambdaQueryChainWrapper<User> query = lambdaQuery().eq(User::getUsername,
+                username);
+        if (excludeId != null) {
+            query.ne(User::getId, excludeId);
+        }
+        return query.count() > 0;
+    }
+
+    @Override
+    public boolean emailIsExisted(String email, Integer excludeId) {
+        LambdaQueryChainWrapper<User> query = lambdaQuery().eq(User::getEmail, email);
+        if (excludeId != null) {
+            query.ne(User::getId, excludeId);
+        }
+        return query.count() > 0;
+    }
+
+    private User checkUserExisted(Integer id) {
         User user = this.getUserById(id);
         if (user == null) {
             throw new CommonServiceException("ID为" + id + "的用户不存在。");

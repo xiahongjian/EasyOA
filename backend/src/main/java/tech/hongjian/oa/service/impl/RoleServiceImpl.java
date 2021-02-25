@@ -155,6 +155,11 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         return baseMapper.findSelectTreeChecked(id);
     }
 
+    @Override
+    public List<Role> findAllRoles() {
+        return lambdaQuery().eq(Role::getStatus, Status.NORMAL).orderByAsc(Role::getSort).list();
+    }
+
     private Role checkExisted(Integer id) {
         Role existed = getById(id);
         if (existed == null) {

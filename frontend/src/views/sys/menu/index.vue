@@ -266,7 +266,7 @@ export default {
           {
             validator: (rule, value, callback) => {
               if (this.form.id === value) {
-                callback(new Error('不能以自己作为父级菜单'))
+                return callback(new Error('不能以自己作为父级菜单'))
               }
               callback()
             },

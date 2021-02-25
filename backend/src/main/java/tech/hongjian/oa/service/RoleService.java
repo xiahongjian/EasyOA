@@ -39,4 +39,6 @@ public interface RoleService extends IService<Role> {
     boolean updateRoleAndPermission(Integer id, RoleWithMenu role);
 
     List<Integer> getRoleTreeSelect(Integer id);
+
+    List<Role> findAllRoles();
 }

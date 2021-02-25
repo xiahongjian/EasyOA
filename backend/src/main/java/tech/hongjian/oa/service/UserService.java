@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.entity.enums.Status;
+import tech.hongjian.oa.model.UserParam;
 
 /**
  * <p>
@@ -29,7 +30,13 @@ public interface UserService extends IService<User>, UserDetailsService {
 
     User createUser(User user);
 
+    User createUser(UserParam formData);
+
     void updateUser(Integer id, User user);
 
     void resetPassword(Integer id);
+
+    boolean usernameIsExisted(String username, Integer excludeId);
+
+    boolean emailIsExisted(String email, Integer excludeId);
 }

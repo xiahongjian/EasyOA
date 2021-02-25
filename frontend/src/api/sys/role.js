@@ -8,6 +8,13 @@ export function listRole(query) {
   })
 }
 
+export function listAllRole() {
+  return request({
+    url: '/roles/all',
+    method: 'get'
+  })
+}
+
 export function createRole(form) {
   return request({
     url: '/role',

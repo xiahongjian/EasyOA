@@ -12,4 +12,6 @@ public interface ConfigConsts {
 
     String PARAM_USERNAME = "username";
     String PARAM_PASSWORD = "password";
+
+    String DEFAULT_PASSWORD = "123456789";
 }
