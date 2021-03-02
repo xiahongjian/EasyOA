@@ -152,6 +152,8 @@
           @pagination="listUsers"
         />
       </el-card>
+
+      <!-- dialog -->
       <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" width="600px">
         <el-form ref="form" :model="form" :rules="rules" label-width="80px">
           <el-row>
@@ -166,6 +168,8 @@
                 <el-input v-model="form.key" placeholder="请输入账号" :disabled="isEdit" />
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row>
             <el-col :span="12">
               <el-form-item label="性别" prop="gender">
                 <el-select v-model="form.gender">
@@ -189,16 +193,22 @@
                 </el-radio-group>
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row>
             <el-col :span="24">
               <el-form-item label="邮箱地址" prop="email">
                 <el-input v-model="form.email" placeholder="请输入邮箱" />
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row>
             <el-col :span="24">
               <el-form-item label="手机号码" prop="mobile">
                 <el-input v-model="form.mobile" placeholder="请输入手机号码" />
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row>
             <el-col :span="12">
               <el-form-item label="隶属部门" prop="departmentId">
                 <treeselect
@@ -222,7 +232,9 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="24">
+          </el-row>
+          <el-row>
+            <el-col :span="12">
               <el-form-item label="角色" prop="roles" placeholder="请选择角色">
                 <el-select v-model="form.roles" multiple collapse-tags>
                   <el-option
@@ -235,7 +247,6 @@
               </el-form-item>
             </el-col>
           </el-row>
-
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" @click="submitForm">确定</el-button>
@@ -321,6 +332,9 @@ export default {
             }
             callback()
           }
+        }],
+        status: [{
+          required: true, message: '状态不能为空', trigger: 'blur'
         }]
       }
     }

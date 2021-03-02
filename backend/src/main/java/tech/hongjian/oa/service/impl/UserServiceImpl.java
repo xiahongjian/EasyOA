@@ -69,13 +69,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             prop = "id";
             order = "asc";
         }
-        return baseMapper.selectByParams(new Page<>((page - 1) * limit, limit), keyword
+        return baseMapper.selectByParams(new Page<>((page - 1L) * limit, limit), keyword
                 , status, dept, prop, order);
     }
 
     @Override
     public User getUserById(Integer id) {
-        User user = this.getUserById(id);
+        User user = this.getById(id);
         if (user != null) {
             user.setPassword(null);
         }
@@ -84,7 +84,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public void deleteById(Integer id) {
-        User user = checkUserExisted(id);
+        checkUserExisted(id);
         this.removeById(id);
     }
 

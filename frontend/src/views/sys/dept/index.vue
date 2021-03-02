@@ -2,7 +2,7 @@
   <basic-layout>
     <template #wrapper>
       <el-card class="box-card">
-        <el-form :inline="true">
+        <el-form ref="queryForm" :inline="true">
           <el-form-item label="部门名称">
             <el-input
               v-model="queryParams.name"

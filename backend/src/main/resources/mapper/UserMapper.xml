@@ -41,13 +41,13 @@
         from `user` u left join department d on u.department_id=d.id
         <where>
             <if test="status != null">
-                and status=#{status}
+                and u.status=#{status}
             </if>
             <if test="dept != null">
-                and department_id=#{dept}
+                and u.department_id=#{dept}
             </if>
             <if test="keyword != null">
-                and (email like #{keyword} or username like #{keyword} or name like #{keyword})
+                and (u.email like #{keyword} or u.username like #{keyword} or u.name like #{keyword})
             </if>
         </where>
         order by ${prop} ${order}
