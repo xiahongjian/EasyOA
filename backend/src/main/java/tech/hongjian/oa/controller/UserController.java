@@ -12,10 +12,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.model.R;
-import tech.hongjian.oa.model.UserParam;
+import tech.hongjian.oa.model.UserVO;
 import tech.hongjian.oa.service.UserService;
 
 /**
@@ -48,14 +47,14 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public R createUser(@RequestBody UserParam formData) {
+    public R createUser(@RequestBody UserVO formData) {
         userService.createUser(formData);
         return R.ok();
     }
 
     @PutMapping("/user/{id}")
-    public R updateUser(@PathVariable Integer id, @RequestBody User user) {
-        userService.updateUser(id, user);
+    public R updateUser(@PathVariable Integer id, @RequestBody UserVO formData) {
+        userService.updateUser(id, formData);
         return R.ok();
     }
 
@@ -67,7 +66,7 @@ public class UserController {
 
     @GetMapping("/user/{id}")
     public R getUser(@PathVariable Integer id) {
-        return R.ok(userService.getById(id));
+        return R.ok(userService.getUserInfo(id));
     }
 
     @DeleteMapping("/user/{id}")

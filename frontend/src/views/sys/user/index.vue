@@ -165,7 +165,7 @@
 
             <el-col :span="12">
               <el-form-item label="账号" prop="username">
-                <el-input v-model="form.key" placeholder="请输入账号" :disabled="isEdit" />
+                <el-input v-model="form.username" placeholder="请输入账号" :disabled="isEdit" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -235,8 +235,8 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="角色" prop="roles" placeholder="请选择角色">
-                <el-select v-model="form.roles" multiple collapse-tags>
+              <el-form-item label="角色" prop="roleIds" placeholder="请选择角色">
+                <el-select v-model="form.roleIds" multiple collapse-tags>
                   <el-option
                     v-for="r in roleOptions"
                     :key="r.id"
@@ -393,7 +393,7 @@ export default {
     },
     handleDelete(row) {
       const id = row.id || this.ids
-      this.$confirm(`是否确认删除编号为”${id}“部门？`, '警告', {
+      this.$confirm(`是否确认删除用户名为”${row.username}“的账号？`, '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -409,9 +409,8 @@ export default {
         if (!valid) {
           return
         }
-        const isUpdate = this.form.id !== undefined
-        const action = isUpdate ? (form) => updateUser(this.form.id, form) : createUser
-        const msg = isUpdate ? '修改成功' : '新增成功'
+        const action = this.form.id ? (form) => updateUser(this.form.id, form) : createUser
+        const msg = this.form.id ? '修改成功' : '新增成功'
         action(this.form).then(resp => {
           if (resp.success) {
             this.msgSuccess(msg)

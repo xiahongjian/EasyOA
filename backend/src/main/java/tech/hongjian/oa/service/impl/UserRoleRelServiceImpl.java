@@ -17,4 +17,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserRoleRelServiceImpl extends ServiceImpl<UserRoleRelMapper, UserRoleRel> implements UserRoleRelService {
 
+    @Override
+    public UserRoleRel create(Integer userId, Integer roleId) {
+        UserRoleRel rel = new UserRoleRel(userId, roleId);
+        baseMapper.insert(rel);
+        return rel;
+    }
 }

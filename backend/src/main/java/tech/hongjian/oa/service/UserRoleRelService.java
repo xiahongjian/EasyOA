@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface UserRoleRelService extends IService<UserRoleRel> {
 
+    UserRoleRel create(Integer userId, Integer roleId);
 }

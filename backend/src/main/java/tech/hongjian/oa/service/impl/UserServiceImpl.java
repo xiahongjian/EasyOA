@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapp
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.Setter;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +19,7 @@ import tech.hongjian.oa.entity.UserRoleRel;
 import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.UserMapper;
-import tech.hongjian.oa.model.UserParam;
+import tech.hongjian.oa.model.UserVO;
 import tech.hongjian.oa.service.RoleService;
 import tech.hongjian.oa.service.UserRoleRelService;
 import tech.hongjian.oa.service.UserService;
@@ -26,6 +27,7 @@ import tech.hongjian.oa.service.UserService;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -100,7 +102,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public User createUser(UserParam formData) {
+    public User createUser(UserVO formData) {
         // 检查username是否重复
         if (usernameIsExisted(formData.getUsername(), null)) {
             throw new CommonServiceException("用户名为[" + formData.getUsername() +
@@ -118,12 +120,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setMobile(formData.getMobile());
         user.setPost(formData.getPost());
         user.setGender(formData.getGender());
-        user.setDepartmentId(formData.getDepartmentId() == -1 ? null : formData.getDepartmentId());
+        user.setDepartmentId(formData.getDepartmentId() == -1 ? null :
+                formData.getDepartmentId());
         user.setPassword(passwordEncoder.encode(ConfigConsts.DEFAULT_PASSWORD));
         baseMapper.insert(user);
 
         // 创建用户角色关联
-        List<Integer> roles = formData.getRoles();
+        List<Integer> roles = formData.getRoleIds();
         if (roles != null && !roles.isEmpty()) {
             for (Integer id : roles) {
                 UserRoleRel rel = new UserRoleRel(user.getId(), id);
@@ -139,6 +142,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         checkUserExisted(id);
         user.setUpdateTime(LocalDateTime.now());
         this.updateById(user);
+    }
+
+    @Override
+    public void updateUser(Integer id, UserVO vo) {
+        updateUser(id, (User) vo);
+        // 更新用户角色关联
+        List<Integer> roleIds = vo.getRoleIds();
+        Set<Integer> existedRoles =
+                userRoleRelService.lambdaQuery().eq(UserRoleRel::getUserId, id).list()
+                        .stream().map(UserRoleRel::getId).collect(Collectors.toSet());
+        // 删除已经不存在的关联
+        userRoleRelService.lambdaUpdate().eq(UserRoleRel::getUserId, id).notIn(UserRoleRel::getRoleId, roleIds).remove();
+
+        List<Integer> needCreated = roleIds.stream().filter(role -> !existedRoles.contains(role)).collect(Collectors.toList());
+        for (Integer roleId : needCreated) {
+            userRoleRelService.create(id, roleId);
+        }
     }
 
     @Override
@@ -165,6 +185,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             query.ne(User::getId, excludeId);
         }
         return query.count() > 0;
+    }
+
+    @Override
+    public UserVO getUserInfo(Integer id) {
+        User user = getUserById(id);
+        if (user == null) {
+            return null;
+        }
+        List<UserRoleRel> list =
+                userRoleRelService.lambdaQuery().eq(UserRoleRel::getUserId, id).list();
+        UserVO vo = new UserVO();
+        BeanUtils.copyProperties(user, vo);
+        vo.setRoleIds(list.stream().map(UserRoleRel::getId).collect(Collectors.toList()));
+        return vo;
     }
 
     private User checkUserExisted(Integer id) {

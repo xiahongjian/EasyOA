@@ -1,6 +1,7 @@
 package tech.hongjian.oa.model;
 
 import lombok.Data;
+import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.entity.enums.Status;
 
 import java.util.List;
@@ -10,7 +11,9 @@ import java.util.List;
  * @time 2021/2/25 23:54
  */
 @Data
-public class UserParam {
+public class UserVO extends User {
+    private Integer id;
+
     private String username;
 
     private String name;
@@ -29,5 +32,6 @@ public class UserParam {
 
     private String post;
 
-    private List<Integer> roles;
+    private List<Integer> roleIds;
+
 }
