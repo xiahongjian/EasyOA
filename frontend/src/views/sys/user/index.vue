@@ -126,7 +126,23 @@
                 icon="el-icon-delete"
                 @click="handleDelete(scope.row)"
               >删除</el-button>
-              <el-button
+              <el-dropdown style="margin-left: 10px;" @command="handleMoreAction">
+                <el-button type="text" size="mini">
+                  更多操作<i class="el-icon-arrow-down el-icon--right" />
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item
+                    :command="buildCommand('handleShowInfo', scope.row)"
+                    icon="el-icon-info"
+                  >详情</el-dropdown-item>
+                  <el-dropdown-item
+                    v-permisaction="['sys:user:update']"
+                    :command="buildCommand('handleResetPassword', scope.row)"
+                    icon="el-icon-refresh"
+                  >重置密码</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+              <!-- <el-button
                 size="mini"
                 type="text"
                 icon="el-icon-info"
@@ -140,7 +156,7 @@
                 icon="el-icon-refresh"
                 @click="handleResetPassword(scope.row)"
               >重置密码
-              </el-button>
+              </el-button> -->
             </template>
           </el-table-column>
         </el-table>
@@ -495,6 +511,15 @@ export default {
         }
       })
       return label
+    },
+    buildCommand(command, data) {
+      return {
+        method: command,
+        data
+      }
+    },
+    handleMoreAction(command) {
+      return this[command.method](command.data)
     }
   }
 }
