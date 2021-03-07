@@ -264,7 +264,7 @@ import { createUser, getUser, listUsers, updateUser, deleteUser, resetPassword }
 import { listDept } from '@/api/sys/dept'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import { validEmail, validMobile } from '@/utils/validate'
+// import { validEmail, validMobile } from '@/utils/validate'
 import { listAllRole } from '@/api/sys/role'
 
 export default {
@@ -313,28 +313,16 @@ export default {
         email: [{
           required: true, message: '邮箱不能为空', trigger: 'blur'
         }, {
-          validator: (rule, value, callback) => {
-            if (!validEmail(value)) {
-              callback(new Error('邮箱格式错误'))
-              return
-            }
-            callback()
-          },
-          trigger: 'blur'
+          type: 'email',
+          trigger: ['blur', 'change'],
+          message: '邮箱格式错误'
         }],
         mobile: [{
-          validator: (rule, value, callback) => {
-            if (value === '' || value === undefined) {
-              return callback()
-            }
-            if (!validMobile(value)) {
-              return callback(new Error('手机号码格式错误'))
-            }
-            callback()
-          }
-        }],
-        status: [{
-          required: true, message: '状态不能为空', trigger: 'blur'
+          required: true, message: '手机号码不能为空', trigger: 'blur'
+        }, {
+          pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+          message: '请输入正确的手机号码',
+          trigger: ['blur', 'change']
         }]
       }
     }
@@ -393,7 +381,7 @@ export default {
     },
     handleDelete(row) {
       const id = row.id || this.ids
-      this.$confirm(`是否确认删除用户名为”${row.username}“的账号？`, '警告', {
+      this.$confirm(`是否确认删除用户编号为”${id}“的账号？`, '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -429,16 +417,16 @@ export default {
       this.$refs.table.clearSort()
       this.handleQuery()
     },
-    handleRestPassword() {
-      this.$confirm(`是否确认重置用户名为"${this.userInfo.username}"的用户密码？`, '警告', {
+    handleResetPassword(row) {
+      this.$confirm(`是否确认重置用户名为"${row.username}"的用户密码？`, '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        return resetPassword(this.userInfo.id)
+        return resetPassword(row.id)
       }).then(() => {
         this.listUsers()
-        this.msgSuccess('删除成功')
+        this.msgSuccess('密码重置成功')
       }).catch(() => {})
     },
     handleSort(data) {

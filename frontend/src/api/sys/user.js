@@ -94,7 +94,7 @@ export function deleteUser(id) {
 
 export function resetPassword(id) {
   return request({
-    url: `/user/{id}/reset`,
+    url: `/user/${id}/reset`,
     method: 'put'
   })
 }

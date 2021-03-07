@@ -4,6 +4,7 @@ import lombok.Data;
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.entity.enums.Status;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +33,6 @@ public class UserVO extends User {
 
     private String post;
 
-    private List<Integer> roleIds;
+    private List<Integer> roleIds = new ArrayList<>();
 
 }

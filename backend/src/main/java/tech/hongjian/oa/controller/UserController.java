@@ -74,4 +74,10 @@ public class UserController {
         userService.deleteById(id);
         return R.ok();
     }
+
+    @DeleteMapping("/users")
+    public R batchDeleteUser(@RequestParam Integer[] ids) {
+        userService.batchDelete(ids);
+        return R.ok();
+    }
 }

@@ -92,7 +92,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public void batchDelete(Integer[] ids) {
-        this.removeByIds(Arrays.asList(ids));
+        if (ids != null && ids.length > 0) {
+            this.removeByIds(Arrays.asList(ids));
+        }
     }
 
     @Override
@@ -120,9 +122,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setMobile(formData.getMobile());
         user.setPost(formData.getPost());
         user.setGender(formData.getGender());
-        user.setDepartmentId(formData.getDepartmentId() == -1 ? null :
+        user.setDepartmentId(formData.getDepartmentId() == null || formData.getDepartmentId() == -1 ? null :
                 formData.getDepartmentId());
         user.setPassword(passwordEncoder.encode(ConfigConsts.DEFAULT_PASSWORD));
+        user.setStatus(formData.getStatus());
         baseMapper.insert(user);
 
         // 创建用户角色关联
@@ -153,7 +156,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 userRoleRelService.lambdaQuery().eq(UserRoleRel::getUserId, id).list()
                         .stream().map(UserRoleRel::getId).collect(Collectors.toSet());
         // 删除已经不存在的关联
-        userRoleRelService.lambdaUpdate().eq(UserRoleRel::getUserId, id).notIn(UserRoleRel::getRoleId, roleIds).remove();
+        if (!roleIds.isEmpty()) {
+            userRoleRelService.lambdaUpdate().eq(UserRoleRel::getUserId, id).notIn(UserRoleRel::getRoleId, roleIds).remove();
+        }
 
         List<Integer> needCreated = roleIds.stream().filter(role -> !existedRoles.contains(role)).collect(Collectors.toList());
         for (Integer roleId : needCreated) {
