@@ -1,11 +1,6 @@
 package tech.hongjian.oa.config;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDecisionManager;
@@ -16,27 +11,30 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.stereotype.Component;
-
 import tech.hongjian.oa.config.ConfigConsts.URLs;
 import tech.hongjian.oa.entity.Menu;
 import tech.hongjian.oa.entity.Role;
 import tech.hongjian.oa.service.MenuService;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * @author xiahongjian
  * @since 2020-03-18 20:09:42
  */
+@Setter(onMethod_ = {@Autowired})
 @Component
 public class ResourceBasedDecisionManager implements AccessDecisionManager {
-
-    @Autowired
     private MenuService menuService;
 
     @Override
     public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes)
             throws AccessDeniedException, InsufficientAuthenticationException {
         HttpServletRequest request = ((FilterInvocation) object).getRequest();
-        String path = getRquestPath(request);
+        String path = getRequestPath(request);
         // 当请求的是登录和登出url时忽略
         if (URLs.HOME.equals(path) || URLs.LOGIN.equals(path) || URLs.LOGOUT.equals(path)) {
             return;
@@ -57,7 +55,7 @@ public class ResourceBasedDecisionManager implements AccessDecisionManager {
         throw new AccessDeniedException("No permission.");
     }
 
-    protected String getRquestPath(HttpServletRequest req) {
+    protected String getRequestPath(HttpServletRequest req) {
         String uri = req.getRequestURI();
         String contextPath = req.getContextPath();
         if (contextPath != null && !"".equals(contextPath) && !"/".equals(contextPath)) {
@@ -78,12 +76,12 @@ public class ResourceBasedDecisionManager implements AccessDecisionManager {
         }
         String path = menu.getRoutePath();
         path = path.replaceAll("\\{[0-9a-zA-Z\\-_]+\\}", "[0-9a-zA-Z\\\\-_]+");
-        uri = trimQueryParamerterAndAncher(uri);
+        uri = trimQueryParameterAndAnchor(uri);
         return uri.matches(path);
     }
 
 
-    private String trimQueryParamerterAndAncher(String uri) {
+    private String trimQueryParameterAndAnchor(String uri) {
         int index = -1;
         if ((index = uri.indexOf("?")) != -1 ) {
             uri = uri.substring(0, index);
