@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.config.ConfigConsts;
+import tech.hongjian.oa.entity.Department;
 import tech.hongjian.oa.entity.Role;
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.entity.UserRoleRel;
@@ -20,6 +21,7 @@ import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.UserMapper;
 import tech.hongjian.oa.model.UserVO;
+import tech.hongjian.oa.service.DepartmentService;
 import tech.hongjian.oa.service.RoleService;
 import tech.hongjian.oa.service.UserRoleRelService;
 import tech.hongjian.oa.service.UserService;
@@ -27,6 +29,7 @@ import tech.hongjian.oa.service.UserService;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -45,6 +48,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private RoleService roleService;
     private PasswordEncoder passwordEncoder;
     private UserRoleRelService userRoleRelService;
+    private DepartmentService deptService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -160,7 +164,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             userRoleRelService.lambdaUpdate().eq(UserRoleRel::getUserId, id).notIn(UserRoleRel::getRoleId, roleIds).remove();
         }
 
-        List<Integer> needCreated = roleIds.stream().filter(role -> !existedRoles.contains(role)).collect(Collectors.toList());
+        List<Integer> needCreated =
+                roleIds.stream().filter(role -> !existedRoles.contains(role)).collect(Collectors.toList());
         for (Integer roleId : needCreated) {
             userRoleRelService.create(id, roleId);
         }
@@ -198,11 +203,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (user == null) {
             return null;
         }
-        List<UserRoleRel> list =
-                userRoleRelService.lambdaQuery().eq(UserRoleRel::getUserId, id).list();
+        List<Role> roles = roleService.getUserRoles(user.getId());
         UserVO vo = new UserVO();
         BeanUtils.copyProperties(user, vo);
-        vo.setRoleIds(list.stream().map(UserRoleRel::getId).collect(Collectors.toList()));
+        vo.setRoleIds(roles.stream().map(Role::getId).collect(Collectors.toList()));
+        vo.setRoles(roles.stream().map(Role::getName).collect(Collectors.toList()));
+        if (vo.getDepartmentId() != null) {
+            vo.setDepartment(Optional.ofNullable(deptService.getDepartmentById(vo.getDepartmentId()))
+                    .map(Department::getName).orElse(null));
+        }
         return vo;
     }
 

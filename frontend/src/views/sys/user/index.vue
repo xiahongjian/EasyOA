@@ -90,6 +90,7 @@
           @sort-change="handleSort"
         >
           <el-table-column type="selection" width="55" align="center" />
+          <!-- <el-table-column label="用户编号" prop="id" width="80" align="center" /> -->
           <el-table-column label="姓名" prop="name" width="90" sortable="custom" />
           <el-table-column label="性别" prop="gender" align="center" width="80" sortable="custom">
             <template slot-scope="scope">
@@ -107,8 +108,8 @@
           </el-table-column>
           <el-table-column label="部门" prop="department" :show-overflow-tooltip="true" width="120" align="center" sortable="custom" />
           <el-table-column label="邮箱" prop="email" :show-overflow-tooltip="true" sortable="custom" />
-          <!-- <el-table-column label="手机号码" prop="mobile" /> -->
-          <!-- <el-table-column label="创建时间" align="center" prop="createTime" width="200px" /> -->
+          <!-- <el-table-column label="手机号码" prop="mobile" />
+          <el-table-column label="创建时间" align="center" prop="createTime" width="200px" /> -->
           <el-table-column label="更新时间" align="center" prop="updateTime" width="200px" sortable="custom" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="300">
             <template slot-scope="scope">
@@ -444,6 +445,14 @@ export default {
         this.listUsers()
         this.msgSuccess('密码重置成功')
       }).catch(() => {})
+    },
+    handleShowInfo(row) {
+      this.$router.push({
+        name: 'UserInfo',
+        params: {
+          id: row.id
+        }
+      })
     },
     handleSort(data) {
       const { prop, order } = data
