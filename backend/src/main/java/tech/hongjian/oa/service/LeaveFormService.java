@@ -1,0 +1,18 @@
+package tech.hongjian.oa.service;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import tech.hongjian.oa.entity.LeaveForm;
+import com.baomidou.mybatisplus.extension.service.IService;
+
+/**
+ * <p>
+ *  服务类
+ * </p>
+ *
+ * @author xiahongjian
+ * @since 2021-03-11
+ */
+public interface LeaveFormService extends IService<LeaveForm> {
+
+    IPage<LeaveForm> listForms(String type, Integer requester, Integer page, Integer limit);
+}

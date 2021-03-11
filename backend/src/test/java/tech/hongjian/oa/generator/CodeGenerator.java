@@ -27,7 +27,7 @@ import java.util.Scanner;
  */
 public class CodeGenerator {
     private static final String BASE_PACKAGE = "tech.hongjian.oa";
-    private static final String DATA_SOURCE_URL = "jdbc:mysql://localhost:3306/oa?useUnicode=true&useSSL=false&characterEncoding=utf8";
+    private static final String DATA_SOURCE_URL = "jdbc:mysql://pi.home:3306/oa?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Shanghai";
     private static final String DATA_SOURCE_DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String DB_USERNAME = "root";
     private static final String DB_PASSWORD = "root";

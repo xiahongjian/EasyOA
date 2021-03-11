@@ -91,14 +91,14 @@
         >
           <el-table-column type="selection" width="55" align="center" />
           <!-- <el-table-column label="用户编号" prop="id" width="80" align="center" /> -->
-          <el-table-column label="姓名" prop="name" width="90" sortable="custom" />
-          <el-table-column label="性别" prop="gender" align="center" width="80" sortable="custom">
+          <el-table-column label="姓名" prop="name" width="90" />
+          <el-table-column label="性别" prop="gender" align="center" width="80">
             <template slot-scope="scope">
               {{ genderFormat(scope.row) }}
             </template>
           </el-table-column>
-          <el-table-column label="用户名" prop="username" :show-overflow-tooltip="true" width="150" sortable="custom" />
-          <el-table-column prop="status" label="状态" width="150px" align="center" sortable="custom">
+          <el-table-column label="用户名" prop="username" :show-overflow-tooltip="true" width="150" />
+          <el-table-column prop="status" label="状态" width="150px" align="center">
             <template slot-scope="scope">
               <el-tag
                 :type="scope.row.status === 0 ? 'danger' : 'success'"
@@ -106,11 +106,11 @@
               >{{ statusFormat(scope.row) }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="部门" prop="department" :show-overflow-tooltip="true" width="120" align="center" sortable="custom" />
-          <el-table-column label="邮箱" prop="email" :show-overflow-tooltip="true" sortable="custom" />
+          <el-table-column label="部门" prop="department" :show-overflow-tooltip="true" width="120" align="center" />
+          <el-table-column label="邮箱" prop="email" :show-overflow-tooltip="true" />
           <!-- <el-table-column label="手机号码" prop="mobile" />
           <el-table-column label="创建时间" align="center" prop="createTime" width="200px" /> -->
-          <el-table-column label="更新时间" align="center" prop="updateTime" width="200px" sortable="custom" />
+          <el-table-column label="更新时间" align="center" prop="updateTime" width="200px" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="300">
             <template slot-scope="scope">
               <el-button
@@ -143,21 +143,6 @@
                   >重置密码</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
-              <!-- <el-button
-                size="mini"
-                type="text"
-                icon="el-icon-info"
-                @click="handleShowInfo(scope.row)"
-              >详情
-              </el-button>
-              <el-button
-                v-permisaction="['sys:user:update']"
-                size="mini"
-                type="text"
-                icon="el-icon-refresh"
-                @click="handleResetPassword(scope.row)"
-              >重置密码
-              </el-button> -->
             </template>
           </el-table-column>
         </el-table>

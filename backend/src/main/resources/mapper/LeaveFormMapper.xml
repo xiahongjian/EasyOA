@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="tech.hongjian.oa.mapper.LeaveFormMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="tech.hongjian.oa.entity.LeaveForm">
+        <result column="id" property="id" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="requester" property="requester" />
+        <result column="start_time" property="startTime" />
+        <result column="end_time" property="endTime" />
+        <result column="duration" property="duration" />
+        <result column="leave_type" property="leaveType" />
+        <result column="reason" property="reason" />
+        <result column="status" property="status" />
+    </resultMap>
+
+    <resultMap id="resultWithRequesterName" type="tech.hongjian.oa.entity.LeaveForm" extends="BaseResultMap">
+        <result column="requesterName" property="requesterName" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        create_time,
+        update_time,
+        requester, start_time, end_time, duration, leave_type, reason, status
+    </sql>
+    <select id="queryByParams" resultMap="resultWithRequesterName">
+        select
+        f.*, u.name
+        from `leave_form` f, `user` u
+        <where>
+            and f.requester=u.id
+            <if test="type != null">
+                and f.type=#{type}
+            </if>
+            <if test="requester != null">
+                and f.requester=#{requester}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

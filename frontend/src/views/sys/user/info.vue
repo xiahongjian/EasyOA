@@ -1,6 +1,14 @@
 <template>
   <basic-layout>
     <template #wrapper>
+      <el-row>
+        <el-form :inline="true">
+          <el-form-item>
+            <el-button type="warning" size="mini" icon="el-icon-refresh-left" @click="handleCancel">取消</el-button>
+            <el-button type="primary" size="mini" icon="el-icon-check" @click="handleSave">保存</el-button>
+          </el-form-item>
+        </el-form>
+      </el-row>
       <el-col :span="8">
         <el-card>
           <el-avatar />
