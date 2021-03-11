@@ -3,7 +3,7 @@
     <template #wrapper>
       <el-card class="box-card">
         <el-form ref="queryForm" :inline="true">
-          <el-form-item label="部门名称">
+          <el-form-item label="部门名称" prop="name">
             <el-input
               v-model="queryParams.name"
               placeholder="请输入部门名称"
@@ -12,7 +12,7 @@
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="状态">
+          <el-form-item label="状态" prop="status">
             <el-select v-model="queryParams.status" placeholder="部门状态" clearable ize="small">
               <el-option
                 v-for="s in statusOptions"

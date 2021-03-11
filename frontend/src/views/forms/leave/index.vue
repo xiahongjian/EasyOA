@@ -3,7 +3,7 @@
     <template #wrapper>
       <el-card class="box-card">
         <el-form ref="queryForm" :inline="true" :model="queryParams" label-width="68px">
-          <el-form-item label="假期类型">
+          <el-form-item label="假期类型" prop="type">
             <el-select
               v-model="queryParams.type"
               placeholder="请选择假期类型"
@@ -19,7 +19,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="创建者">
+          <el-form-item label="创建者" prop="requester">
             <el-select
               v-model="queryParams.requester"
               value-key="id"
@@ -188,7 +188,7 @@ export default {
     },
     handleQuery() {
       this.loading = true
-      this.listForm()
+      this.listForm(this.queryParams)
     },
     handleAdd() {
 

@@ -3,7 +3,7 @@
     <template #wrapper>
       <el-card class="box-card">
         <el-form ref="queryForm" :inline="true">
-          <el-form-item label="关键字">
+          <el-form-item label="关键字" prop="keyword">
             <el-input
               v-model="queryParams.keyword"
               placeholder="请输入姓名或邮箱"
@@ -13,7 +13,7 @@
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="部门">
+          <el-form-item label="部门" prop="dept">
             <treeselect
               v-model="queryParams.dept"
               :options="deptOptions"
@@ -25,7 +25,7 @@
               @keydup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="状态">
+          <el-form-item label="状态" prop="status">
             <el-select v-model="queryParams.status" placeholder="状态" clearable size="small">
               <el-option
                 v-for="s in statusOptions"
