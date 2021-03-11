@@ -1,8 +1,9 @@
 import request from '@/utils/request'
 
 export function listLeaveForms(query) {
-  request({
+  return request({
     url: 'leaveForms',
-    method: 'get'
+    method: 'get',
+    params: query
   })
 }

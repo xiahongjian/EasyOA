@@ -188,7 +188,7 @@ export default {
     },
     handleQuery() {
       this.loading = true
-      this.listForm(this.queryParams)
+      this.listForm()
     },
     handleAdd() {
 
