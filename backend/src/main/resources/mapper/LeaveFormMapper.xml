@@ -4,20 +4,25 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="tech.hongjian.oa.entity.LeaveForm">
-        <result column="id" property="id" />
+        <id column="id" property="id" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
-        <result column="requester" property="requester" />
+        <result column="creator_id" property="creatorId" />
         <result column="start_time" property="startTime" />
         <result column="end_time" property="endTime" />
         <result column="duration" property="duration" />
         <result column="leave_type" property="leaveType" />
         <result column="reason" property="reason" />
         <result column="status" property="status" />
+        <result column="detail_reason" property="detailReason" />
     </resultMap>
 
-    <resultMap id="resultWithRequesterName" type="tech.hongjian.oa.entity.LeaveForm" extends="BaseResultMap">
-        <result column="requesterName" property="requesterName" />
+    <resultMap id="resultWithCreator" type="tech.hongjian.oa.entity.LeaveForm" extends="BaseResultMap">
+        <association property="creator" javaType="tech.hongjian.oa.entity.User">
+            <id column="uid" property="id" />
+            <result column="username" property="username" />
+            <result column="name" property="name" />
+        </association>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -25,19 +30,18 @@
         id,
         create_time,
         update_time,
-        requester, start_time, end_time, duration, leave_type, reason, status
+        creator_id, start_time, end_time, duration, leave_type, reason, status, detail_reason
     </sql>
-    <select id="queryByParams" resultMap="resultWithRequesterName">
+    <select id="queryByParams" resultMap="resultWithCreator">
         select
-        f.*, u.name
-        from `leave_form` f, `user` u
+        f.*, u.id uid, u.username, u.name
+        from `leave_form` f left join `user` u on f.creator_id=u.id
         <where>
-            and f.requester=u.id
             <if test="type != null">
-                and f.type=#{type}
+                and f.leave_type=#{type}
             </if>
-            <if test="requester != null">
-                and f.requester=#{requester}
+            <if test="creatorId != null">
+                and f.creator_id=#{creatorId}
             </if>
         </where>
     </select>

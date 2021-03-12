@@ -5,8 +5,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import tech.hongjian.oa.entity.User;
 
 /**
  * @author xiahongjian
@@ -137,5 +139,9 @@ public class WebUtil {
     public static boolean isAjaxRequest(HttpServletRequest request) {
         String ajaxFlag = request.getHeader("X-Requested-With");
         return ajaxFlag != null && "XMLHttpRequest".equals(ajaxFlag);
+    }
+
+    public static User currentUser() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

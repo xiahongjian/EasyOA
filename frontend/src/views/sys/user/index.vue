@@ -87,7 +87,6 @@
           v-loading="loading"
           :data="records"
           @selection-change="handleSelectionChange"
-          @sort-change="handleSort"
         >
           <el-table-column type="selection" width="55" align="center" />
           <!-- <el-table-column label="用户编号" prop="id" width="80" align="center" /> -->
@@ -261,7 +260,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getDicts } from '@/api/sys/dict/data'
 import { createUser, getUser, listUsers, updateUser, deleteUser, resetPassword } from '@/api/sys/user'
 import { listDept } from '@/api/sys/dept'
 import Treeselect from '@riophae/vue-treeselect'
@@ -333,10 +331,10 @@ export default {
     ...mapGetters(['statusOptions'])
   },
   created() {
-    getDicts('sys_gender').then(resp => {
+    this.getDicts('sys_gender').then(resp => {
       this.genderOptions = resp.data
     })
-    getDicts('sys_post').then(resp => {
+    this.getDicts('sys_post').then(resp => {
       this.postOptions = resp.data
     })
     this.listUsers()

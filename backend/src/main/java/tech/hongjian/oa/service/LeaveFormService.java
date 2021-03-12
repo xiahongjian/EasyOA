@@ -14,5 +14,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface LeaveFormService extends IService<LeaveForm> {
 
-    IPage<LeaveForm> listForms(String type, Integer requester, Integer page, Integer limit);
+    IPage<LeaveForm> listForms(String type, Integer creatorId, Integer page, Integer limit);
+
+    LeaveForm create(LeaveForm form);
 }

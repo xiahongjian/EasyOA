@@ -105,3 +105,14 @@ export function praseStrEmpty(str) {
 export function compareValue(value1, value2) {
   return (value1 === value2) || (value1 + '' === value2) || (value1 === value2 + '')
 }
+
+export function dictFormat(opts, value) {
+  let label = '-'
+  opts.forEach(opt => {
+    if (opt.value === value) {
+      label = opt.label
+      return
+    }
+  })
+  return label
+}

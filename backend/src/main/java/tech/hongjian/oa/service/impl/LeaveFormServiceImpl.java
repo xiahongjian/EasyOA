@@ -2,6 +2,8 @@ package tech.hongjian.oa.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import tech.hongjian.oa.entity.LeaveForm;
 import tech.hongjian.oa.mapper.LeaveFormMapper;
 import tech.hongjian.oa.service.LeaveFormService;
@@ -20,7 +22,13 @@ import org.springframework.stereotype.Service;
 public class LeaveFormServiceImpl extends ServiceImpl<LeaveFormMapper, LeaveForm> implements LeaveFormService {
 
     @Override
-    public IPage<LeaveForm> listForms(String type, Integer requester, Integer page, Integer limit) {
-        return baseMapper.queryByParams(new Page<>((page - 1L) * limit, limit), type, page);
+    public IPage<LeaveForm> listForms(String type, Integer creatorId, Integer page, Integer limit) {
+        return baseMapper.queryByParams(new Page<>((page - 1L) * limit, limit), type, creatorId);
+    }
+
+    @Override
+    public LeaveForm create(LeaveForm form) {
+        save(form);
+        return form;
     }
 }

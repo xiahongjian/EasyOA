@@ -21,10 +21,10 @@ public class LeaveForm extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer requester;
+    private Integer creatorId;
 
     @TableField(exist = false)
-    private String requesterName;
+    private User creator;
 
     /**
      * 开始时间
@@ -51,4 +51,8 @@ public class LeaveForm extends BaseEntity {
     private Integer status;
 
 
+    /**
+     * 详细原因
+     */
+    private String detailReason;
 }

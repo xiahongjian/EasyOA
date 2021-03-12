@@ -19,6 +19,6 @@ public abstract class BaseEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @TableId(type = IdType.AUTO)
     private Integer id;
-    private LocalDateTime createTime = LocalDateTime.now();
-    private LocalDateTime updateTime = LocalDateTime.now();
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
 }
