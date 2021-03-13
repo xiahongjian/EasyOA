@@ -200,7 +200,7 @@
 
 <script>
 import { userSelectQuery } from '@/api/sys/user'
-import { listLeaveForms, createLeaveForm, updateLeaveForm, getLeaveForm } from '@/api/forms/leave'
+import { listLeaveForms, createLeaveForm, updateLeaveForm, getLeaveForm, deleteLeaveForm } from '@/api/forms/leave'
 
 export default {
   name: 'LeaveForm',
@@ -329,7 +329,17 @@ export default {
       })
     },
     handleDelete(row) {
-
+      const id = row && row.id || this.ids
+      this.$confirm(`是否确认删除编号为”${id}“的请假单？`, '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return deleteLeaveForm(id)
+      }).then(() => {
+        this.listForm()
+        this.msgSuccess('删除成功')
+      }).catch(() => {})
     },
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
