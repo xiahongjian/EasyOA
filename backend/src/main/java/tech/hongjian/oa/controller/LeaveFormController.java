@@ -38,4 +38,27 @@ public class LeaveFormController {
         leaveFormService.create(form);
         return R.ok();
     }
+
+    @GetMapping("/leaveForm/{id}")
+    public R getForm(@PathVariable Integer id) {
+        return R.ok(leaveFormService.find(id));
+    }
+
+    @PutMapping("/leaveForm/{id}")
+    public R updateForm(@PathVariable Integer id, @RequestBody LeaveForm form) {
+        leaveFormService.update(id, form);
+        return R.ok();
+    }
+
+    @DeleteMapping("/leaveForm/{id}")
+    public R deleteForm(@PathVariable Integer id) {
+        leaveFormService.delete(id);
+        return R.ok();
+    }
+
+    @DeleteMapping("/leaveForms")
+    public R batchDeleteForms(@RequestParam Integer[] ids) {
+        leaveFormService.batchDelete(ids);
+        return R.ok();
+    }
 }

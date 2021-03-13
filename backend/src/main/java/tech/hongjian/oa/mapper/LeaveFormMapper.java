@@ -18,4 +18,6 @@ import java.util.List;
 public interface LeaveFormMapper extends BaseMapper<LeaveForm> {
 
     IPage<LeaveForm> queryByParams(Page<LeaveForm> page, String type, Integer creatorId);
+
+    LeaveForm queryById(Integer id);
 }

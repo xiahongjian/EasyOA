@@ -184,7 +184,7 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="详细原因" prop="detialReason">
-                <el-input v-model="form.detialReason" type="textarea" :autosize="{ minRows: 6, maxRows: 6}" />
+                <el-input v-model="form.detailReason" type="textarea" :autosize="{ minRows: 6, maxRows: 6}" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -316,17 +316,16 @@ export default {
     handleAdd() {
       this.reset()
       this.title = '新建请假单'
-      this.open = true
       this.edit = false
+      this.open = true
     },
     handleUpdate(row) {
       const id = row && row.id || this.ids[0]
-      getLeaveForm(id).then(resp => {
-        const { data } = resp
-        this.from = data
+      getLeaveForm(id).then(({ data }) => {
+        this.form = data
         this.title = '修改请假单'
-        this.open = true
         this.edit = true
+        this.open = true
       })
     },
     handleDelete(row) {
@@ -338,8 +337,8 @@ export default {
       this.multiple = !selection.length
     },
     cancel() {
-      this.reset()
       this.open = false
+      this.reset()
     },
     submitForm() {
       this.$refs['form'].validate(valid => {

@@ -18,7 +18,7 @@ export function createLeaveForm(form) {
 
 export function updateLeaveForm(id, form) {
   return request({
-    url: `leveForm/${id}`,
+    url: `leaveForm/${id}`,
     method: 'put',
     data: form
   })
@@ -28,5 +28,22 @@ export function getLeaveForm(id) {
   return request({
     url: `leaveForm/${id}`,
     method: 'get'
+  })
+}
+
+export function deleteLeaveForm(id) {
+  if (id instanceof Array) {
+    return request({
+      url: '/leaveForms',
+      method: 'delete',
+      params: {
+        ids: id + ''
+      }
+    })
+  }
+
+  return request({
+    url: `/leaveForm/${id}`,
+    method: 'delete'
   })
 }

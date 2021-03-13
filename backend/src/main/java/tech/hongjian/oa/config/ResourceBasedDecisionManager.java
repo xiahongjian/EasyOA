@@ -52,7 +52,7 @@ public class ResourceBasedDecisionManager implements AccessDecisionManager {
                 }
             }
         }
-        throw new AccessDeniedException("No permission.");
+        throw new AccessDeniedException("您无权限执行此操作，请联系管理员。");
     }
 
     protected String getRequestPath(HttpServletRequest req) {

@@ -17,4 +17,12 @@ public interface LeaveFormService extends IService<LeaveForm> {
     IPage<LeaveForm> listForms(String type, Integer creatorId, Integer page, Integer limit);
 
     LeaveForm create(LeaveForm form);
+
+    LeaveForm find(Integer id);
+
+    void update(Integer id, LeaveForm form);
+
+    void delete(Integer id);
+
+    void batchDelete(Integer[] ids);
 }

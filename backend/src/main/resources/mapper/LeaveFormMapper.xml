@@ -45,6 +45,12 @@
             </if>
         </where>
     </select>
+    <select id="queryById" resultMap="resultWithCreator">
+        select
+            f.*, u.id uid, u.username, u.name
+        from `leave_form` f left join `user` u on f.creator_id=u.id
+        where f.id=#{id}
+    </select>
 
 
 </mapper>
