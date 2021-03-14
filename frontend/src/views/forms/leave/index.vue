@@ -177,14 +177,14 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="原因" prop="reason">
-                <el-input v-model="form.reason" />
+                <el-input v-model="form.reason" :maxlength="100" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
               <el-form-item label="详细原因" prop="detialReason">
-                <el-input v-model="form.detailReason" type="textarea" :autosize="{ minRows: 6, maxRows: 6}" />
+                <el-input v-model="form.detailReason" type="textarea" :autosize="{ minRows: 6, maxRows: 6}" :maxlength="500" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -254,23 +254,6 @@ export default {
         }],
         reason: [{
           required: true, message: '原因不能为空', trigger: 'blur'
-        }, {
-          validator: (rule, value, callback) => {
-            if (value && value.length > 100) {
-              return callback(new Error('原因不能超过100个字符'))
-            }
-            callback()
-          },
-          trigger: 'blur'
-        }],
-        detailReason: [{
-          validator: (rule, value, callback) => {
-            if (value && value.length > 500) {
-              return callback(new Error('详细原因不能超过500个字符'))
-            }
-            callback()
-          },
-          trigger: 'blur'
         }]
       }
     }
