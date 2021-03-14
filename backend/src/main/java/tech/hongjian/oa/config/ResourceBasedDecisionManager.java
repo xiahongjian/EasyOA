@@ -39,6 +39,10 @@ public class ResourceBasedDecisionManager implements AccessDecisionManager {
         if (URLs.HOME.equals(path) || URLs.LOGIN.equals(path) || URLs.LOGOUT.equals(path)) {
             return;
         }
+        // TODO FOR TEST
+        if (path.startsWith("/test")) {
+            return;
+        }
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         if (!authorities.isEmpty()) {
             if (authorities.iterator().next() instanceof Role) {

@@ -1,11 +1,10 @@
 package tech.hongjian.oa.entity;
 
-import java.time.LocalDateTime;
-
 import com.baomidou.mybatisplus.annotation.TableField;
-import tech.hongjian.oa.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -55,4 +54,6 @@ public class LeaveForm extends BaseEntity {
      * 详细原因
      */
     private String detailReason;
+
+    private String processInstanceId;
 }

@@ -7,6 +7,7 @@
         <result column="id" property="id" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
+        <result column="process_instance_id" property="processInstanceId" />
         <result column="dict_id" property="dictId" />
         <result column="label" property="label" />
         <result column="value" property="value" />
@@ -20,6 +21,7 @@
         `id`,
         `create_time`,
         `update_time`,
+        `process_instance_id`,
         `dict_id`, `label`, `value`, `remark`, `status`, `sort`
     </sql>
     <select id="findValueByDictKey" resultMap="BaseResultMap">
