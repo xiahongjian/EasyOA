@@ -16,7 +16,7 @@ import tech.hongjian.oa.flow.listener.globab.ProcessCreatedListener;
  */
 @Setter(onMethod_ = {@Autowired})
 @Configuration
-public class FlowableGlobListenerConfig implements ApplicationListener<ContextRefreshedEvent> {
+public class FlowableGlobalListenerConfig implements ApplicationListener<ContextRefreshedEvent> {
     private SpringProcessEngineConfiguration configuration;
     private ProcessCreatedListener processCreatedListener;
 
