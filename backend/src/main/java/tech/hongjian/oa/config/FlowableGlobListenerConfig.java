@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
-import tech.hongjian.oa.flow.listener.glob.ProcessCreatedListener;
+import tech.hongjian.oa.flow.listener.globab.ProcessCreatedListener;
 
 /**
  * @author xiahongjian

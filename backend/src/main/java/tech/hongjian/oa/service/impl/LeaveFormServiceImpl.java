@@ -2,11 +2,13 @@ package tech.hongjian.oa.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import tech.hongjian.oa.entity.LeaveForm;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.LeaveFormMapper;
+import tech.hongjian.oa.service.FlowBizFormService;
+import tech.hongjian.oa.service.FlowService;
 import tech.hongjian.oa.service.LeaveFormService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
@@ -22,8 +24,10 @@ import java.util.Arrays;
  * @author xiahongjian
  * @since 2021-03-11
  */
+@Setter(onMethod_ = {@Autowired})
 @Service
-public class LeaveFormServiceImpl extends ServiceImpl<LeaveFormMapper, LeaveForm> implements LeaveFormService {
+public class LeaveFormServiceImpl extends ServiceImpl<LeaveFormMapper, LeaveForm> implements LeaveFormService, FlowBizFormService<LeaveForm> {
+    private FlowService flowService;
 
     @Override
     public IPage<LeaveForm> listForms(String type, Integer creatorId, Integer page, Integer limit) {
@@ -78,5 +82,13 @@ public class LeaveFormServiceImpl extends ServiceImpl<LeaveFormMapper, LeaveForm
             throw new CommonServiceException("ID为" + id + "的请假单不存在");
         }
         return entity;
+    }
+
+    @Override
+    public LeaveForm getByBizKey(String bizKey) {
+        if (bizKey == null) {
+            return null;
+        }
+        return getById(flowService.bizKey2Id(bizKey));
     }
 }

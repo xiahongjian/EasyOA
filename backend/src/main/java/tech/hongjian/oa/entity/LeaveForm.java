@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class LeaveForm extends BaseEntity {
+public class LeaveForm extends FlowEntity {
 
     private static final long serialVersionUID = 1L;
 
@@ -54,6 +54,4 @@ public class LeaveForm extends BaseEntity {
      * 详细原因
      */
     private String detailReason;
-
-    private String processInstanceId;
 }

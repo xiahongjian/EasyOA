@@ -4,12 +4,14 @@ import org.flowable.engine.HistoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.runtime.ProcessInstance;
+import org.flowable.task.api.history.HistoricTaskInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import tech.hongjian.oa.entity.LeaveForm;
 import tech.hongjian.oa.model.R;
+import tech.hongjian.oa.service.FlowService;
 import tech.hongjian.oa.service.LeaveFormService;
 
 import java.util.HashMap;
@@ -47,18 +49,19 @@ public class IndexController {
     @Autowired
     private LeaveFormService leaveFormService;
 
+    @Autowired
+    private FlowService flowService;
+
 
     @GetMapping("/test/{id}/start")
     public R start(@PathVariable Integer id) {
-        Map<String, Object> vars = new HashMap<>();
-        vars.put("init", "init");
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(
-                "LeaveFormFlow", String.valueOf(id), vars);
+
+        String processInstanceId = flowService.startProcess(LeaveForm.class, id, "LeaveFormFlow");
 
         leaveFormService.lambdaUpdate().eq(LeaveForm::getId, id)
-                .set(LeaveForm::getProcessInstanceId, processInstance.getProcessInstanceId())
+                .set(LeaveForm::getProcessInstanceId, processInstanceId)
                 .update();
-        return R.ok(processInstance.getProcessInstanceId());
+        return R.ok(processInstanceId);
     }
 
     @GetMapping("/test/{id}/history")
@@ -66,8 +69,16 @@ public class IndexController {
         LeaveForm form = leaveFormService.getById(id);
         ProcessInstance processInstance =
                 runtimeService.createProcessInstanceQuery().processInstanceId(form.getProcessInstanceId()).singleResult();
-        List<HistoricActivityInstance> list =
-                historyService.createHistoricActivityInstanceQuery().processInstanceId(form.getProcessInstanceId()).list();
+        List<HistoricTaskInstance> list =
+                historyService.createHistoricTaskInstanceQuery().processInstanceId(form.getProcessInstanceId()).list();
+
+        for (HistoricTaskInstance his : list) {
+            System.out.println("Task Id: " + his.getId());
+            System.out.println("Name: " + his.getName());
+            System.out.println("Process instance id: " + his.getProcessInstanceId());
+            System.out.println("Process definition id: " + his.getProcessDefinitionId());
+            System.out.println("Assignee: " + his.getAssignee());
+        }
         return R.ok(list);
     }
 }
