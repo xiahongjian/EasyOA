@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" targetNamespace="http://www.flowable.org/processdef" exporter="Camunda Modeler" exporterVersion="4.6.0">
   <process id="LeaveFormFlow" name="LeaveFormFlow" isExecutable="true">
-    <extensionElements>
-      <camunda:executionListener delegateExpression="bizObjectInjector" event="start" />
-    </extensionElements>
     <startEvent id="start">
       <outgoing>Flow_1n38udv</outgoing>
     </startEvent>
@@ -38,7 +35,7 @@
     <sequenceFlow id="Flow_1xvcbcr" name="驳回" sourceRef="Gateway_0ecf8ny" targetRef="creator">
       <conditionExpression xsi:type="tFormalExpression">${action == 'Reject'}</conditionExpression>
     </sequenceFlow>
-    <userTask id="creator" name="创建者" camunda:assignee="${form.creator}">
+    <userTask id="creator" name="创建者" camunda:assignee="${init}">
       <incoming>Flow_1n38udv</incoming>
       <incoming>Flow_1xvcbcr</incoming>
       <outgoing>Flow_0b2jjvd</outgoing>
