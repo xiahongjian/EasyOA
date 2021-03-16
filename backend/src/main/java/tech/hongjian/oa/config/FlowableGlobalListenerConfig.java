@@ -23,6 +23,9 @@ public class FlowableGlobalListenerConfig implements ApplicationListener<Context
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         FlowableEventDispatcher dispatcher = configuration.getEventDispatcher();
+        // 注册流程实例创建监听器
         dispatcher.addEventListener(processCreatedListener, FlowableEngineEventType.PROCESS_CREATED);
+        // 注册任务分配监听器
+//        dispatcher.addEventListener(null, FlowableEngineEventType.TASK_ASSIGNED);
     }
 }
