@@ -30,7 +30,7 @@ export function listUsers(query) {
   })
 }
 
-export function userSelectQuery(query) {
+export function userSelectQuery(query, pageSize) {
   return request({
     url: '/users',
     method: 'get',
@@ -38,7 +38,7 @@ export function userSelectQuery(query) {
       keyword: query,
       status: 1,
       page: 0,
-      limit: 20
+      limit: pageSize || 20
     }
   })
 }

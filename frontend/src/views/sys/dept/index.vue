@@ -101,28 +101,13 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="负责人" prop="leaderId">
-                <el-select
+                <user-select
                   v-model="form.leader"
-                  value-key="id"
                   placeholder="请输入负责人姓名"
-                  clearable
-                  filterable
-                  remote
-                  :default-first-option="true"
-                  :remote-method="selectUser"
-                  :loading="userSelectLoading"
+                  :auto-load="true"
                   @clear="userClear"
                   @change="userChange"
-                >
-                  <el-option
-                    v-for="o of userSelectOpts"
-                    :key="o.id"
-                    :label="o.name"
-                    :value="o"
-                  >
-                    <span>{{ o.name }} ({{ o.email }})</span>
-                  </el-option>
-                </el-select>
+                />
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -155,13 +140,13 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { userSelectQuery } from '@/api/sys/user'
 import { listDept, getDept, createDept, updateDept, deleteDept } from '@/api/sys/dept'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import StatusRadioGroup from '@/components/StatusRadioGroup'
 import DictSelect from '@/components/DictSelect'
 import StatusTag from '@/components/StatusTag'
+import UserSelect from '@/components/UserSelect'
 
 export default {
   name: 'Dept',
@@ -169,15 +154,14 @@ export default {
     Treeselect,
     DictSelect,
     StatusTag,
-    StatusRadioGroup
+    StatusRadioGroup,
+    UserSelect
   },
   data() {
     return {
       loading: true,
       records: [],
       deptOptions: [],
-      userSelectLoading: false,
-      userSelectOpts: [],
 
       title: '',
       isEdit: false,
@@ -251,8 +235,6 @@ export default {
         }
         if (this.form.leader === null) {
           this.form.leader = {}
-        } else {
-          this.userSelectOpts = [this.form.leader]
         }
         this.open = true
       })
@@ -308,13 +290,6 @@ export default {
     cancel() {
       this.open = false
       this.reset()
-    },
-    selectUser(query) {
-      this.userSelectLoading = true
-      userSelectQuery(query).then(resp => {
-        this.userSelectOpts = resp.data.records
-        this.userSelectLoading = false
-      })
     },
     getTreeselect() {
       listDept().then(resp => {

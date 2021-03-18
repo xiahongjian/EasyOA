@@ -15,10 +15,10 @@
     </resultMap>
 
     <resultMap id="withLeader" type="tech.hongjian.oa.entity.Department" extends="BaseResultMap">
-        <association property="leader" javaType="tech.hongjian.oa.entity.User">
+        <association property="leader" javaType="tech.hongjian.oa.entity.User" columnPrefix="u_">
             <result column="id" property="id" />
             <result column="username" property="username" />
-            <result column="leader_name" property="name" />
+            <result column="name" property="name" />
             <result column="email" property="email" />
             <result column="mobile" property="mobile" />
             <result column="gender" property="gender" />
@@ -35,7 +35,7 @@
 
     <select id="selectByIdWithLeader" resultMap="withLeader">
         select
-        d.*, u.id, u.username, u.name leader_name, u.email, u.mobile, u.gender
+        d.*, u.id u_id, u.username u_username, u.name u_name, u.email u_email, u.mobile u_mobile, u.gender u_gender
         from `department` d left join `user` u on d.leader_id=u.id
         where d.id=#{id}
     </select>

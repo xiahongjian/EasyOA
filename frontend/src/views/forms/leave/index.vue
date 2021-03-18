@@ -4,20 +4,14 @@
       <el-card class="box-card">
         <el-form ref="queryForm" :inline="true" :model="queryParams" label-width="68px">
           <el-form-item label="假期类型" prop="type">
-            <el-select
+            <dict-select
               v-model="queryParams.type"
+              dict-type="sys_leave_type"
               placeholder="请选择假期类型"
               clearable
               size="small"
               style="width: 240px"
-            >
-              <el-option
-                v-for="o in leaveTypeOpts"
-                :key="o.id"
-                :label="o.label"
-                :value="o.value"
-              />
-            </el-select>
+            />
           </el-form-item>
           <el-form-item label="创建者" prop="creatorId">
             <el-select
@@ -129,19 +123,13 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="假期类型" prop="leaveType">
-                <el-select
+                <dict-select
                   v-model="form.leaveType"
+                  dict-type="sys_leave_type"
                   placeholder="请选择假期类型"
                   clearable
                   style="width: 100%"
-                >
-                  <el-option
-                    v-for="o in leaveTypeOpts"
-                    :key="o.id"
-                    :label="o.label"
-                    :value="o.value"
-                  />
-                </el-select>
+                />
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -201,9 +189,13 @@
 <script>
 import { userSelectQuery } from '@/api/sys/user'
 import { listLeaveForms, createLeaveForm, updateLeaveForm, getLeaveForm, deleteLeaveForm } from '@/api/forms/leave'
+import DictSelect from '@/components/DictSelect'
 
 export default {
   name: 'LeaveForm',
+  components: {
+    DictSelect
+  },
   data() {
     const validateStartEndTime = (rule, value, callback) => {
       const { startTime, endTime } = this.form
@@ -215,7 +207,6 @@ export default {
     return {
       loading: false,
       userSelectLoading: false,
-      leaveTypeOpts: [],
       userSelectOpts: [],
       single: true,
       multiple: true,
@@ -262,9 +253,6 @@ export default {
 
   },
   created() {
-    this.getDicts('sys_level_type').then(resp => {
-      this.leaveTypeOpts = resp.data
-    })
     this.selectUser('')
     this.listForm()
   },
