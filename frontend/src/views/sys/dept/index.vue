@@ -2,7 +2,7 @@
   <basic-layout>
     <template #wrapper>
       <el-card class="box-card">
-        <el-form ref="queryForm" :inline="true">
+        <el-form ref="queryForm" :inline="true" :model="queryParams">
           <el-form-item label="部门名称" prop="name">
             <el-input
               v-model="queryParams.name"
@@ -20,9 +20,14 @@
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
             <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-            <el-button v-permisaction="['sys:dept:create']" type="primary" icon="el-icon-plus" size="mini" @click="handleCreate">新增</el-button>
           </el-form-item>
         </el-form>
+
+        <el-row :gutter="10" class="mb8">
+          <el-col>
+            <el-button v-permisaction="['sys:dept:create']" type="primary" icon="el-icon-plus" size="mini" @click="handleCreate">新增</el-button>
+          </el-col>
+        </el-row>
 
         <!-- Table -->
         <el-table

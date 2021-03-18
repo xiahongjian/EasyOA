@@ -1,7 +1,6 @@
 <template>
   <el-select
     clearable
-    size="small"
     v-bind="$attrs"
     v-on="$listeners"
   >

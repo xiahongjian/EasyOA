@@ -2,7 +2,7 @@
   <BasicLayout>
     <template #wrapper>
       <el-card class="box-card">
-        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form ref="queryForm" :model="queryParams" :inline="true">
           <el-form-item label="字典名称" prop="name">
             <el-input
               v-model="queryParams.name"
@@ -24,7 +24,7 @@
             />
           </el-form-item>
           <el-form-item label="状态" prop="status">
-            <dict-select v-model="queryParams.status" :options="statusOptions" />
+            <dict-select v-model="queryParams.status" :options="statusOptions" size="small" style="width: 240px" />
           </el-form-item>
 
           <el-form-item>

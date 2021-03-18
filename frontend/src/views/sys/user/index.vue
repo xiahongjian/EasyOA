@@ -2,7 +2,7 @@
   <basic-layout>
     <template #wrapper>
       <el-card class="box-card">
-        <el-form ref="queryForm" :inline="true">
+        <el-form ref="queryForm" :inline="true" :model="queryParams">
           <el-form-item label="关键字" prop="keyword">
             <el-input
               v-model="queryParams.keyword"
@@ -20,13 +20,12 @@
               :normalizer="normalizer"
               :show-count="true"
               placeholder="所属部门"
-              size="small"
-              style="width: 240px"
+              style="width: 240px; height: 37px;"
               @keydup.enter.native="handleQuery"
             />
           </el-form-item>
           <el-form-item label="状态" prop="status">
-            <dict-select v-model="queryParams.status" placeholder="状态" :options="statusOptions" />
+            <dict-select v-model="queryParams.status" placeholder="状态" :options="statusOptions" size="small" tyle="width: 240px" />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>

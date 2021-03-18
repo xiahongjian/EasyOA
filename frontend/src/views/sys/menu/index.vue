@@ -4,7 +4,7 @@
       <el-card class="box-card">
 
         <!-- query表单 -->
-        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form ref="queryForm" :model="queryParams" :inline="true">
           <el-form-item label="菜单名称" prop="query">
             <el-input
               v-model="queryParams.query"
@@ -16,20 +16,14 @@
             />
           </el-form-item>
           <el-form-item label="状态" prop="visible">
-            <el-select
+            <dict-select
               v-model="queryParams.visible"
-              placeholder="状态"
+              :options="visibleOptions"
+              placeholder="请选择状态"
               clearable
               size="small"
               style="width: 240px"
-            >
-              <el-option
-                v-for="s in visibleOptions"
-                :key="s.id"
-                :label="s.label"
-                :value="s.value"
-              />
-            </el-select>
+            />
           </el-form-item>
 
           <!-- 按钮 -->
@@ -70,7 +64,7 @@
               <span v-else>{{ scope.row.component }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="visible" label="可见" :formatter="visibleFormat" width="80">
+          <el-table-column prop="visible" label="状态" :formatter="visibleFormat" width="80" align="center">
             <template slot-scope="scope">
               <el-tag
                 :type="scope.row.visible === false ? 'danger' : 'success'"
@@ -208,7 +202,7 @@
               </el-col>
 
               <el-col :span="24">
-                <el-form-item v-if="!isButton" label="菜单状态">
+                <el-form-item v-if="!isButton" label="状态">
                   <el-radio-group v-model="form.visible">
                     <el-radio
                       v-for="o in visibleOptions"
@@ -230,15 +224,16 @@
   </basic-layout>
 </template>
 <script>
+import DictSelect from '@/components/DictSelect'
 import IconSelect from '@/components/IconSelect'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { mapGetters } from 'vuex'
-import { createMenu, deleteMenu, getMenu, listMenu, /*, createMenu, updateMenu, deleteMenu, getMenu*/
-  updateMenu } from '@/api/sys/menu'
+import { createMenu, deleteMenu, getMenu, listMenu, updateMenu } from '@/api/sys/menu'
+
 export default {
   name: 'Menu',
-  components: { IconSelect, Treeselect },
+  components: { DictSelect, IconSelect, Treeselect },
   data() {
     return {
       loading: false,
