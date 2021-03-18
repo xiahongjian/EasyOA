@@ -23,14 +23,7 @@
             />
           </el-form-item>
           <el-form-item label="状态" prop="status">
-            <el-select v-model="queryParams.status" placeholder="数据状态" clearable size="small">
-              <el-option
-                v-for="s in statusOptions"
-                :key="s.id"
-                :label="s.label"
-                :value="s.value"
-              />
-            </el-select>
+            <dict-select v-model="queryParams.status" :options="statusOptions" placeholder="数据状态" />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -78,10 +71,7 @@
           <el-table-column label="字典排序" align="center" prop="sort" />
           <el-table-column label="状态" align="center">
             <template slot-scope="scope">
-              <el-tag
-                :type="scope.row.status === 0 ? 'danger' : 'success'"
-                disable-transitions
-              >{{ statusFormat(scope.row) }}</el-tag>
+              <status-tag :status="scope.row.status" />
             </template>
           </el-table-column>
           <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
@@ -130,13 +120,7 @@
               <el-input-number v-model="form.sort" controls-position="right" :min="0" />
             </el-form-item>
             <el-form-item label="状态" prop="status">
-              <el-radio-group v-model="form.status">
-                <el-radio
-                  v-for="dict in statusOptions"
-                  :key="dict.value"
-                  :label="dict.value"
-                >{{ dict.label }}</el-radio>
-              </el-radio-group>
+              <status-radio-group v-model="form.status" />
             </el-form-item>
             <el-form-item label="备注" prop="remark">
               <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
@@ -155,10 +139,17 @@
 import { mapGetters } from 'vuex'
 import { listData, getData, updateData, createData, deleteData } from '@/api/sys/dict/data'
 import { listType, getType } from '@/api/sys/dict/type'
-import BasicLayout from '@/layout/BasicLayout.vue'
+import StatusTag from '@/components/StatusTag'
+import StatusRadioGroup from '@/components/StatusRadioGroup'
+import DictSelect from '@/components/DictSelect'
+
 export default {
   name: 'Data',
-  components: { BasicLayout },
+  components: {
+    StatusTag,
+    StatusRadioGroup,
+    DictSelect
+  },
   data() {
     return {
       loading: true,
@@ -208,9 +199,6 @@ export default {
     this.getTypeList()
   },
   methods: {
-    statusFormat(row, column) {
-      return this.selectDictLabel(this.statusOptions, row.status)
-    },
     // 表单重置
     reset() {
       this.form = {

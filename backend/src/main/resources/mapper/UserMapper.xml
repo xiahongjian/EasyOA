@@ -26,6 +26,8 @@
         <result column="mobile" property="mobile" />
         <result column="gender" property="gender" />
         <result column="department" property="department" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -37,7 +39,7 @@
     </sql>
     <select id="selectByParams" resultMap="UserSelectOptMap">
         select
-        u.id, u.username, u.name, u.email, u.mobile, u.gender, u.status, d.name as department
+        u.id, u.username, u.name, u.email, u.mobile, u.gender, u.status, d.name as department, u.create_time, u.update_time
         from `user` u left join department d on u.department_id=d.id
         <where>
             <if test="status != null">

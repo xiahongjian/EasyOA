@@ -13,14 +13,7 @@
             />
           </el-form-item>
           <el-form-item label="状态" prop="status">
-            <el-select v-model="queryParams.status" placeholder="部门状态" clearable ize="small">
-              <el-option
-                v-for="s in statusOptions"
-                :key="s.value"
-                :label="s.label"
-                :value="s.value"
-              />
-            </el-select>
+            <dict-select v-model="queryParams.status" :options="statusOptions" placeholder="部门状态" />
           </el-form-item>
 
           <!-- 按钮 -->
@@ -43,10 +36,7 @@
           <el-table-column prop="sort" label="排序" width="150px" align="center" />
           <el-table-column prop="status" label="状态" width="150px" align="center">
             <template slot-scope="scope">
-              <el-tag
-                :type="scope.row.status === 0 ? 'danger' : 'success'"
-                disable-transitions
-              >{{ statusFormat(scope.row) }}</el-tag>
+              <status-tag :status="scope.row.status" />
             </template>
           </el-table-column>
           <el-table-column label="创建时间" align="center" prop="createTime" width="250px" />
@@ -149,13 +139,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="部门状态">
-                <el-radio-group v-model="form.status">
-                  <el-radio
-                    v-for="o in statusOptions"
-                    :key="o.value"
-                    :label="o.value"
-                  >{{ o.label }}</el-radio>
-                </el-radio-group>
+                <status-radio-group v-model="form.status" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -175,9 +159,18 @@ import { userSelectQuery } from '@/api/sys/user'
 import { listDept, getDept, createDept, updateDept, deleteDept } from '@/api/sys/dept'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import StatusRadioGroup from '@/components/StatusRadioGroup'
+import DictSelect from '@/components/DictSelect'
+import StatusTag from '@/components/StatusTag'
+
 export default {
   name: 'Dept',
-  components: { Treeselect },
+  components: {
+    Treeselect,
+    DictSelect,
+    StatusTag,
+    StatusRadioGroup
+  },
   data() {
     return {
       loading: true,
@@ -311,9 +304,6 @@ export default {
     resetQuery() {
       this.resetForm('queryForm')
       this.handleQuery()
-    },
-    statusFormat(row, column) {
-      return this.selectDictLabel(this.statusOptions, row.status)
     },
     cancel() {
       this.open = false

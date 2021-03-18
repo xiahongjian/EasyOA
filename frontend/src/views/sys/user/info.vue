@@ -29,10 +29,7 @@
                   <span>{{ record.email }}</span>
                 </el-form-item>
                 <el-form-item label="状态" class="display-field">
-                  <span><el-tag
-                    :type="record.status === 0 ? 'danger' : 'success'"
-                    disable-transitions
-                  >{{ statusFormat(record.status) }}</el-tag></span>
+                  <span><status-tag :status="record.status" /></span>
                 </el-form-item>
                 <el-form-item label="角色" class="display-field">
                   <span><el-tag
@@ -77,11 +74,15 @@
   </basic-layout>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 import { getUser } from '@/api/sys/user'
 import { getDicts } from '@/api/sys/dict/data'
+import StatusTag from '@/components/StatusTag'
+
 export default {
   name: 'UserInfo',
+  components: {
+    StatusTag
+  },
   data() {
     return {
       record: {},
@@ -89,9 +90,6 @@ export default {
       genderOptions: [],
       postOptions: []
     }
-  },
-  computed: {
-    ...mapGetters(['statusOptions'])
   },
   created() {
     const userId = this.$route.params && this.$route.params.id
@@ -109,9 +107,6 @@ export default {
         const { data } = resp
         this.record = data
       })
-    },
-    statusFormat(status) {
-      return this.selectDictLabel(this.statusOptions, status)
     },
     dictDataFormat(options, value) {
       let label = '-'

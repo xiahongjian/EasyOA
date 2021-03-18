@@ -26,14 +26,7 @@
             />
           </el-form-item>
           <el-form-item label="状态" prop="status">
-            <el-select v-model="queryParams.status" placeholder="状态" clearable size="small">
-              <el-option
-                v-for="s in statusOptions"
-                :key="s.value"
-                :label="s.label"
-                :value="s.value"
-              />
-            </el-select>
+            <dict-select v-model="queryParams.status" placeholder="状态" :options="statusOptions" />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -97,12 +90,9 @@
             </template>
           </el-table-column>
           <el-table-column label="用户名" prop="username" :show-overflow-tooltip="true" width="150" />
-          <el-table-column prop="status" label="状态" width="150px" align="center">
+          <el-table-column label="状态" prop="status" width="150px" align="center">
             <template slot-scope="scope">
-              <el-tag
-                :type="scope.row.status === 0 ? 'danger' : 'success'"
-                disable-transitions
-              >{{ statusFormat(scope.row) }}</el-tag>
+              <status-tag :status="scope.row.status" />
             </template>
           </el-table-column>
           <el-table-column label="部门" prop="department" :show-overflow-tooltip="true" width="120" align="center" />
@@ -173,25 +163,12 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="性别" prop="gender">
-                <el-select v-model="form.gender">
-                  <el-option
-                    v-for="o in genderOptions"
-                    :key="o.id"
-                    :label="o.label"
-                    :value="o.value"
-                  />
-                </el-select>
+                <dict-select v-model="form.gender" dict-type="sys_gender" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="状态" prop="status">
-                <el-radio-group v-model="form.status">
-                  <el-radio
-                    v-for="s in statusOptions"
-                    :key="s.value"
-                    :label="s.value"
-                  >{{ s.label }}</el-radio>
-                </el-radio-group>
+                <status-radio-group v-model="form.status" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -223,14 +200,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="岗位" prop="post">
-                <el-select v-model="form.post" clearable placeholder="请选择岗位">
-                  <el-option
-                    v-for="o in postOptions"
-                    :key="o.id"
-                    :label="o.label"
-                    :value="o.value"
-                  />
-                </el-select>
+                <dict-select v-model="form.post" placehodler="请选择岗位" dict-type="sys_post" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -262,14 +232,17 @@
 import { mapGetters } from 'vuex'
 import { createUser, getUser, listUsers, updateUser, deleteUser, resetPassword } from '@/api/sys/user'
 import { listDept } from '@/api/sys/dept'
+import { listAllRole } from '@/api/sys/role'
+// import { validEmail, validMobile } from '@/utils/validate'
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-// import { validEmail, validMobile } from '@/utils/validate'
-import { listAllRole } from '@/api/sys/role'
+import DictSelect from '@/components/DictSelect'
+import StatusTag from '@/components/StatusTag'
+import StatusRadioGroup from '@/components/StatusRadioGroup'
 
 export default {
   name: 'User',
-  components: { Treeselect },
+  components: { Treeselect, DictSelect, StatusTag, StatusRadioGroup },
   data() {
     return {
       loading: true,
@@ -475,9 +448,6 @@ export default {
         }
         this.deptOptions.push(dept)
       })
-    },
-    statusFormat(row, column) {
-      return this.selectDictLabel(this.statusOptions, row.status)
     },
     normalizer(node) {
       if (node.children && !node.children.length) {

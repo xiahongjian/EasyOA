@@ -24,20 +24,7 @@
             />
           </el-form-item>
           <el-form-item label="状态" prop="status">
-            <el-select
-              v-model="queryParams.status"
-              placeholder="字典状态"
-              clearable
-              size="small"
-              style="width: 240px"
-            >
-              <el-option
-                v-for="s in statusOptions"
-                :key="s.id"
-                :label="s.label"
-                :value="s.value"
-              />
-            </el-select>
+            <dict-select v-model="queryParams.status" :options="statusOptions" />
           </el-form-item>
 
           <el-form-item>
@@ -100,10 +87,7 @@
           </el-table-column>
           <el-table-column label="状态" align="center">
             <template slot-scope="scope">
-              <el-tag
-                :type="scope.row.status === 0 ? 'danger' : 'success'"
-                disable-transitions
-              >{{ statusFormat(scope.row) }}</el-tag>
+              <status-tag :status="scope.row.status" />
             </template>
           </el-table-column>
           <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
@@ -145,13 +129,7 @@
               <el-input v-model="form.key" placeholder="请输入字典类型" :disabled="isEdit" />
             </el-form-item>
             <el-form-item label="状态" prop="status">
-              <el-radio-group v-model="form.status">
-                <el-radio
-                  v-for="s in statusOptions"
-                  :key="s.value"
-                  :label="s.value"
-                >{{ s.label }}</el-radio>
-              </el-radio-group>
+              <status-radio-group v-model="form.status" />
             </el-form-item>
             <el-form-item label="备注" prop="remark">
               <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
@@ -169,8 +147,17 @@
 <script>
 import { mapGetters } from 'vuex'
 import { listType, updateType, addType, delType, getType } from '@/api/sys/dict/type'
+import StatusRadioGroup from '@/components/StatusRadioGroup'
+import StatusTag from '@/components/StatusTag'
+import DictSelect from '@/components/DictSelect'
+
 export default {
   name: 'Dict',
+  components: {
+    StatusTag,
+    StatusRadioGroup,
+    DictSelect
+  },
   data() {
     return {
       loading: true,
@@ -218,10 +205,6 @@ export default {
         this.total = data.total
         this.loading = false
       })
-    },
-    // 字典状态字典翻译
-    statusFormat(row, column) {
-      return this.selectDictLabel(this.statusOptions, row.status)
     },
     /** 重置按钮操作 */
     resetQuery() {
