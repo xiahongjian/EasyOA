@@ -10,6 +10,7 @@ import tech.hongjian.oa.entity.enums.MenuType;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.MenuMapper;
 import tech.hongjian.oa.service.MenuService;
+import tech.hongjian.oa.util.CommonUtil;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -74,6 +75,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     public Menu createMenu(Menu menu) {
         // 清楚不必要的数据
         setDefaultValueByType(menu, menu.getType());
+        menu = CommonUtil.setEntityDefault(menu);
         save(menu);
         return menu;
     }

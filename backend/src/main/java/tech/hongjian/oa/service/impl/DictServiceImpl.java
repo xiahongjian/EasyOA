@@ -16,6 +16,7 @@ import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.DictMapper;
 import tech.hongjian.oa.service.DictService;
 import tech.hongjian.oa.service.DictValueService;
+import tech.hongjian.oa.util.CommonUtil;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
@@ -79,9 +80,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
             throw new CommonServiceException(MessageFormat.format(M.ALREADY_EXISTED,
                     dict.getKey()));
         }
-        LocalDateTime now = LocalDateTime.now();
-        dict.setCreateTime(now);
-        dict.setUpdateTime(now);
+        dict = CommonUtil.setEntityDefault(dict);
         save(dict);
         return dict;
     }

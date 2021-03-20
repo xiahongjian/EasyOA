@@ -11,7 +11,9 @@ import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.DepartmentMapper;
 import tech.hongjian.oa.service.DepartmentService;
+import tech.hongjian.oa.util.CommonUtil;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -64,6 +66,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     @Override
     public Department create(Department department) {
         Department entity = validate(department);
+        entity = CommonUtil.setEntityDefault(entity);
         save(entity);
         return entity;
     }
@@ -95,6 +98,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         }
         department.setId(id);
         Department entity = validate(department);
+        entity.setUpdateTime(LocalDateTime.now());
         updateById(entity);
         return entity;
     }

@@ -25,6 +25,7 @@ import tech.hongjian.oa.service.DepartmentService;
 import tech.hongjian.oa.service.RoleService;
 import tech.hongjian.oa.service.UserRoleRelService;
 import tech.hongjian.oa.service.UserService;
+import tech.hongjian.oa.util.CommonUtil;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -103,6 +104,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public User createUser(User user) {
+        user = CommonUtil.setEntityDefault(user);
         baseMapper.insert(user);
         return user;
     }
@@ -130,6 +132,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 formData.getDepartmentId());
         user.setPassword(passwordEncoder.encode(ConfigConsts.DEFAULT_PASSWORD));
         user.setStatus(formData.getStatus());
+        user = CommonUtil.setEntityDefault(user);
         baseMapper.insert(user);
 
         // 创建用户角色关联
@@ -175,6 +178,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void resetPassword(Integer id) {
         User user = checkUserExisted(id);
         user.setPassword(passwordEncoder.encode(DEFAULT_PASSWORD));
+        user.setUpdateTime(LocalDateTime.now());
         this.updateById(user);
     }
 

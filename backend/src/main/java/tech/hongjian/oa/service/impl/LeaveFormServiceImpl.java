@@ -12,6 +12,7 @@ import tech.hongjian.oa.service.FlowService;
 import tech.hongjian.oa.service.LeaveFormService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import tech.hongjian.oa.util.CommonUtil;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -36,6 +37,7 @@ public class LeaveFormServiceImpl extends ServiceImpl<LeaveFormMapper, LeaveForm
 
     @Override
     public LeaveForm create(LeaveForm form) {
+        form = CommonUtil.setEntityDefault(form);
         save(form);
         return form;
     }

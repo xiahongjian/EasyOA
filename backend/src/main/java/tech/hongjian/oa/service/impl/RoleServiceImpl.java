@@ -84,8 +84,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         if (lambdaQuery().eq(Role::getKey, role.getKey()).count() > 0) {
             throw new CommonServiceException("角色标识为[" + role.getKey() + "]的角色已存在。");
         }
-        role.setCreateTime(LocalDateTime.now());
-        role.setUpdateTime(LocalDateTime.now());
+        role = CommonUtil.setEntityDefault(role);
         save(role);
         return role;
     }
@@ -105,7 +104,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
             throw new CommonServiceException("角色状态不能为空");
         }
         checkExisted(id);
-        lambdaUpdate().eq(Role::getId, id).set(Role::getStatus, status).update();
+        lambdaUpdate().eq(Role::getId, id).set(Role::getStatus, status).set(Role::getUpdateTime, LocalDateTime.now()).update();
     }
 
     @Override

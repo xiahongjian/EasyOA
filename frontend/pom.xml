@@ -9,8 +9,8 @@
         <artifactId>oa</artifactId>
         <version>0.0.1</version>
     </parent>
-    <artifactId>frontent</artifactId>
-    <name>frontent</name>
+    <artifactId>frontend</artifactId>
+    <name>fronted</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

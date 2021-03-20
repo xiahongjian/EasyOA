@@ -10,6 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class BaseEntityWithOperator extends BaseEntity {
-    private Integer creatorId;
-    private Integer updaterId;
+    private Integer createdBy;
+    private Integer updatedBy;
 }

@@ -16,6 +16,7 @@ import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.DictValueMapper;
 import tech.hongjian.oa.service.DictValueService;
+import tech.hongjian.oa.util.CommonUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -83,6 +84,7 @@ public class DictValueServiceImpl extends ServiceImpl<DictValueMapper, DictValue
         if (count > 0) {
             throw new CommonServiceException("字典数据键值[" + entity.getValue() +"]已经存在");
         }
+        entity = CommonUtil.setEntityDefault(entity);
         return save(entity);
     }
 }
