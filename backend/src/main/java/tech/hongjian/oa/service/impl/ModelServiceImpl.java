@@ -12,7 +12,6 @@ import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.bpmn.model.Process;
 import org.flowable.editor.language.json.converter.BpmnJsonConverter;
-import org.flowable.ui.common.util.XmlUtil;
 import org.flowable.validation.ProcessValidator;
 import org.flowable.validation.ProcessValidatorFactory;
 import org.flowable.validation.ValidationError;
@@ -26,6 +25,7 @@ import tech.hongjian.oa.mapper.ModelMapper;
 import tech.hongjian.oa.service.ModelService;
 import tech.hongjian.oa.util.CommonUtil;
 import tech.hongjian.oa.util.WebUtil;
+import tech.hongjian.oa.util.XmlUtil;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
