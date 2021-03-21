@@ -2,6 +2,7 @@ package tech.hongjian.oa.entity;
 
 import java.sql.Blob;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.Version;
 import tech.hongjian.oa.entity.BaseEntity;
 import lombok.Data;
@@ -24,7 +25,7 @@ public class Model extends BaseEntityWithOperator {
 
     private String name;
 
-    private String key;
+    private String modelId;
 
     private String description;
 
@@ -39,5 +40,9 @@ public class Model extends BaseEntityWithOperator {
     @Version
     private Integer version;
 
-
+    // DB中不不在的字段
+    @TableField(exist = false)
+    private User createdByUser;
+    @TableField(exist = false)
+    private User updatedByUser;
 }

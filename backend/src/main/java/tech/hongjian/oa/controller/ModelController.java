@@ -3,13 +3,10 @@ package tech.hongjian.oa.controller;
 
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tech.hongjian.oa.entity.Model;
+import tech.hongjian.oa.entity.enums.ModelType;
 import tech.hongjian.oa.model.R;
 import tech.hongjian.oa.service.ModelService;
 
@@ -24,12 +21,20 @@ import java.io.IOException;
  * @since 2021-03-20
  */
 @Setter(onMethod_ = {@Autowired})
-@Controller
-@RequestMapping("/model")
+@RestController
+@RequestMapping("/process")
 public class ModelController {
     private ModelService modelService;
 
-    @PostMapping("/process")
+    @GetMapping("/models")
+    public R listModel(@RequestParam(required = false) String modelId,
+                       @RequestParam(required = false) String name,
+                       @RequestParam Integer page,
+                       @RequestParam Integer limit) {
+        return R.ok(modelService.findByParams(page, limit, ModelType.BPMN, modelId, name));
+    }
+
+    @PostMapping("/model")
     public R updateProcessModel(@RequestParam MultipartFile file) throws IOException {
         Model model = modelService.createOrUpdateProcessModel(file.getInputStream());
         return R.ok(model);

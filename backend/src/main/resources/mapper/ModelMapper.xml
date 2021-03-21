@@ -8,7 +8,7 @@
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
         <result column="name" property="name" />
-        <result column="key" property="key" />
+        <result column="model_id" property="modelId" />
         <result column="description" property="description" />
         <result column="created_by" property="createdBy" />
         <result column="updated_by" property="updatedBy" />
@@ -19,26 +19,47 @@
         <result column="version" property="version" />
     </resultMap>
 
+    <resultMap id="ResultWithUser" extends="BaseResultMap" type="tech.hongjian.oa.entity.Model">
+        <association property="createdByUser" javaType="tech.hongjian.oa.entity.User" columnPrefix="c_">
+            <result column="id" property="id" />
+            <result column="username" property="username" />
+            <result column="name" property="name" />
+            <result column="email" property="email" />
+            <result column="mobile" property="mobile" />
+            <result column="gender" property="gender" />
+        </association>
+        <association property="updatedByUser" javaType="tech.hongjian.oa.entity.User" columnPrefix="u_">
+            <result column="id" property="id" />
+            <result column="username" property="username" />
+            <result column="name" property="name" />
+            <result column="email" property="email" />
+            <result column="mobile" property="mobile" />
+            <result column="gender" property="gender" />
+        </association>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id,
         create_time,
         update_time,
-        name, key, description, created_by, updated_by, model_comment, model_type, model_editor_json, thumbnail, version
+        name, model_id, description, created_by, updated_by, model_comment, model_type, model_editor_json, thumbnail, version
     </sql>
     <select id="selectByParams" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List" />
-        from `model`
+        m.*,
+        c.id c_id, c.username c_username, c.name c_name, c.email c_email, c.mobile c_mobile, c.gender c_gender,
+        u.id u_id, u.username u_username, u.name u_name, u.email u_email, u.mobile u_mobile, u.gender u_gender
+        from `model` m left join `user` c on m.created_by = c.id left join `user` u on m.updated_by = u.id
         <where>
-            <if test="key != null">
-                upper(`key`) like upper(#{key})
+            <if test="params.modelId != null">
+                upper(`model_id`) like upper(#{params.modelId})
             </if>
-            <if test="name != null">
-                and upper(`name`)  like upper(#{name})
+            <if test="params.name != null">
+                and upper(`name`)  like upper(#{params.name})
             </if>
-            <if test="type != null">
-                and model_type = #{type}
+            <if test="params.type != null">
+                and model_type = #{params.type}
             </if>
         </where>
     </select>

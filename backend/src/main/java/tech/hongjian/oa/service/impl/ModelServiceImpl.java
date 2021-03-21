@@ -103,14 +103,14 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
             User currentUser = WebUtil.currentUser();
             //查询是否已经存在流程模板
             Model newModel = new Model();
-            Model existedModel = lambdaQuery().eq(Model::getKey, process.getId()).eq(Model::getModelType, ModelType.BPMN).one();
+            Model existedModel = lambdaQuery().eq(Model::getModelId, process.getId()).eq(Model::getModelType, ModelType.BPMN).one();
             boolean isUpdate = false;
             if (existedModel != null) {
                 isUpdate = true;
                 newModel = existedModel;
             }
             newModel.setName(name);
-            newModel.setKey(process.getId());
+            newModel.setModelId(process.getId());
             newModel.setModelType(ModelType.BPMN);
             newModel.setDescription(description);
             newModel.setModelEditorJson(modelNode.toString());
@@ -131,7 +131,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         Map<String, Object> params = new HashMap<>(3);
         params.put("type", modelType);
         if (StringUtils.isNotBlank(key)) {
-            params.put("key", CommonUtil.wrapperWithPercent(key));
+            params.put("modelId", CommonUtil.wrapperWithPercent(key));
         }
         if (StringUtils.isNotBlank(name)) {
             params.put("name", CommonUtil.wrapperWithPercent(name));
