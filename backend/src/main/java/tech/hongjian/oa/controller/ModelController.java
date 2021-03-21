@@ -35,8 +35,8 @@ public class ModelController {
     }
 
     @PostMapping("/model")
-    public R updateProcessModel(@RequestParam MultipartFile file) throws IOException {
-        Model model = modelService.createOrUpdateProcessModel(file.getInputStream());
+    public R updateProcessModel(@RequestParam("file") MultipartFile file, @RequestParam("comment") String comment) throws IOException {
+        Model model = modelService.importModel(file.getInputStream());
         return R.ok(model);
     }
 }

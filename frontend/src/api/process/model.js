@@ -8,16 +8,28 @@ export function listModel(query) {
   })
 }
 
+function handleFormData(form) {
+  const data = new FormData()
+  data.append('file', form.file)
+  data.append('comment', form.comment)
+  return data
+}
+
 export function createModel(form) {
   return request({
     url: '/process/model',
     method: 'post',
-    data: form
+    headers: { 'Content-Type': 'multipart/form-data' },
+    data: handleFormData(form)
   })
 }
 
-export function updateModel(form) {
-
+export function updateModel(id, form) {
+  return request({
+    url: `/process/meodel/${id}`,
+    method: 'put',
+    data: handleFormData(form)
+  })
 }
 
 export function deleteModel(id) {

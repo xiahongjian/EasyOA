@@ -45,7 +45,7 @@
         update_time,
         name, model_id, description, created_by, updated_by, model_comment, model_type, model_editor_json, thumbnail, version
     </sql>
-    <select id="selectByParams" resultMap="BaseResultMap">
+    <select id="selectByParams" resultMap="ResultWithUser">
         select
         m.*,
         c.id c_id, c.username c_username, c.name c_name, c.email c_email, c.mobile c_mobile, c.gender c_gender,

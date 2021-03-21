@@ -2,8 +2,6 @@ package tech.hongjian.oa.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.sun.org.apache.xpath.internal.operations.Mod;
-import org.flowable.job.service.impl.cmd.MoveDeadLetterJobToExecutableJobCmd;
 import tech.hongjian.oa.entity.Model;
 import tech.hongjian.oa.entity.enums.ModelType;
 
@@ -19,11 +17,13 @@ import java.io.InputStream;
  */
 public interface ModelService extends IService<Model> {
 
+    boolean modelExisted(String modelId, ModelType modelType);
+
     Model createModel(Model model, Integer createdBy);
 
     Model updateModel(Model model, Integer updatedBy);
 
-    Model createOrUpdateProcessModel(InputStream inputStream);
+    Model importModel(InputStream inputStream);
 
     IPage<Model> findByParams(int page, int limit, ModelType modelType, String key, String name);
 }

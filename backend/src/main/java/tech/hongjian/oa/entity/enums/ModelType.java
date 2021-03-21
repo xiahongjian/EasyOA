@@ -1,6 +1,7 @@
 package tech.hongjian.oa.entity.enums;
 
 import com.baomidou.mybatisplus.core.enums.IEnum;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * Created by xiahongjian on 2021/3/20.
@@ -19,8 +20,9 @@ public enum ModelType implements IEnum<Integer> {
         this.value = value;
     }
 
+    @JsonValue
     @Override
     public Integer getValue() {
-        return null;
+        return this.value;
     }
 }

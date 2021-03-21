@@ -34,16 +34,16 @@
               icon="el-icon-upload"
               size="mini"
               @click="handleCreate"
-            >上传</el-button>
+            >导入</el-button>
           </el-col>
           <el-col :span="1.5">
             <el-button
               type="success"
-              icon="el-icon-edit"
+              icon="el-icon-refresh"
               size="mini"
               :disabled="single"
               @click="handleUpdate"
-            >修改</el-button>
+            >更新</el-button>
           </el-col>
           <el-col :span="1.5">
             <el-button
@@ -76,9 +76,9 @@
               <el-button
                 size="mini"
                 type="text"
-                icon="el-icon-edit"
+                icon="el-icon-refresh"
                 @click="handleUpdate(scope.row)"
-              >修改</el-button>
+              >更新</el-button>
               <el-button
                 size="mini"
                 type="text"
@@ -92,12 +92,16 @@
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
                     :command="buildCommand('showXML', scope.row)"
-                    icon="el-icon-info"
+                    icon="el-icon-document"
                   >查看XML</el-dropdown-item>
                   <el-dropdown-item
                     :command="buildCommand('showImage', scope.row)"
-                    icon="el-icon-refresh"
+                    icon="el-icon-picture-outline"
                   >查看图片</el-dropdown-item>
+                  <el-dropdown-item
+                    :command="buildCommand('deployProcess', scope.row)"
+                    icon="el-icon-coin"
+                  >部署流程</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -111,12 +115,39 @@
           @pagination="handleQuery"
         />
       </el-card>
+
+      <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" width="500px">
+        <el-form ref="form" :model="form" label-position="top" :rules="rules">
+          <el-form-item label="备注" prop="comment">
+            <el-input v-model="form.comment" placeholder="请输入备注" type="textarea" :autosize="{ minRows: 6, maxRows: 6}" :maxlength="500" />
+          </el-form-item>
+          <el-form-item prop="file">
+            <el-upload
+              drag
+              :multiple="false"
+              accept="*.xml,*.bpmn"
+              action="http://forRequired"
+              :auto-upload="false"
+              :on-change="handleSelectFile"
+              :on-remove="handleSelectFile"
+            >
+              <i class="el-icon-upload" />
+              <div class="el-upload__text" style="width: 100%">将文件拖到此处，或<em>点击上传</em></div>
+              <div slot="tip" class="el-upload__tip">只能上传xml和bpmn文件</div>
+            </el-upload>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="submitForm">确定</el-button>
+          <el-button @click="cancel">取消</el-button>
+        </div>
+      </el-dialog>
     </template>
   </basic-layout>
 </template>
 
 <script>
-import { listModel } from '@/api/process/model'
+import { listModel, createModel, deleteModel, updateModel } from '@/api/process/model'
 export default {
   name: 'ProcessModel',
   data() {
@@ -127,6 +158,7 @@ export default {
       ids: [],
       single: true,
       multiple: true,
+      open: false,
 
       queryParams: {
         modelId: undefined,
@@ -137,9 +169,15 @@ export default {
       records: [],
       total: 0,
 
-      form: {},
+      form: {
+        comment: 'test'
+      },
       rules: {
-
+        file: [{
+          requied: true,
+          message: '上传文件不能为空',
+          trigger: 'blur'
+        }]
       }
     }
   },
@@ -155,28 +193,44 @@ export default {
 
     },
     handleCreate() {
-
+      this.reset()
+      this.title = '导入流程模板'
+      this.open = true
     },
     handleDelete(row) {
-
+      const id = row && row.id || this.ids
+      this.$confirm('是否确认删除选择中的流程模板？', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return deleteModel(id)
+      }).then(() => {
+        this.handleQuery()
+        this.msgSuccess('删除成功')
+      }).catch(() => {})
     },
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (!valid) {
           return
         }
-        // const action = this.form.id ? (form) => updateUser(this.form.id, form) : createUser
-        // const msg = this.form.id ? '修改成功' : '新增成功'
-        // action(this.form).then(resp => {
-        //   if (resp.success) {
-        //     this.msgSuccess(msg)
-        //     this.open = false
-        //     this.listUsers()
-        //   } else {
-        //     this.msgError(resp.message)
-        //   }
-        // })
       })
+      if (this.form.file) {
+        this.$refs['form'].clearValidate()
+        const action = this.form.id ? (form) => updateModel(this.form.id, form) : createModel
+        const msg = this.form.id ? '更新成功' : '导入成功'
+        action(this.form).then(resp => {
+          if (resp.success) {
+            this.msgSuccess(msg)
+            this.handleQuery()
+          } else {
+            this.msgError(resp.message)
+          }
+        })
+      } else {
+        this.$refs['form'].validate(valid => {})
+      }
     },
     resetQuery() {
       this.resetForm('queryForm')
@@ -189,6 +243,12 @@ export default {
     cancel() {
       this.reset()
       this.open = false
+    },
+    buildCommand(command, data) {
+      return {
+        method: command,
+        data
+      }
     },
     handleMoreAction(command) {
       return this[command.method](command.data)
@@ -206,6 +266,13 @@ export default {
         this.total = data.total
         this.loading = false
       })
+    },
+    handleSelectFile(file, fileList) {
+      if (fileList && fileList.length > 0) {
+        this.form.file = fileList[0].raw
+      } else {
+        this.form.file = undefined
+      }
     }
   }
 }

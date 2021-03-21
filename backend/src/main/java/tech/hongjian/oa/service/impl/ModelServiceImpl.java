@@ -53,6 +53,11 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
     protected BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
 
     @Override
+    public boolean modelExisted(String modelId, ModelType modelType) {
+        return lambdaQuery().eq(Model::getModelId, modelId).eq(Model::getModelType, modelType).count() > 0;
+    }
+
+    @Override
     public Model createModel(Model model, Integer createdBy) {
         Model entity = new Model();
         BeanUtils.copyProperties(model, entity);
@@ -66,12 +71,13 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         Model entity = new Model();
         BeanUtils.copyProperties(model, entity);
         CommonUtil.setUpdateDefault(entity, updatedBy);
+        entity.setVersion(1);
         updateById(entity);
         return entity;
     }
 
     @Override
-    public Model createOrUpdateProcessModel(InputStream inputStream) {
+    public Model importModel(InputStream inputStream) {
         XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
         try {
             InputStreamReader xmlIn = new InputStreamReader(inputStream, "UTF-8");
@@ -103,23 +109,18 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
             User currentUser = WebUtil.currentUser();
             //查询是否已经存在流程模板
             Model newModel = new Model();
-            Model existedModel = lambdaQuery().eq(Model::getModelId, process.getId()).eq(Model::getModelType, ModelType.BPMN).one();
-            boolean isUpdate = false;
-            if (existedModel != null) {
-                isUpdate = true;
-                newModel = existedModel;
+            if (modelExisted(process.getId(), ModelType.BPMN)) {
+                throw new CommonServiceException("流程ID为: " + process.getId() +
+                        "的流程模板已经存在。");
             }
             newModel.setName(name);
             newModel.setModelId(process.getId());
             newModel.setModelType(ModelType.BPMN);
             newModel.setDescription(description);
             newModel.setModelEditorJson(modelNode.toString());
+            // TODO
 
-            if (isUpdate) {
-                return updateModel(newModel, currentUser.getId());
-            } else {
-                return createModel(newModel, currentUser.getId());
-            }
+            return createModel(newModel, currentUser.getId());
         } catch (UnsupportedEncodingException | XMLStreamException e) {
             log.warn("导入流程模板失败，原因：{}", e.getMessage(), e);
             throw new CommonServiceException("导入流程模板失败，原因：" + e.getMessage());
