@@ -67,6 +67,7 @@
           <el-table-column label="流程名称" prop="name" :show-overflow-tooltip="true" />
           <el-table-column label="描述" prop="description" :show-overflow-tooltip="true" />
           <el-table-column label="版本" prop="version" />
+          <el-table-column label="备注" prop="comment" :show-overflow-tooltip="true" />
           <el-table-column label="创建者" prop="createdByUser.name" />
           <el-table-column label="创建时间" align="center" prop="createTime" width="200px" />
           <el-table-column label="更新者" prop="updatedByUser.name" />
@@ -116,7 +117,7 @@
         />
       </el-card>
 
-      <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" width="500px">
+      <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" width="600px">
         <el-form ref="form" :model="form" label-position="top" :rules="rules">
           <el-form-item label="备注" prop="comment">
             <el-input v-model="form.comment" placeholder="请输入备注" type="textarea" :autosize="{ minRows: 6, maxRows: 6}" :maxlength="500" />
@@ -125,11 +126,14 @@
             <el-upload
               drag
               :multiple="false"
+              :limit="1"
               accept="*.xml,*.bpmn"
               action="http://forRequired"
               :auto-upload="false"
               :on-change="handleSelectFile"
               :on-remove="handleSelectFile"
+              :on-exceed="handleExceed"
+              class="upload-field"
             >
               <i class="el-icon-upload" />
               <div class="el-upload__text" style="width: 100%">将文件拖到此处，或<em>点击上传</em></div>
@@ -170,12 +174,17 @@ export default {
       total: 0,
 
       form: {
+        canUpload: true,
         comment: 'test'
       },
       rules: {
         file: [{
-          requied: true,
-          message: '上传文件不能为空',
+          validator: (rule, value, callback) => {
+            if (!this.form.file) {
+              callback(new Error('上传文件不能为空'))
+            }
+            callback()
+          },
           trigger: 'blur'
         }]
       }
@@ -215,8 +224,6 @@ export default {
         if (!valid) {
           return
         }
-      })
-      if (this.form.file) {
         this.$refs['form'].clearValidate()
         const action = this.form.id ? (form) => updateModel(this.form.id, form) : createModel
         const msg = this.form.id ? '更新成功' : '导入成功'
@@ -228,9 +235,7 @@ export default {
             this.msgError(resp.message)
           }
         })
-      } else {
-        this.$refs['form'].validate(valid => {})
-      }
+      })
     },
     resetQuery() {
       this.resetForm('queryForm')
@@ -273,11 +278,19 @@ export default {
       } else {
         this.form.file = undefined
       }
+    },
+    handleExceed(file, fileList) {
+      this.msgInfo('每次只能上传一个文件。')
     }
   }
 }
 </script>
 
 <style>
-
+.upload-field .el-upload {
+  width: 100%;
+}
+.upload-field .el-upload-dragger {
+  width: 100%;
+}
 </style>
