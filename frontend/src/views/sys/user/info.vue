@@ -40,10 +40,10 @@
                   >{{ role }}</el-tag></span>
                 </el-form-item>
                 <el-form-item label="创建时间" class="display-field">
-                  <span>{{ record.createTime }}</span>
+                  <span>{{ record.createdAt }}</span>
                 </el-form-item>
                 <el-form-item label="更新时间" class="display-field">
-                  <span>{{ record.updateTime }}</span>
+                  <span>{{ record.updatedAt }}</span>
                 </el-form-item>
               </el-form>
             </el-tab-pane>

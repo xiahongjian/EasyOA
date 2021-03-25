@@ -142,7 +142,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
             throw new CommonServiceException("ID为[" + id + "]的菜单不存在。");
         }
         setDefaultValueByType(menu, menu.getType());
-        menu.setUpdateTime(LocalDateTime.now());
+        menu.setUpdatedAt(LocalDateTime.now());
         updateById(menu);
     }
 

@@ -55,7 +55,7 @@ public class LeaveFormServiceImpl extends ServiceImpl<LeaveFormMapper, LeaveForm
         if (checkExisted(id) == null) {
             return;
         }
-        form.setUpdateTime(LocalDateTime.now());
+        form.setUpdatedAt(LocalDateTime.now());
         updateById(form);
     }
 

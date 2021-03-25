@@ -5,8 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="tech.hongjian.oa.entity.Department">
         <id column="id" property="id" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
         <result column="name" property="name" />
         <result column="leader_id" property="leaderId" />
         <result column="parent_id" property="parentId" />
@@ -28,8 +28,8 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id,
-        create_time,
-        update_time,
+        created_at,
+        updated_at,
         name, leader_id, parent_id, status, sort
     </sql>
 

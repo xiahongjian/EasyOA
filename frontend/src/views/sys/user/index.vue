@@ -97,8 +97,8 @@
           <el-table-column label="部门" prop="department" :show-overflow-tooltip="true" width="120" align="center" />
           <el-table-column label="邮箱" prop="email" :show-overflow-tooltip="true" />
           <!-- <el-table-column label="手机号码" prop="mobile" />
-          <el-table-column label="创建时间" align="center" prop="createTime" width="200px" /> -->
-          <el-table-column label="更新时间" align="center" prop="updateTime" width="200px" />
+          <el-table-column label="创建时间" align="center" prop="createdAt" width="200px" /> -->
+          <el-table-column label="更新时间" align="center" prop="updatedAt" width="200px" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="300">
             <template slot-scope="scope">
               <el-button

@@ -5,9 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="tech.hongjian.oa.entity.DictValue">
         <result column="id" property="id" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
-        <result column="process_instance_id" property="processInstanceId" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
         <result column="dict_id" property="dictId" />
         <result column="label" property="label" />
         <result column="value" property="value" />
@@ -19,8 +18,8 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         `id`,
-        `create_time`,
-        `update_time`,
+        `created_at`,
+        `updated_at`,
         `process_instance_id`,
         `dict_id`, `label`, `value`, `remark`, `status`, `sort`
     </sql>

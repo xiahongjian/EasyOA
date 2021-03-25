@@ -24,8 +24,8 @@ public class CommonUtil {
 
     public static  <T extends BaseEntity> T setEntityDefault(T entity) {
         LocalDateTime now = LocalDateTime.now();
-        entity.setCreateTime(now);
-        entity.setUpdateTime(now);
+        entity.setCreatedAt(now);
+        entity.setUpdatedAt(now);
         return entity;
     }
 
@@ -38,7 +38,7 @@ public class CommonUtil {
     }
 
     public static  <T extends BaseEntityWithOperator> T setUpdateDefault(T entity, Integer updatedBy) {
-        entity.setUpdateTime(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
         entity.setUpdatedBy(updatedBy);
         return entity;
     }

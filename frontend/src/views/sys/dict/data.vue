@@ -75,7 +75,7 @@
             </template>
           </el-table-column>
           <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
-          <el-table-column label="创建时间" align="cneter" prop="createTime" width="180" />
+          <el-table-column label="创建时间" align="cneter" prop="createdAt" width="180" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button

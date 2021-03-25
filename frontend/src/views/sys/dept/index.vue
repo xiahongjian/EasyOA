@@ -44,8 +44,8 @@
               <status-tag :status="scope.row.status" />
             </template>
           </el-table-column>
-          <el-table-column label="创建时间" align="center" prop="createTime" width="250px" />
-          <el-table-column label="更新时间" align="center" prop="updateTime" width="250px" />
+          <el-table-column label="创建时间" align="center" prop="createdAt" width="250px" />
+          <el-table-column label="更新时间" align="center" prop="updatedAt" width="250px" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="300">
             <template slot-scope="scope">
               <el-button

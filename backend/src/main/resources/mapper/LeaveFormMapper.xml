@@ -5,8 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="tech.hongjian.oa.entity.LeaveForm">
         <id column="id" property="id" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
         <result column="creator_id" property="creatorId" />
         <result column="start_time" property="startTime" />
         <result column="end_time" property="endTime" />
@@ -28,8 +28,8 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id,
-        create_time,
-        update_time,
+        created_at,
+        updated_at,
         creator_id, start_time, end_time, duration, leave_type, reason, status, detail_reason
     </sql>
     <select id="queryByParams" resultMap="resultWithCreator">

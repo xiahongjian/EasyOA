@@ -57,7 +57,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     @Override
     public boolean updateRole(Integer id, Role role) {
         checkExisted(id);
-        role.setUpdateTime(LocalDateTime.now());
+        role.setUpdatedAt(LocalDateTime.now());
         return updateById(role);
     }
 
@@ -104,7 +104,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
             throw new CommonServiceException("角色状态不能为空");
         }
         checkExisted(id);
-        lambdaUpdate().eq(Role::getId, id).set(Role::getStatus, status).set(Role::getUpdateTime, LocalDateTime.now()).update();
+        lambdaUpdate().eq(Role::getId, id).set(Role::getStatus, status).set(Role::getUpdatedAt, LocalDateTime.now()).update();
     }
 
     @Override

@@ -98,7 +98,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         }
         department.setId(id);
         Department entity = validate(department);
-        entity.setUpdateTime(LocalDateTime.now());
+        entity.setUpdatedAt(LocalDateTime.now());
         updateById(entity);
         return entity;
     }

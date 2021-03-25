@@ -47,7 +47,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
     public IPage<Dict> getDict(String name, String key, Status status, Integer page,
                                Integer limit) {
         LambdaQueryChainWrapper<Dict> query =
-                lambdaQuery().orderByAsc(Dict::getCreateTime);
+                lambdaQuery().orderByAsc(Dict::getCreatedAt);
         if (StringUtils.isNotBlank(name)) {
             query.like(Dict::getName, name);
         }
@@ -90,7 +90,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         if (dict.getId() == null || getBaseMapper().selectById(dict.getId()) == null) {
             throw new CommonServiceException(M.PARAM_ERROR);
         }
-        dict.setUpdateTime(LocalDateTime.now());
+        dict.setUpdatedAt(LocalDateTime.now());
         getBaseMapper().updateById(dict);
         return dict;
     }

@@ -5,8 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="tech.hongjian.oa.entity.Menu">
         <result column="id" property="id" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
         <result column="title" property="title" />
         <result column="icon" property="icon" />
         <result column="sort" property="sort" />
@@ -32,8 +32,8 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         `id`,
-        `create_time`,
-        `update_time`,
+        `created_at`,
+        `updated_at`,
         `title`, `icon`, `sort`, `type`, `component`,
         `route_path`, `route_name`, `parent_id`, `visible`, `permission`,
         `external_link`, `method`

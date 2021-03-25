@@ -5,8 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="tech.hongjian.oa.entity.User">
         <result column="id" property="id" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
         <result column="username" property="username" />
         <result column="password" property="password" />
         <result column="name" property="name" />
@@ -26,20 +26,20 @@
         <result column="mobile" property="mobile" />
         <result column="gender" property="gender" />
         <result column="department" property="department" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id,
-        create_time,
-        update_time,
+        created_at,
+        updated_at,
         username, password, name, email, department_id, mobile, gender, status, post
     </sql>
     <select id="selectByParams" resultMap="UserSelectOptMap">
         select
-        u.id, u.username, u.name, u.email, u.mobile, u.gender, u.status, d.name as department, u.create_time, u.update_time
+        u.id, u.username, u.name, u.email, u.mobile, u.gender, u.status, d.name as department, u.created_at, u.updated_at
         from `user` u left join department d on u.department_id=d.id
         <where>
             <if test="status != null">

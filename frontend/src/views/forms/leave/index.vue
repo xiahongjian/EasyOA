@@ -88,7 +88,7 @@
           <el-table-column label="开始时间" align="center" prop="startTime" width="180" />
           <el-table-column label="结束时间" align="center" prop="endTime" width="180" />
           <el-table-column label="原因" align="center" prop="reason" :show-overflow-tooltip="true" />
-          <el-table-column label="创建时间" align="center" prop="createTime" width="180" />
+          <el-table-column label="创建时间" align="center" prop="createdAt" width="180" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
             <template slot-scope="scope">
               <el-button

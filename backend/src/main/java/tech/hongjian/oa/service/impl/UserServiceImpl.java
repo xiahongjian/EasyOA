@@ -150,7 +150,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public void updateUser(Integer id, User user) {
         checkUserExisted(id);
-        user.setUpdateTime(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
         this.updateById(user);
     }
 
@@ -178,7 +178,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void resetPassword(Integer id) {
         User user = checkUserExisted(id);
         user.setPassword(passwordEncoder.encode(DEFAULT_PASSWORD));
-        user.setUpdateTime(LocalDateTime.now());
+        user.setUpdatedAt(LocalDateTime.now());
         this.updateById(user);
     }
 
