@@ -62,6 +62,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         Model entity = new Model();
         BeanUtils.copyProperties(model, entity);
         CommonUtil.setEntityDefault(entity, createdBy);
+        model.setVersion(1);
         save(entity);
         return entity;
     }
