@@ -65,39 +65,48 @@
           <el-table-column type="selection" width="55" align="center" />
           <el-table-column type="expand">
             <template slot-scope="props">
-              <el-form label-position="right" label-width="80px">
-                <el-form-item label="流程ID">
-                  <span>{{ props.row.modelId }}</span>
-                </el-form-item>
-                <el-form-item label="流程名称">
-                  <span>{{ props.row.name }}</span>
-                </el-form-item>
-                <el-form-item label="描述">
-                  <span>{{ props.row.description }}</span>
-                </el-form-item>
-                <el-form-item label="版本">
-                  <span>{{ props.row.version }}</span>
-                </el-form-item>
-                <el-form-item label="备注">
-                  <span>{{ props.row.comment }}</span>
-                </el-form-item>
-                <el-form-item label="创建者">
-                  <span>{{ props.row.updatedByUser.name }}</span>
-                </el-form-item>
-                <el-form-item label="创建时间">
-                  <span>{{ props.row.createdAt }}</span>
-                </el-form-item>
-                <el-form-item label="更新者">
-                  <span>{{ props.row.updatedByUser.name }}</span>
-                </el-form-item>
-                <el-form-item label="更新时间">
-                  <span>{{ props.row.updatedAt }}</span>
-                </el-form-item>
-              </el-form>
+              <el-row>
+                <el-col :span="12">
+                  <el-form label-position="right" label-width="80px">
+                    <el-form-item label="ID">
+                      <span>{{ props.row.modelId }}</span>
+                    </el-form-item>
+                    <el-form-item label="名称">
+                      <span>{{ props.row.name }}</span>
+                    </el-form-item>
+                    <el-form-item label="描述">
+                      <span>{{ props.row.description }}</span>
+                    </el-form-item>
+                    <el-form-item label="版本">
+                      <span>{{ props.row.version }}</span>
+                    </el-form-item>
+                    <el-form-item label="备注">
+                      <span>{{ props.row.comment }}</span>
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+                <el-col :span="12">
+                  <el-form label-position="right" label-width="80px">
+                    <el-form-item label="创建者">
+                      <span>{{ props.row.updatedByUser.name }}</span>
+                    </el-form-item>
+                    <el-form-item label="创建时间">
+                      <span>{{ props.row.createdAt }}</span>
+                    </el-form-item>
+                    <el-form-item label="更新者">
+                      <span>{{ props.row.updatedByUser.name }}</span>
+                    </el-form-item>
+                    <el-form-item label="更新时间">
+                      <span>{{ props.row.updatedAt }}</span>
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+              </el-row>
+
             </template>
           </el-table-column>
-          <el-table-column label="流程ID" prop="modelId" width="150" />
-          <el-table-column label="流程名称" prop="name" :show-overflow-tooltip="true" />
+          <el-table-column label="ID" prop="modelId" width="150" />
+          <el-table-column label="名称" prop="name" :show-overflow-tooltip="true" />
           <el-table-column label="描述" prop="description" :show-overflow-tooltip="true" />
           <el-table-column label="版本" prop="version" />
           <el-table-column label="备注" prop="comment" :show-overflow-tooltip="true" />
