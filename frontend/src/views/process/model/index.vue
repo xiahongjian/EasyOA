@@ -3,7 +3,7 @@
     <template #wrapper>
       <el-card class="box-card">
         <el-form ref="queryForm" :inline="true" :model="queryParams">
-          <el-form-item label="流程ID" prop="modelId">
+          <el-form-item label="ID" prop="modelId">
             <el-input
               v-model="queryParams.modelId"
               clearable
@@ -12,7 +12,7 @@
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="流程名称" prop="name">
+          <el-form-item label="名称" prop="name">
             <el-input
               v-model="queryParams.name"
               clearable
@@ -161,9 +161,6 @@
 
       <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" width="600px">
         <el-form ref="form" :model="form" label-position="top" :rules="rules">
-          <el-form-item label="备注" prop="comment">
-            <el-input v-model="form.comment" placeholder="请输入备注" type="textarea" :autosize="{ minRows: 6, maxRows: 6}" :maxlength="500" />
-          </el-form-item>
           <el-form-item prop="file">
             <el-upload
               drag
@@ -181,6 +178,9 @@
               <div class="el-upload__text" style="width: 100%">将文件拖到此处，或<em>点击上传</em></div>
               <div slot="tip" class="el-upload__tip">只能上传xml和bpmn文件</div>
             </el-upload>
+          </el-form-item>
+          <el-form-item label="备注" prop="comment">
+            <el-input v-model="form.comment" placeholder="请输入备注" type="textarea" :autosize="{ minRows: 6, maxRows: 6}" :maxlength="500" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
