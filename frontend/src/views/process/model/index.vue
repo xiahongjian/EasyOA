@@ -65,7 +65,7 @@
           <el-table-column type="selection" width="55" align="center" />
           <el-table-column type="expand">
             <template slot-scope="props">
-              <el-form label-position="left" inline>
+              <el-form label-position="right" label-width="80px">
                 <el-form-item label="流程ID">
                   <span>{{ props.row.modelId }}</span>
                 </el-form-item>
@@ -101,8 +101,8 @@
           <el-table-column label="描述" prop="description" :show-overflow-tooltip="true" />
           <el-table-column label="版本" prop="version" />
           <el-table-column label="备注" prop="comment" :show-overflow-tooltip="true" />
-          <el-table-column label="创建者" prop="createdByUser.name" />
-          <el-table-column label="创建时间" align="center" prop="createdAt" width="200px" />
+          <!-- <el-table-column label="创建者" prop="createdByUser.name" />
+          <el-table-column label="创建时间" align="center" prop="createdAt" width="200px" /> -->
           <el-table-column label="更新者" prop="updatedByUser.name" />
           <el-table-column label="更新时间" align="center" prop="updatedAt" width="200px" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="300">
@@ -326,8 +326,16 @@ export default {
 .upload-field .el-upload-dragger {
   width: 100%;
 }
-.able-expand label {
-    width: 90px;
-    color: #99a9bf;
-  }
+.expand-col {
+  font-size: 0;
+}
+.expand-col label {
+  width: 90px;
+  color: #99a9bf;
+}
+.expand-col .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
 </style>
