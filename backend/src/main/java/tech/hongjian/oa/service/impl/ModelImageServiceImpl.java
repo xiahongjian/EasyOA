@@ -70,7 +70,7 @@ public class ModelImageServiceImpl implements ModelImageService {
             DefaultProcessDiagramGenerator diagramGenerator = new DefaultProcessDiagramGenerator();
             BufferedImage bufferedImage = diagramGenerator.generateImage(bpmnModel, DEFAULT_IMAGE_TYPE, Collections.emptyList(),
                     Collections.emptyList(), DEFAULT_FONT, DEFAULT_FONT, DEFAULT_FONT,
-                    ClassLoader.getSystemClassLoader(), 1.0, false);
+                    ClassLoader.getSystemClassLoader(), 1.0, true);
             return ImageGenerator.createByteArrayForImage(bufferedImage, DEFAULT_IMAGE_TYPE);
         } catch (JsonProcessingException e) {
             log.error("创建流程图片失败， Model ID: {}", model.getModelId(), e);
