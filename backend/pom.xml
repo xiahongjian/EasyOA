@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <project
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>tech.hongjian</groupId>
@@ -109,11 +109,11 @@
             <version>${flowable.version}</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.flowable</groupId>-->
-<!--            <artifactId>flowable-ui-common</artifactId>-->
-<!--            <version>${flowable.version}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.flowable</groupId>-->
+        <!--            <artifactId>flowable-ui-common</artifactId>-->
+        <!--            <version>${flowable.version}</version>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>org.flowable</groupId>
@@ -140,18 +140,6 @@
             <version>${commons-collections.version}</version>
         </dependency>
 
-
-        <!--        <dependency>-->
-<!--            <groupId>org.flowable</groupId>-->
-<!--            <artifactId>flowable-ui-modeler-rest</artifactId>-->
-<!--            <version>${flowable.version}</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.flowable</groupId>-->
-<!--            <artifactId>flowable-ui-modeler-conf</artifactId>-->
-<!--            <version>${flowable.version}</version>-->
-<!--        </dependency>-->
 
     </dependencies>
 

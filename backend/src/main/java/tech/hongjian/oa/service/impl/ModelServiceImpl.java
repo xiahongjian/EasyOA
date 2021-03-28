@@ -3,7 +3,9 @@ package tech.hongjian.oa.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,12 +18,14 @@ import org.flowable.validation.ProcessValidator;
 import org.flowable.validation.ProcessValidatorFactory;
 import org.flowable.validation.ValidationError;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.Model;
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.entity.enums.ModelType;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.ModelMapper;
+import tech.hongjian.oa.service.ModelImageService;
 import tech.hongjian.oa.service.ModelService;
 import tech.hongjian.oa.util.CommonUtil;
 import tech.hongjian.oa.util.WebUtil;
@@ -39,7 +43,7 @@ import java.util.Map;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author xiahongjian
@@ -48,9 +52,12 @@ import java.util.Map;
 @Slf4j
 @Service
 public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements ModelService {
-
     protected BpmnXMLConverter bpmnXmlConverter = new BpmnXMLConverter();
     protected BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
+    protected ObjectMapper objectMapper = new ObjectMapper();
+
+    @Setter(onMethod_ = {@Autowired})
+    private ModelImageService modelImageService;
 
     @Override
     public boolean modelExisted(String modelId, ModelType modelType) {
@@ -62,7 +69,35 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         Model entity = new Model();
         BeanUtils.copyProperties(model, entity);
         CommonUtil.setEntityDefault(entity, createdBy);
-        save(entity);
+        entity.setVersion(1);
+
+        if (StringUtils.isNotEmpty(model.getModelEditorJson())) {
+
+            // Parse json to java
+            ObjectNode jsonNode = null;
+            try {
+                jsonNode = (ObjectNode) objectMapper.readTree(entity.getModelEditorJson());
+            } catch (Exception e) {
+                log.error("Could not deserialize json model", e);
+                throw new CommonServiceException("Could not deserialize json model");
+            }
+
+            if (entity.getModelType() == ModelType.BPMN) {
+
+                // Thumbnail
+                byte[] thumbnail = modelImageService.generateThumbnailImage(entity);
+                if (thumbnail != null) {
+                    entity.setThumbnail(thumbnail);
+                }
+
+                save(entity);
+
+                // Relations
+//                handleBpmnProcessFormModelRelations(model, jsonNode);
+//                handleBpmnProcessDecisionTaskModelRelations(model, jsonNode);
+
+            }
+        }
         return entity;
     }
 
@@ -71,13 +106,21 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         Model entity = new Model();
         BeanUtils.copyProperties(model, entity);
         CommonUtil.setUpdateDefault(entity, updatedBy);
-        entity.setVersion(1);
         updateById(entity);
         return entity;
     }
 
     @Override
-    public Model importModel(InputStream inputStream) {
+    public void deleteModel(Integer id) {
+        Model byId = getById(id);
+        if (byId == null) {
+            throw new CommonServiceException("ID为" + id + "的模板不存在。");
+        }
+        removeById(id);
+    }
+
+    @Override
+    public Model importModel(InputStream inputStream, String comment) {
         XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
         try {
             InputStreamReader xmlIn = new InputStreamReader(inputStream, "UTF-8");
@@ -118,6 +161,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
             newModel.setModelType(ModelType.BPMN);
             newModel.setDescription(description);
             newModel.setModelEditorJson(modelNode.toString());
+            newModel.setModelComment(comment);
             // TODO
 
             return createModel(newModel, currentUser.getId());
@@ -125,6 +169,15 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
             log.warn("导入流程模板失败，原因：{}", e.getMessage(), e);
             throw new CommonServiceException("导入流程模板失败，原因：" + e.getMessage());
         }
+    }
+
+    @Override
+    public Model getModel(Integer id) {
+        Model byId = getById(id);
+        if (byId == null) {
+            throw new CommonServiceException("ID为" + id + "的流程模板不存在。");
+        }
+        return byId;
     }
 
     @Override
@@ -139,5 +192,4 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         }
         return baseMapper.selectByParams(new Page<>((page - 1) * limit, limit), params);
     }
-
 }

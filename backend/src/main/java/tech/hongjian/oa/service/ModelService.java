@@ -23,7 +23,12 @@ public interface ModelService extends IService<Model> {
 
     Model updateModel(Model model, Integer updatedBy);
 
-    Model importModel(InputStream inputStream);
+    void deleteModel(Integer id);
+
+    Model importModel(InputStream inputStream, String comment);
+
+    Model getModel(Integer id);
+
 
     IPage<Model> findByParams(int page, int limit, ModelType modelType, String key, String name);
 }
