@@ -189,7 +189,7 @@
         </div>
       </el-dialog>
 
-      <el-dialog title="流程图片" :visible.sync="imageDialogOpen" :close-on-click-modal="false" width="800px">
+      <el-dialog title="流程图片" :visible.sync="imageDialogOpen" width="1000px" height="500px">
         <el-image :src="imageUrl">
           <div slot="placeholder" class="image-slot">
             加载中<span class="dot">...</span>
