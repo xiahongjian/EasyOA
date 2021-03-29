@@ -1,11 +1,7 @@
 package tech.hongjian.oa.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import liquibase.pro.packaged.O;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.Process;
@@ -13,9 +9,11 @@ import org.flowable.bpmn.model.*;
 import org.flowable.cmmn.model.CmmnModel;
 import org.flowable.editor.language.json.converter.BpmnJsonConverter;
 import org.flowable.image.impl.DefaultProcessDiagramGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.Model;
 import tech.hongjian.oa.service.ModelImageService;
+import tech.hongjian.oa.service.ModelService;
 import tech.hongjian.oa.util.ImageGenerator;
 
 import java.awt.image.BufferedImage;
@@ -39,44 +37,36 @@ public class ModelImageServiceImpl implements ModelImageService {
     public static final String DEFAULT_IMAGE_TYPE = "png";
 
 
+    @Setter(onMethod_ = {@Autowired})
+    private ModelService modelService;
+
+
     @Override
     public byte[] generateThumbnailImage(Model model) {
-        try {
-            JsonNode editorJsonNode = objectMapper.readTree(model.getModelEditorJson());
-            BpmnModel bpmnModel = bpmnJsonConverter.convertToBpmnModel(editorJsonNode);
+        BpmnModel bpmnModel = modelService.getBpmnModel(model);
 
-            double scaleFactor = 1.0;
-            GraphicInfo diagramInfo = calculateDiagramSize(bpmnModel);
-            if (diagramInfo.getWidth() > THUMBNAIL_WIDTH) {
-                scaleFactor = diagramInfo.getWidth() / THUMBNAIL_WIDTH;
-                scaleDiagram(bpmnModel, scaleFactor);
-            }
+        double scaleFactor = 1.0;
+        GraphicInfo diagramInfo = calculateDiagramSize(bpmnModel);
+        if (diagramInfo.getWidth() > THUMBNAIL_WIDTH) {
+            scaleFactor = diagramInfo.getWidth() / THUMBNAIL_WIDTH;
+            scaleDiagram(bpmnModel, scaleFactor);
+        }
 
-            BufferedImage modelImage = ImageGenerator.createImage(bpmnModel, scaleFactor);
-            if (modelImage != null) {
-                return ImageGenerator.createByteArrayForImage(modelImage, "png");
-            }
-        } catch (Exception e) {
-            log.error("创建缩略图失败， Model ID: {}", model.getId(), e);
+        BufferedImage modelImage = ImageGenerator.createImage(bpmnModel, scaleFactor);
+        if (modelImage != null) {
+            return ImageGenerator.createByteArrayForImage(modelImage, "png");
         }
         return null;
     }
 
     @Override
     public byte[] generateProcessImage(Model model) {
-        try {
-            JsonNode editorJsonNode = objectMapper.readTree(model.getModelEditorJson());
-            BpmnModel bpmnModel = bpmnJsonConverter.convertToBpmnModel(editorJsonNode);
-            DefaultProcessDiagramGenerator diagramGenerator = new DefaultProcessDiagramGenerator();
-            BufferedImage bufferedImage = diagramGenerator.generateImage(bpmnModel, DEFAULT_IMAGE_TYPE, Collections.emptyList(),
-                    Collections.emptyList(), DEFAULT_FONT, DEFAULT_FONT, DEFAULT_FONT,
-                    ClassLoader.getSystemClassLoader(), 1.0, true);
-            return ImageGenerator.createByteArrayForImage(bufferedImage, DEFAULT_IMAGE_TYPE);
-        } catch (JsonProcessingException e) {
-            log.error("创建流程图片失败， Model ID: {}", model.getModelId(), e);
-        }
-
-        return new byte[0];
+        BpmnModel bpmnModel = modelService.getBpmnModel(model);
+        DefaultProcessDiagramGenerator diagramGenerator = new DefaultProcessDiagramGenerator();
+        BufferedImage bufferedImage = diagramGenerator.generateImage(bpmnModel, DEFAULT_IMAGE_TYPE, Collections.emptyList(),
+                Collections.emptyList(), DEFAULT_FONT, DEFAULT_FONT, DEFAULT_FONT,
+                ClassLoader.getSystemClassLoader(), 1.0, true);
+        return ImageGenerator.createByteArrayForImage(bufferedImage, DEFAULT_IMAGE_TYPE);
     }
 
     protected GraphicInfo calculateDiagramSize(BpmnModel bpmnModel) {

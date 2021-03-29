@@ -39,6 +39,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,16 +75,6 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         entity.setVersion(1);
 
         if (StringUtils.isNotEmpty(model.getModelEditorJson())) {
-
-            // Parse json to java
-            ObjectNode jsonNode = null;
-            try {
-                jsonNode = (ObjectNode) objectMapper.readTree(entity.getModelEditorJson());
-            } catch (Exception e) {
-                log.error("Could not deserialize json model", e);
-                throw new CommonServiceException("Could not deserialize json model");
-            }
-
             if (entity.getModelType() == ModelType.BPMN) {
 
                 // Thumbnail
@@ -125,7 +116,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
     public Model importModel(InputStream inputStream, String comment) {
         XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
         try {
-            InputStreamReader xmlIn = new InputStreamReader(inputStream, "UTF-8");
+            InputStreamReader xmlIn = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             XMLStreamReader xtr = xif.createXMLStreamReader(xmlIn);
             BpmnModel bpmnModel = bpmnXmlConverter.convertToBpmnModel(xtr);
 
@@ -167,9 +158,19 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
             // TODO
 
             return createModel(newModel, currentUser.getId());
-        } catch (UnsupportedEncodingException | XMLStreamException e) {
+        } catch (XMLStreamException e) {
             log.warn("导入流程模板失败，原因：{}", e.getMessage(), e);
             throw new CommonServiceException("导入流程模板失败，原因：" + e.getMessage());
+        }
+    }
+
+    @Override
+    public BpmnModel getBpmnModel(Model model) {
+        try {
+            JsonNode editorJsonNode = objectMapper.readTree(model.getModelEditorJson());
+            return bpmnJsonConverter.convertToBpmnModel(editorJsonNode);
+        } catch (JsonProcessingException e) {
+            throw new CommonServiceException("转化成BPMN Model失败，{}" + e.getMessage(), e);
         }
     }
 
@@ -190,13 +191,8 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
 
     @Override
     public byte[] getXmlData(Model model) {
-        try {
-            JsonNode editorJsonNode = objectMapper.readTree(model.getModelEditorJson());
-            BpmnModel bpmnModel = bpmnJsonConverter.convertToBpmnModel(editorJsonNode);
-            return bpmnXmlConverter.convertToXML(bpmnModel);
-        } catch (JsonProcessingException e) {
-            throw new CommonServiceException("获取流程定义XML数据失败，{}" + e.getMessage(), e);
-        }
+        BpmnModel bpmnModel = getBpmnModel(model);
+        return bpmnXmlConverter.convertToXML(bpmnModel);
     }
 
     @Override
@@ -209,6 +205,6 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         if (StringUtils.isNotBlank(name)) {
             params.put("name", CommonUtil.wrapperWithPercent(name));
         }
-        return baseMapper.selectByParams(new Page<>((page - 1) * limit, limit), params);
+        return baseMapper.selectByParams(new Page<>((page - 1L) * limit, limit), params);
     }
 }
