@@ -3,9 +3,7 @@ package tech.hongjian.oa.controller;
 
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tech.hongjian.oa.entity.Model;
@@ -14,9 +12,9 @@ import tech.hongjian.oa.model.R;
 import tech.hongjian.oa.service.ModelImageService;
 import tech.hongjian.oa.service.ModelService;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Base64;
 
 /**
  * <p>
@@ -53,10 +51,15 @@ public class ModelController {
         return R.ok();
     }
 
+    // xml 下载
     @GetMapping("/{id}/xml")
-    public R getProcessModelXml(@PathVariable Integer id) {
-
-        return R.ok();
+    public void getProcessModelXml(@PathVariable Integer id, HttpServletResponse response) throws IOException {
+        Model model = modelService.getModel(id);
+        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        response.addHeader("Content-Disposition", "attachment;fileName=" + model.getModelId() + ".bpmn20.xml");
+        ServletOutputStream outputStream = response.getOutputStream();
+        outputStream.write(modelService.getXmlData(model));
+        outputStream.flush();
     }
 
     @GetMapping("/{id}/image")
@@ -64,6 +67,9 @@ public class ModelController {
         Model model = modelService.getModel(id);
         byte[] bytes = modelImageService.generateProcessImage(model);
         response.setContentType(MediaType.IMAGE_PNG_VALUE);
-        response.getOutputStream().write(bytes);
+        ServletOutputStream outputStream = response.getOutputStream();
+        outputStream.write(bytes);
+        outputStream.flush();
     }
+
 }

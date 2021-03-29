@@ -3,6 +3,8 @@ package tech.hongjian.oa.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Setter;
@@ -178,6 +180,23 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
             throw new CommonServiceException("ID为" + id + "的流程模板不存在。");
         }
         return byId;
+    }
+
+    @Override
+    public byte[] getXmlData(Integer id) {
+        Model model = getModel(id);
+        return getXmlData(model);
+    }
+
+    @Override
+    public byte[] getXmlData(Model model) {
+        try {
+            JsonNode editorJsonNode = objectMapper.readTree(model.getModelEditorJson());
+            BpmnModel bpmnModel = bpmnJsonConverter.convertToBpmnModel(editorJsonNode);
+            return bpmnXmlConverter.convertToXML(bpmnModel);
+        } catch (JsonProcessingException e) {
+            throw new CommonServiceException("获取流程定义XML数据失败，{}" + e.getMessage(), e);
+        }
     }
 
     @Override

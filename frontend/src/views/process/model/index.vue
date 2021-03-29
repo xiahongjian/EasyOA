@@ -134,9 +134,9 @@
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
-                    :command="buildCommand('showXML', scope.row)"
+                    :command="buildCommand('downloadXML', scope.row)"
                     icon="el-icon-document"
-                  >查看XML</el-dropdown-item>
+                  >下载XML</el-dropdown-item>
                   <el-dropdown-item
                     :command="buildCommand('showImage', scope.row)"
                     icon="el-icon-picture-outline"
@@ -341,13 +341,25 @@ export default {
     handleExceed(file, fileList) {
       this.msgInfo('每次只能上传一个文件。')
     },
-
     showImage(record) {
       this.imageUrl = `processes/models/${record.id}/image`
       this.imageDialogOpen = true
     },
     closeImage() {
       this.imageDialogOpen = false
+    },
+    downloadXML(record) {
+      const elink = document.createElement('a')
+      elink.style.display = 'none'
+      elink.target = '_blank'
+      elink.href = `/processes/models/${record.id}/xml`
+      document.body.appendChild(elink)
+      elink.click()
+      URL.revokeObjectURL(elink.href) // 释放URL 对象
+      document.body.removeChild(elink)
+    },
+    deployProcess(record) {
+
     }
   }
 }
