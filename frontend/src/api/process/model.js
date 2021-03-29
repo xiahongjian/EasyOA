@@ -56,13 +56,6 @@ export function deleteModel(id) {
 export function deployprocesses(id) {
   return request({
     url: `/processes/models/${id}/deploy`,
-    method: 'put'
-  })
-}
-
-export function getProcessImage(id) {
-  return request({
-    url: `/processes/models/${id}/image`,
     method: 'get'
   })
 }

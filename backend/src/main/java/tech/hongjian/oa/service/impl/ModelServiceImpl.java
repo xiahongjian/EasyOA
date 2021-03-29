@@ -16,6 +16,7 @@ import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.bpmn.model.Process;
 import org.flowable.editor.language.json.converter.BpmnJsonConverter;
+import org.flowable.engine.RepositoryService;
 import org.flowable.validation.ProcessValidator;
 import org.flowable.validation.ProcessValidatorFactory;
 import org.flowable.validation.ValidationError;
@@ -38,7 +39,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +58,9 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
     protected BpmnXMLConverter bpmnXmlConverter = new BpmnXMLConverter();
     protected BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
     protected ObjectMapper objectMapper = new ObjectMapper();
+
+    @Setter(onMethod_ = {@Autowired})
+    private RepositoryService repositoryService;
 
     @Setter(onMethod_ = {@Autowired})
     private ModelImageService modelImageService;
@@ -206,5 +209,17 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
             params.put("name", CommonUtil.wrapperWithPercent(name));
         }
         return baseMapper.selectByParams(new Page<>((page - 1L) * limit, limit), params);
+    }
+
+    @Override
+    public void deploy(Integer id) {
+        Model model = getModel(id);
+        BpmnModel bpmnModel = getBpmnModel(model);
+
+        repositoryService.createDeployment()
+                .name(model.getName())
+                .key(model.getModelId())
+                .addBpmnModel(model.getModelId() + ".bpmn20.xml", bpmnModel)
+                .deploy();
     }
 }

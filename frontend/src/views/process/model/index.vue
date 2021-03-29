@@ -204,7 +204,7 @@
 </template>
 
 <script>
-import { listModel, createModel, deleteModel, updateModel } from '@/api/process/model'
+import { listModel, createModel, deleteModel, updateModel, deployprocesses } from '@/api/process/model'
 export default {
   name: 'ProcessModel',
   data() {
@@ -359,7 +359,16 @@ export default {
       document.body.removeChild(elink)
     },
     deployProcess(record) {
-
+      this.$confirm('是否确认部署此流程模板？', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return deployprocesses(record.id)
+      }).then(() => {
+        this.handleQuery()
+        this.msgSuccess('部署成功')
+      }).catch(() => {})
     }
   }
 }

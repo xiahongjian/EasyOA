@@ -18,7 +18,7 @@ import java.io.IOException;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author xiahongjian
@@ -72,4 +72,9 @@ public class ModelController {
         outputStream.flush();
     }
 
+    @GetMapping("/{id}/deploy")
+    public R deployProcess(@PathVariable Integer id) {
+        modelService.deploy(id);
+        return R.ok();
+    }
 }

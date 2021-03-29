@@ -37,4 +37,6 @@ public interface ModelService extends IService<Model> {
     byte[] getXmlData(Model model);
 
     IPage<Model> findByParams(int page, int limit, ModelType modelType, String key, String name);
+
+    void deploy(Integer id);
 }
