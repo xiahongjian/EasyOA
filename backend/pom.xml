@@ -16,7 +16,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <activiti.version>7.0.0.SR1</activiti.version>
         <mp.version>3.3.2</mp.version>
         <jwt.version>3.10.3</jwt.version>
         <flowable.version>6.6.0</flowable.version>

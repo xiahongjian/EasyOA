@@ -40,9 +40,20 @@ public class ModelController {
     }
 
     @PostMapping("")
-    public R updateProcessModel(@RequestParam("file") MultipartFile file, @RequestParam("comment") String comment) throws IOException {
+    public R updateProcessModel(@RequestParam MultipartFile file, @RequestParam(required = false) String comment) throws IOException {
         Model model = modelService.importModel(file.getInputStream(), comment);
         return R.ok(model);
+    }
+
+    @GetMapping("/{id}")
+    public R getProcessModel(@PathVariable Integer id) {
+        return R.ok(modelService.getModel(id));
+    }
+
+    @PutMapping("/{id}")
+    public R updateProcessModel(@PathVariable Integer id, @RequestParam(required = false) MultipartFile file, @RequestParam(required = false) String comment) throws IOException {
+        modelService.updateModel(id, file == null ? null : file.getInputStream(), comment);
+        return R.ok();
     }
 
     @DeleteMapping("/{id}")

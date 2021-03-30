@@ -40,6 +40,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,6 +108,20 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
     }
 
     @Override
+    public Model updateModel(Integer id, InputStream inputStream, String comment) {
+        Model byId = getById(id);
+        if (inputStream != null) {
+            Model model = parseXml(inputStream);
+            BeanUtils.copyProperties(model, byId);
+        }
+        byId.setUpdatedBy(WebUtil.currentUser().getId());
+        byId.setUpdatedAt(LocalDateTime.now());
+        byId.setModelComment(comment);
+        updateById(byId);
+        return byId;
+    }
+
+    @Override
     public void deleteModel(Integer id) {
         Model byId = getById(id);
         if (byId == null) {
@@ -115,8 +130,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         removeById(id);
     }
 
-    @Override
-    public Model importModel(InputStream inputStream, String comment) {
+    private Model parseXml(InputStream inputStream) {
         XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
         try {
             InputStreamReader xmlIn = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
@@ -145,26 +159,31 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
                 name = process.getName();
             }
             String description = process.getDocumentation();
-            User currentUser = WebUtil.currentUser();
             //查询是否已经存在流程模板
             Model newModel = new Model();
-            if (modelExisted(process.getId(), ModelType.BPMN)) {
-                throw new CommonServiceException("流程ID为: " + process.getId() +
-                        "的流程模板已经存在。");
-            }
             newModel.setName(name);
             newModel.setModelId(process.getId());
             newModel.setModelType(ModelType.BPMN);
             newModel.setDescription(description);
             newModel.setModelEditorJson(modelNode.toString());
-            newModel.setModelComment(comment);
-            // TODO
 
-            return createModel(newModel, currentUser.getId());
+            return newModel;
         } catch (XMLStreamException e) {
             log.warn("导入流程模板失败，原因：{}", e.getMessage(), e);
             throw new CommonServiceException("导入流程模板失败，原因：" + e.getMessage());
         }
+    }
+
+    @Override
+    public Model importModel(InputStream inputStream, String comment) {
+        Model model = parseXml(inputStream);
+        //查询是否已经存在流程模板
+        if (modelExisted(model.getModelId(), ModelType.BPMN)) {
+            throw new CommonServiceException("流程ID为: " + model.getModelId() +
+                    "的流程模板已经存在。");
+        }
+        User currentUser = WebUtil.currentUser();
+        return createModel(model, currentUser.getId());
     }
 
     @Override

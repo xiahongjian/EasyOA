@@ -10,7 +10,9 @@ export function listModel(query) {
 
 function handleFormData(form) {
   const data = new FormData()
-  data.append('file', form.file)
+  if (form.file) {
+    data.append('file', form.file)
+  }
   data.append('comment', form.comment)
   return data
 }
@@ -26,7 +28,7 @@ export function createModel(form) {
 
 export function updateModel(id, form) {
   return request({
-    url: `/processes/meodel/${id}`,
+    url: `/processes/models/${id}`,
     method: 'put',
     data: handleFormData(form)
   })
@@ -35,7 +37,7 @@ export function updateModel(id, form) {
 export function deleteModel(id) {
   if (id instanceof Array) {
     return request({
-      url: '/processes/modelss',
+      url: '/processes/models',
       method: 'delete',
       params: {
         ids: id + ''

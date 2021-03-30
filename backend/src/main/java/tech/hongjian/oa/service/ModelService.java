@@ -3,6 +3,7 @@ package tech.hongjian.oa.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.flowable.bpmn.model.BpmnModel;
+import org.springframework.web.multipart.MultipartFile;
 import tech.hongjian.oa.entity.Model;
 import tech.hongjian.oa.entity.enums.ModelType;
 
@@ -23,6 +24,8 @@ public interface ModelService extends IService<Model> {
     Model createModel(Model model, Integer createdBy);
 
     Model updateModel(Model model, Integer updatedBy);
+
+    Model updateModel(Integer id, InputStream inputStream, String comment);
 
     void deleteModel(Integer id);
 
