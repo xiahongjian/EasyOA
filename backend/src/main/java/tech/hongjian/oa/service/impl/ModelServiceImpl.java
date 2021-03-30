@@ -117,7 +117,9 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         byId.setUpdatedBy(WebUtil.currentUser().getId());
         byId.setUpdatedAt(LocalDateTime.now());
         byId.setModelComment(comment);
-        updateById(byId);
+        if (!updateById(byId)) {
+            throw new CommonServiceException("更新失败。");
+        }
         return byId;
     }
 
