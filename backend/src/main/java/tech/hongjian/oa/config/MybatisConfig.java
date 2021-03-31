@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+import com.baomidou.mybatisplus.extension.plugins.OptimisticLockerInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -53,5 +54,10 @@ public class MybatisConfig {
     @Bean
     public PaginationInterceptor paginationInterceptor() {
         return new PaginationInterceptor();
+    }
+
+    @Bean
+    public OptimisticLockerInterceptor optimisticLockerInterceptor() {
+        return  new OptimisticLockerInterceptor();
     }
 }

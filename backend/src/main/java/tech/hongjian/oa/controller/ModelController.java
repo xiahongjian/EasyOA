@@ -3,18 +3,22 @@ package tech.hongjian.oa.controller;
 
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tech.hongjian.oa.entity.Model;
 import tech.hongjian.oa.entity.enums.ModelType;
 import tech.hongjian.oa.model.R;
+import tech.hongjian.oa.service.ModelImageService;
 import tech.hongjian.oa.service.ModelService;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author xiahongjian
@@ -22,11 +26,12 @@ import java.io.IOException;
  */
 @Setter(onMethod_ = {@Autowired})
 @RestController
-@RequestMapping("/process")
+@RequestMapping("/processes/models")
 public class ModelController {
     private ModelService modelService;
+    private ModelImageService modelImageService;
 
-    @GetMapping("/models")
+    @GetMapping("")
     public R listModel(@RequestParam(required = false) String modelId,
                        @RequestParam(required = false) String name,
                        @RequestParam Integer page,
@@ -34,9 +39,56 @@ public class ModelController {
         return R.ok(modelService.findByParams(page, limit, ModelType.BPMN, modelId, name));
     }
 
-    @PostMapping("/model")
-    public R updateProcessModel(@RequestParam("file") MultipartFile file, @RequestParam("comment") String comment) throws IOException {
-        Model model = modelService.importModel(file.getInputStream());
+    @PostMapping("")
+    public R updateProcessModel(@RequestParam MultipartFile file,
+                                @RequestParam(required = false) String comment) throws IOException {
+        Model model = modelService.importModel(file.getInputStream(), comment);
         return R.ok(model);
+    }
+
+    @GetMapping("/{id}")
+    public R getProcessModel(@PathVariable Integer id) {
+        return R.ok(modelService.getModel(id));
+    }
+
+    @PutMapping("/{id}")
+    public R updateProcessModel(@PathVariable Integer id,
+                                @RequestParam(required = false) MultipartFile file,
+                                @RequestParam(required = false) String comment) throws IOException {
+        modelService.updateModel(id, file == null ? null : file.getInputStream(), comment);
+        return R.ok();
+    }
+
+    @DeleteMapping("/{id}")
+    public R deleteProcessModel(@PathVariable Integer id) {
+        modelService.deleteModel(id);
+        return R.ok();
+    }
+
+    // xml 下载
+    @GetMapping("/{id}/xml")
+    public void getProcessModelXml(@PathVariable Integer id, HttpServletResponse response) throws IOException {
+        Model model = modelService.getModel(id);
+        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        response.addHeader("Content-Disposition", "attachment;fileName=" + model.getModelId() + ".bpmn20.xml");
+        ServletOutputStream outputStream = response.getOutputStream();
+        outputStream.write(modelService.getXmlData(model));
+        outputStream.flush();
+    }
+
+    @GetMapping("/{id}/image")
+    public void getProcessModelImage(@PathVariable Integer id, HttpServletResponse response) throws IOException {
+        Model model = modelService.getModel(id);
+        byte[] bytes = modelImageService.generateProcessImage(model);
+        response.setContentType(MediaType.IMAGE_PNG_VALUE);
+        ServletOutputStream outputStream = response.getOutputStream();
+        outputStream.write(bytes);
+        outputStream.flush();
+    }
+
+    @GetMapping("/{id}/deploy")
+    public R deployProcess(@PathVariable Integer id) {
+        modelService.deploy(id);
+        return R.ok();
     }
 }

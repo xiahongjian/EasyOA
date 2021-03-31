@@ -3,7 +3,11 @@ package tech.hongjian.oa.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -12,16 +16,19 @@ import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.bpmn.model.Process;
 import org.flowable.editor.language.json.converter.BpmnJsonConverter;
+import org.flowable.engine.RepositoryService;
 import org.flowable.validation.ProcessValidator;
 import org.flowable.validation.ProcessValidatorFactory;
 import org.flowable.validation.ValidationError;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.Model;
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.entity.enums.ModelType;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.ModelMapper;
+import tech.hongjian.oa.service.ModelImageService;
 import tech.hongjian.oa.service.ModelService;
 import tech.hongjian.oa.util.CommonUtil;
 import tech.hongjian.oa.util.WebUtil;
@@ -32,14 +39,15 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author xiahongjian
@@ -48,9 +56,15 @@ import java.util.Map;
 @Slf4j
 @Service
 public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements ModelService {
-
     protected BpmnXMLConverter bpmnXmlConverter = new BpmnXMLConverter();
     protected BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
+    protected ObjectMapper objectMapper = new ObjectMapper();
+
+    @Setter(onMethod_ = {@Autowired})
+    private RepositoryService repositoryService;
+
+    @Setter(onMethod_ = {@Autowired})
+    private ModelImageService modelImageService;
 
     @Override
     public boolean modelExisted(String modelId, ModelType modelType) {
@@ -62,8 +76,25 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         Model entity = new Model();
         BeanUtils.copyProperties(model, entity);
         CommonUtil.setEntityDefault(entity, createdBy);
-        model.setVersion(1);
-        save(entity);
+        entity.setVersion(1);
+
+        if (StringUtils.isNotEmpty(model.getModelEditorJson())) {
+            if (entity.getModelType() == ModelType.BPMN) {
+
+                // Thumbnail
+                byte[] thumbnail = modelImageService.generateThumbnailImage(entity);
+                if (thumbnail != null) {
+                    entity.setThumbnail(thumbnail);
+                }
+
+                save(entity);
+
+                // Relations
+//                handleBpmnProcessFormModelRelations(model, jsonNode);
+//                handleBpmnProcessDecisionTaskModelRelations(model, jsonNode);
+
+            }
+        }
         return entity;
     }
 
@@ -72,16 +103,39 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         Model entity = new Model();
         BeanUtils.copyProperties(model, entity);
         CommonUtil.setUpdateDefault(entity, updatedBy);
-        entity.setVersion(1);
         updateById(entity);
         return entity;
     }
 
     @Override
-    public Model importModel(InputStream inputStream) {
+    public Model updateModel(Integer id, InputStream inputStream, String comment) {
+        Model byId = getById(id);
+        if (inputStream != null) {
+            Model model = parseXml(inputStream);
+            BeanUtils.copyProperties(model, byId);
+        }
+        byId.setUpdatedBy(WebUtil.currentUser().getId());
+        byId.setUpdatedAt(LocalDateTime.now());
+        byId.setModelComment(comment);
+        if (!updateById(byId)) {
+            throw new CommonServiceException("更新失败。");
+        }
+        return byId;
+    }
+
+    @Override
+    public void deleteModel(Integer id) {
+        Model byId = getById(id);
+        if (byId == null) {
+            throw new CommonServiceException("ID为" + id + "的模板不存在。");
+        }
+        removeById(id);
+    }
+
+    private Model parseXml(InputStream inputStream) {
         XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
         try {
-            InputStreamReader xmlIn = new InputStreamReader(inputStream, "UTF-8");
+            InputStreamReader xmlIn = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             XMLStreamReader xtr = xif.createXMLStreamReader(xmlIn);
             BpmnModel bpmnModel = bpmnXmlConverter.convertToBpmnModel(xtr);
 
@@ -107,25 +161,62 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
                 name = process.getName();
             }
             String description = process.getDocumentation();
-            User currentUser = WebUtil.currentUser();
             //查询是否已经存在流程模板
             Model newModel = new Model();
-            if (modelExisted(process.getId(), ModelType.BPMN)) {
-                throw new CommonServiceException("流程ID为: " + process.getId() +
-                        "的流程模板已经存在。");
-            }
             newModel.setName(name);
             newModel.setModelId(process.getId());
             newModel.setModelType(ModelType.BPMN);
             newModel.setDescription(description);
             newModel.setModelEditorJson(modelNode.toString());
-            // TODO
 
-            return createModel(newModel, currentUser.getId());
-        } catch (UnsupportedEncodingException | XMLStreamException e) {
+            return newModel;
+        } catch (XMLStreamException e) {
             log.warn("导入流程模板失败，原因：{}", e.getMessage(), e);
             throw new CommonServiceException("导入流程模板失败，原因：" + e.getMessage());
         }
+    }
+
+    @Override
+    public Model importModel(InputStream inputStream, String comment) {
+        Model model = parseXml(inputStream);
+        //查询是否已经存在流程模板
+        if (modelExisted(model.getModelId(), ModelType.BPMN)) {
+            throw new CommonServiceException("流程ID为: " + model.getModelId() +
+                    "的流程模板已经存在。");
+        }
+        User currentUser = WebUtil.currentUser();
+        return createModel(model, currentUser.getId());
+    }
+
+    @Override
+    public BpmnModel getBpmnModel(Model model) {
+        try {
+            JsonNode editorJsonNode = objectMapper.readTree(model.getModelEditorJson());
+            return bpmnJsonConverter.convertToBpmnModel(editorJsonNode);
+        } catch (JsonProcessingException e) {
+            throw new CommonServiceException("转化成BPMN Model失败，{}" + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Model getModel(Integer id) {
+        Model byId = getById(id);
+        if (byId == null) {
+            throw new CommonServiceException("ID为" + id + "的流程模板不存在。");
+        }
+        return byId;
+    }
+
+    @Override
+    public byte[] getXmlData(Integer id) {
+        Model model = getModel(id);
+        return getXmlData(model);
+    }
+
+    @Override
+    public byte[] getXmlData(Model model) {
+        BpmnModel bpmnModel = getBpmnModel(model);
+        return bpmnXmlConverter.convertToXML(bpmnModel);
     }
 
     @Override
@@ -138,7 +229,18 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         if (StringUtils.isNotBlank(name)) {
             params.put("name", CommonUtil.wrapperWithPercent(name));
         }
-        return baseMapper.selectByParams(new Page<>((page - 1) * limit, limit), params);
+        return baseMapper.selectByParams(new Page<>((page - 1L) * limit, limit), params);
     }
 
+    @Override
+    public void deploy(Integer id) {
+        Model model = getModel(id);
+        BpmnModel bpmnModel = getBpmnModel(model);
+
+        repositoryService.createDeployment()
+                .name(model.getName())
+                .key(model.getModelId())
+                .addBpmnModel(model.getModelId() + ".bpmn20.xml", bpmnModel)
+                .deploy();
+    }
 }

@@ -2,6 +2,8 @@ package tech.hongjian.oa.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.flowable.bpmn.model.BpmnModel;
+import org.springframework.web.multipart.MultipartFile;
 import tech.hongjian.oa.entity.Model;
 import tech.hongjian.oa.entity.enums.ModelType;
 
@@ -23,7 +25,21 @@ public interface ModelService extends IService<Model> {
 
     Model updateModel(Model model, Integer updatedBy);
 
-    Model importModel(InputStream inputStream);
+    Model updateModel(Integer id, InputStream inputStream, String comment);
+
+    void deleteModel(Integer id);
+
+    Model importModel(InputStream inputStream, String comment);
+
+    BpmnModel getBpmnModel(Model model);
+
+    Model getModel(Integer id);
+
+    byte[] getXmlData(Integer id);
+
+    byte[] getXmlData(Model model);
 
     IPage<Model> findByParams(int page, int limit, ModelType modelType, String key, String name);
+
+    void deploy(Integer id);
 }

@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function listModel(query) {
   return request({
-    url: '/process/models',
+    url: '/processes/models',
     method: 'get',
     params: query
   })
@@ -10,14 +10,16 @@ export function listModel(query) {
 
 function handleFormData(form) {
   const data = new FormData()
-  data.append('file', form.file)
+  if (form.file) {
+    data.append('file', form.file)
+  }
   data.append('comment', form.comment)
   return data
 }
 
 export function createModel(form) {
   return request({
-    url: '/process/model',
+    url: '/processes/models',
     method: 'post',
     headers: { 'Content-Type': 'multipart/form-data' },
     data: handleFormData(form)
@@ -26,7 +28,7 @@ export function createModel(form) {
 
 export function updateModel(id, form) {
   return request({
-    url: `/process/meodel/${id}`,
+    url: `/processes/models/${id}`,
     method: 'put',
     data: handleFormData(form)
   })
@@ -35,7 +37,7 @@ export function updateModel(id, form) {
 export function deleteModel(id) {
   if (id instanceof Array) {
     return request({
-      url: '/process/models',
+      url: '/processes/models',
       method: 'delete',
       params: {
         ids: id + ''
@@ -44,7 +46,7 @@ export function deleteModel(id) {
   }
 
   return request({
-    url: `/process/model/${id}`,
+    url: `/processes/models/${id}`,
     method: 'delete'
   })
 }
@@ -53,9 +55,9 @@ export function deleteModel(id) {
  * @param {Number} id 流程模板ID
  * @returns
  */
-export function deployProcess(id) {
+export function deployprocesses(id) {
   return request({
-    url: `/process/model/${id}/deploy`,
-    method: 'put'
+    url: `/processes/models/${id}/deploy`,
+    method: 'get'
   })
 }

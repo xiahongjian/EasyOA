@@ -3,7 +3,7 @@
     <template #wrapper>
       <el-card class="box-card">
         <el-form ref="queryForm" :inline="true" :model="queryParams">
-          <el-form-item label="流程ID" prop="modelId">
+          <el-form-item label="ID" prop="modelId">
             <el-input
               v-model="queryParams.modelId"
               clearable
@@ -12,7 +12,7 @@
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="流程名称" prop="name">
+          <el-form-item label="名称" prop="name">
             <el-input
               v-model="queryParams.name"
               clearable
@@ -36,73 +36,63 @@
               @click="handleCreate"
             >导入</el-button>
           </el-col>
-          <el-col :span="1.5">
-            <el-button
-              type="success"
-              icon="el-icon-refresh"
-              size="mini"
-              :disabled="single"
-              @click="handleUpdate"
-            >更新</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button
-              type="danger"
-              icon="el-icon-delete"
-              size="mini"
-              :disabled="multiple"
-              @click="handleDelete"
-            >删除</el-button>
-          </el-col>
         </el-row>
 
         <el-table
           ref="table"
           v-loading="loading"
           :data="records"
-          @selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection" width="55" align="center" />
+          <!-- <el-table-column type="selection" width="55" align="center" /> -->
           <el-table-column type="expand">
             <template slot-scope="props">
-              <el-form label-position="left" inline>
-                <el-form-item label="流程ID">
-                  <span>{{ props.row.modelId }}</span>
-                </el-form-item>
-                <el-form-item label="流程名称">
-                  <span>{{ props.row.name }}</span>
-                </el-form-item>
-                <el-form-item label="描述">
-                  <span>{{ props.row.description }}</span>
-                </el-form-item>
-                <el-form-item label="版本">
-                  <span>{{ props.row.version }}</span>
-                </el-form-item>
-                <el-form-item label="备注">
-                  <span>{{ props.row.comment }}</span>
-                </el-form-item>
-                <el-form-item label="创建者">
-                  <span>{{ props.row.updatedByUser.name }}</span>
-                </el-form-item>
-                <el-form-item label="创建时间">
-                  <span>{{ props.row.createdAt }}</span>
-                </el-form-item>
-                <el-form-item label="更新者">
-                  <span>{{ props.row.updatedByUser.name }}</span>
-                </el-form-item>
-                <el-form-item label="更新时间">
-                  <span>{{ props.row.updatedAt }}</span>
-                </el-form-item>
-              </el-form>
+              <el-row>
+                <el-col :span="12">
+                  <el-form label-position="right" label-width="80px">
+                    <el-form-item label="ID" class="no-margin">
+                      <span>{{ props.row.modelId }}</span>
+                    </el-form-item>
+                    <el-form-item label="名称" class="no-margin">
+                      <span>{{ props.row.name }}</span>
+                    </el-form-item>
+                    <el-form-item label="描述" class="no-margin">
+                      <span>{{ props.row.description }}</span>
+                    </el-form-item>
+                    <el-form-item label="版本" class="no-margin">
+                      <span>{{ props.row.version }}</span>
+                    </el-form-item>
+                    <el-form-item label="备注" class="no-margin">
+                      <span>{{ props.row.modelComment }}</span>
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+                <el-col :span="12">
+                  <el-form label-position="right" label-width="80px">
+                    <el-form-item label="创建者" class="no-margin">
+                      <span>{{ props.row.updatedByUser.name }}</span>
+                    </el-form-item>
+                    <el-form-item label="创建时间" class="no-margin">
+                      <span>{{ props.row.createdAt }}</span>
+                    </el-form-item>
+                    <el-form-item label="更新者" class="no-margin">
+                      <span>{{ props.row.updatedByUser.name }}</span>
+                    </el-form-item>
+                    <el-form-item label="更新时间" class="no-margin">
+                      <span>{{ props.row.updatedAt }}</span>
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+              </el-row>
+
             </template>
           </el-table-column>
-          <el-table-column label="流程ID" prop="modelId" width="150" />
-          <el-table-column label="流程名称" prop="name" :show-overflow-tooltip="true" />
+          <el-table-column label="ID" prop="modelId" width="150" />
+          <el-table-column label="名称" prop="name" :show-overflow-tooltip="true" />
           <el-table-column label="描述" prop="description" :show-overflow-tooltip="true" />
           <el-table-column label="版本" prop="version" />
-          <el-table-column label="备注" prop="comment" :show-overflow-tooltip="true" />
-          <el-table-column label="创建者" prop="createdByUser.name" />
-          <el-table-column label="创建时间" align="center" prop="createdAt" width="200px" />
+          <el-table-column label="备注" prop="modelComment" :show-overflow-tooltip="true" />
+          <!-- <el-table-column label="创建者" prop="createdByUser.name" />
+          <el-table-column label="创建时间" align="center" prop="createdAt" width="200px" /> -->
           <el-table-column label="更新者" prop="updatedByUser.name" />
           <el-table-column label="更新时间" align="center" prop="updatedAt" width="200px" />
           <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="300">
@@ -125,9 +115,9 @@
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item
-                    :command="buildCommand('showXML', scope.row)"
+                    :command="buildCommand('downloadXML', scope.row)"
                     icon="el-icon-document"
-                  >查看XML</el-dropdown-item>
+                  >下载XML</el-dropdown-item>
                   <el-dropdown-item
                     :command="buildCommand('showImage', scope.row)"
                     icon="el-icon-picture-outline"
@@ -152,9 +142,6 @@
 
       <el-dialog :title="title" :visible.sync="open" :close-on-click-modal="false" width="600px">
         <el-form ref="form" :model="form" label-position="top" :rules="rules">
-          <el-form-item label="备注" prop="comment">
-            <el-input v-model="form.comment" placeholder="请输入备注" type="textarea" :autosize="{ minRows: 6, maxRows: 6}" :maxlength="500" />
-          </el-form-item>
           <el-form-item prop="file">
             <el-upload
               drag
@@ -173,10 +160,24 @@
               <div slot="tip" class="el-upload__tip">只能上传xml和bpmn文件</div>
             </el-upload>
           </el-form-item>
+          <el-form-item label="备注" prop="comment">
+            <el-input v-model="form.comment" placeholder="请输入备注" type="textarea" :autosize="{ minRows: 6, maxRows: 6}" :maxlength="500" />
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="primary" @click="submitForm">确定</el-button>
           <el-button @click="cancel">取消</el-button>
+        </div>
+      </el-dialog>
+
+      <el-dialog title="流程图片" :visible.sync="imageDialogOpen" width="1000px" height="500px">
+        <el-image :src="imageUrl">
+          <div slot="placeholder" class="image-slot">
+            加载中<span class="dot">...</span>
+          </div>
+        </el-image>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="closeImage">关闭</el-button>
         </div>
       </el-dialog>
     </template>
@@ -184,7 +185,7 @@
 </template>
 
 <script>
-import { listModel, createModel, deleteModel, updateModel } from '@/api/process/model'
+import { listModel, createModel, deleteModel, updateModel, deployprocesses } from '@/api/process/model'
 export default {
   name: 'ProcessModel',
   data() {
@@ -192,9 +193,6 @@ export default {
       loading: true,
       isEdit: false,
       title: '',
-      ids: [],
-      single: true,
-      multiple: true,
       open: false,
 
       queryParams: {
@@ -213,14 +211,18 @@ export default {
       rules: {
         file: [{
           validator: (rule, value, callback) => {
-            if (!this.form.file) {
+            if (!this.form.file && this.id) {
               callback(new Error('上传文件不能为空'))
             }
             callback()
           },
           trigger: 'blur'
         }]
-      }
+      },
+
+      // image
+      imageDialogOpen: false,
+      imageUrl: undefined
     }
   },
   created() {
@@ -232,7 +234,13 @@ export default {
       this.listModel()
     },
     handleUpdate(row) {
-
+      this.reset()
+      this.title = '更新流程模板'
+      this.form = {
+        id: row.id,
+        comment: row.modelComment
+      }
+      this.open = true
     },
     handleCreate() {
       this.reset()
@@ -240,7 +248,7 @@ export default {
       this.open = true
     },
     handleDelete(row) {
-      const id = row && row.id || this.ids
+      const id = row.id
       this.$confirm('是否确认删除选择中的流程模板？', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -264,8 +272,10 @@ export default {
           if (resp.success) {
             this.msgSuccess(msg)
             this.handleQuery()
+            this.open = false
           } else {
             this.msgError(resp.message)
+            this.open = false
           }
         })
       })
@@ -291,11 +301,6 @@ export default {
     handleMoreAction(command) {
       return this[command.method](command.data)
     },
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length !== 1
-      this.multiple = !selection.length
-    },
 
     listModel() {
       listModel(this.queryParams).then(resp => {
@@ -314,6 +319,35 @@ export default {
     },
     handleExceed(file, fileList) {
       this.msgInfo('每次只能上传一个文件。')
+    },
+    showImage(record) {
+      this.imageUrl = `processes/models/${record.id}/image`
+      this.imageDialogOpen = true
+    },
+    closeImage() {
+      this.imageDialogOpen = false
+    },
+    downloadXML(record) {
+      const elink = document.createElement('a')
+      elink.style.display = 'none'
+      elink.target = '_blank'
+      elink.href = `/processes/models/${record.id}/xml`
+      document.body.appendChild(elink)
+      elink.click()
+      URL.revokeObjectURL(elink.href) // 释放URL 对象
+      document.body.removeChild(elink)
+    },
+    deployProcess(record) {
+      this.$confirm('是否确认部署此流程模板？', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return deployprocesses(record.id)
+      }).then(() => {
+        this.handleQuery()
+        this.msgSuccess('部署成功')
+      }).catch(() => {})
     }
   }
 }
@@ -326,8 +360,19 @@ export default {
 .upload-field .el-upload-dragger {
   width: 100%;
 }
-.able-expand label {
-    width: 90px;
-    color: #99a9bf;
-  }
+.expand-col {
+  font-size: 0;
+}
+.expand-col label {
+  width: 90px;
+  color: #99a9bf;
+}
+.expand-col .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+.no-margin {
+   margin-bottom: 0
+}
 </style>
