@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.Version;
 import tech.hongjian.oa.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import tech.hongjian.oa.entity.enums.ModelStatue;
 import tech.hongjian.oa.entity.enums.ModelType;
 
 /**
@@ -39,6 +40,8 @@ public class Model extends BaseEntityWithOperator {
 
     @Version
     private Integer version;
+
+    private ModelStatue status;
 
     // DB中不不在的字段
     @TableField(exist = false)

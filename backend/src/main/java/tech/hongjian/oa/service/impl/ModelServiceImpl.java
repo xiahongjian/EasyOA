@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.Model;
 import tech.hongjian.oa.entity.User;
+import tech.hongjian.oa.entity.enums.ModelStatue;
 import tech.hongjian.oa.entity.enums.ModelType;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.ModelMapper;
@@ -77,6 +78,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         BeanUtils.copyProperties(model, entity);
         CommonUtil.setEntityDefault(entity, createdBy);
         entity.setVersion(1);
+        entity.setStatus(ModelStatue.NOT_DEPLOYED);
 
         if (StringUtils.isNotEmpty(model.getModelEditorJson())) {
             if (entity.getModelType() == ModelType.BPMN) {
@@ -88,11 +90,6 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
                 }
 
                 save(entity);
-
-                // Relations
-//                handleBpmnProcessFormModelRelations(model, jsonNode);
-//                handleBpmnProcessDecisionTaskModelRelations(model, jsonNode);
-
             }
         }
         return entity;
@@ -103,6 +100,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         Model entity = new Model();
         BeanUtils.copyProperties(model, entity);
         CommonUtil.setUpdateDefault(entity, updatedBy);
+        entity.setStatus(ModelStatue.NOT_DEPLOYED);
         updateById(entity);
         return entity;
     }
@@ -235,8 +233,12 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
     @Override
     public void deploy(Integer id) {
         Model model = getModel(id);
-        BpmnModel bpmnModel = getBpmnModel(model);
+        model.setStatus(ModelStatue.DEPLOYED);
+        if (updateById(model)) {
+            throw new CommonServiceException("更新模板状态失败。");
+        }
 
+        BpmnModel bpmnModel = getBpmnModel(model);
         repositoryService.createDeployment()
                 .name(model.getName())
                 .key(model.getModelId())

@@ -89,13 +89,16 @@
           <el-table-column label="ID" prop="modelId" width="150" />
           <el-table-column label="名称" prop="name" :show-overflow-tooltip="true" />
           <el-table-column label="描述" prop="description" :show-overflow-tooltip="true" />
-          <el-table-column label="版本" prop="version" />
+          <el-table-column label="版本" prop="version" align="center" />
           <el-table-column label="备注" prop="modelComment" :show-overflow-tooltip="true" />
+          <el-table-column label="状态" prop="status" align="center" width="80">
+            <template slot-scope="scope"><el-tag :type="getStatusTagType(scope.row.status)">{{ formatStatus(scope.row.status) }}</el-tag></template>
+          </el-table-column>
           <!-- <el-table-column label="创建者" prop="createdByUser.name" />
           <el-table-column label="创建时间" align="center" prop="createdAt" width="200px" /> -->
-          <el-table-column label="更新者" prop="updatedByUser.name" />
-          <el-table-column label="更新时间" align="center" prop="updatedAt" width="200px" />
-          <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="300">
+          <el-table-column label="更新者" prop="updatedByUser.name" align="center" />
+          <el-table-column label="更新时间" prop="updatedAt" width="200px" align="center" />
+          <el-table-column label="操作" class-name="small-padding fixed-width" width="300" align="center">
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -229,6 +232,20 @@ export default {
     this.handleQuery()
   },
   methods: {
+    formatStatus(status) {
+      if (status === 0) {
+        return '未部署'
+      } else if (status === 1) {
+        return '已部署'
+      }
+    },
+    getStatusTagType(status) {
+      if (status === 0) {
+        return 'warning'
+      } else if (status === 1) {
+        return 'success'
+      }
+    },
     handleQuery() {
       this.loading = true
       this.listModel()

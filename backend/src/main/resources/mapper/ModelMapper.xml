@@ -17,6 +17,7 @@
         <result column="model_editor_json" property="modelEditorJson" />
         <result column="thumbnail" property="thumbnail" />
         <result column="version" property="version" />
+        <result column="status" property="status" />
     </resultMap>
 
     <resultMap id="BasePropResultMap" type="tech.hongjian.oa.entity.Model">
@@ -31,6 +32,7 @@
         <result column="model_comment" property="modelComment" />
         <result column="model_type" property="modelType" />
         <result column="version" property="version" />
+        <result column="status" property="status" />
     </resultMap>
 
     <resultMap id="ResultWithUser" extends="BasePropResultMap" type="tech.hongjian.oa.entity.Model">
@@ -57,7 +59,7 @@
         id,
         created_at,
         updated_at,
-        name, model_id, description, created_by, updated_by, model_comment, model_type, model_editor_json, thumbnail, version
+        name, model_id, description, created_by, updated_by, model_comment, model_type, model_editor_json, thumbnail, version, status
     </sql>
     <select id="selectByParams" resultMap="ResultWithUser">
         select
