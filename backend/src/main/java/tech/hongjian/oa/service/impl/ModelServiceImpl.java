@@ -69,7 +69,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
 
     @Override
     public boolean modelExisted(String modelId, ModelType modelType) {
-        return lambdaQuery().eq(Model::getModelId, modelId).eq(Model::getModelType, modelType).count() > 0;
+        return lambdaQuery().eq(Model::getKey, modelId).eq(Model::getModelType, modelType).count() > 0;
     }
 
     @Override
@@ -162,7 +162,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
             //查询是否已经存在流程模板
             Model newModel = new Model();
             newModel.setName(name);
-            newModel.setModelId(process.getId());
+            newModel.setKey(process.getId());
             newModel.setModelType(ModelType.BPMN);
             newModel.setDescription(description);
             newModel.setModelEditorJson(modelNode.toString());
@@ -178,8 +178,8 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
     public Model importModel(InputStream inputStream, String comment) {
         Model model = parseXml(inputStream);
         //查询是否已经存在流程模板
-        if (modelExisted(model.getModelId(), ModelType.BPMN)) {
-            throw new CommonServiceException("流程ID为: " + model.getModelId() +
+        if (modelExisted(model.getKey(), ModelType.BPMN)) {
+            throw new CommonServiceException("流程ID为: " + model.getKey() +
                     "的流程模板已经存在。");
         }
         User currentUser = WebUtil.currentUser();
@@ -222,7 +222,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         Map<String, Object> params = new HashMap<>(3);
         params.put("type", modelType);
         if (StringUtils.isNotBlank(key)) {
-            params.put("modelId", CommonUtil.wrapperWithPercent(key));
+            params.put("key", CommonUtil.wrapperWithPercent(key));
         }
         if (StringUtils.isNotBlank(name)) {
             params.put("name", CommonUtil.wrapperWithPercent(name));
@@ -241,8 +241,8 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         BpmnModel bpmnModel = getBpmnModel(model);
         repositoryService.createDeployment()
                 .name(model.getName())
-                .key(model.getModelId())
-                .addBpmnModel(model.getModelId() + ".bpmn20.xml", bpmnModel)
+                .key(model.getKey())
+                .addBpmnModel(model.getKey() + ".bpmn20.xml", bpmnModel)
                 .deploy();
     }
 }

@@ -70,7 +70,7 @@ public class ModelController {
     public void getProcessModelXml(@PathVariable Integer id, HttpServletResponse response) throws IOException {
         Model model = modelService.getModel(id);
         response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-        response.addHeader("Content-Disposition", "attachment;fileName=" + model.getModelId() + ".bpmn20.xml");
+        response.addHeader("Content-Disposition", "attachment;fileName=" + model.getKey() + ".bpmn20.xml");
         ServletOutputStream outputStream = response.getOutputStream();
         outputStream.write(modelService.getXmlData(model));
         outputStream.flush();

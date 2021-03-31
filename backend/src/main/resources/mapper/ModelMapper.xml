@@ -8,7 +8,7 @@
         <result column="created_at" property="createdAt" />
         <result column="updated_at" property="updatedAt" />
         <result column="name" property="name" />
-        <result column="model_id" property="modelId" />
+        <result column="key" property="key" />
         <result column="description" property="description" />
         <result column="created_by" property="createdBy" />
         <result column="updated_by" property="updatedBy" />
@@ -25,7 +25,7 @@
         <result column="created_at" property="createdAt" />
         <result column="updated_at" property="updatedAt" />
         <result column="name" property="name" />
-        <result column="model_id" property="modelId" />
+        <result column="key" property="key" />
         <result column="description" property="description" />
         <result column="created_by" property="createdBy" />
         <result column="updated_by" property="updatedBy" />
@@ -59,7 +59,7 @@
         id,
         created_at,
         updated_at,
-        name, model_id, description, created_by, updated_by, model_comment, model_type, model_editor_json, thumbnail, version, status
+        `name`, `key`, description, created_by, updated_by, model_comment, model_type, model_editor_json, thumbnail, version, status
     </sql>
     <select id="selectByParams" resultMap="ResultWithUser">
         select
@@ -69,7 +69,7 @@
         from `model` m left join `user` c on m.created_by = c.id left join `user` u on m.updated_by = u.id
         <where>
             <if test="params.modelId != null">
-                upper(`model_id`) like upper(#{params.modelId})
+                upper(`key`) like upper(#{params.key})
             </if>
             <if test="params.name != null">
                 and upper(`name`)  like upper(#{params.name})

@@ -26,7 +26,8 @@ public class Model extends BaseEntityWithOperator {
 
     private String name;
 
-    private String modelId;
+    @TableField("`key`")
+    private String key;
 
     private String description;
 
