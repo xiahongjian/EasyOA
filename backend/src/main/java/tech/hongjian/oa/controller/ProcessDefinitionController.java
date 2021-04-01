@@ -6,7 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import tech.hongjian.oa.model.R;
 import tech.hongjian.oa.service.ProcessResourceService;
-import tech.hongjian.oa.service.ProcDefService;
+import tech.hongjian.oa.service.ProcessDefinitionService;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
@@ -18,8 +18,8 @@ import java.io.IOException;
 @Setter(onMethod_ = {@Autowired})
 @RestController
 @RequestMapping("/processes/definitions")
-public class ProcDefController {
-    private ProcDefService procDefService;
+public class ProcessDefinitionController {
+    private ProcessDefinitionService processDefinitionService;
     private ProcessResourceService processResourceService;
 
     @RequestMapping("")
@@ -27,7 +27,7 @@ public class ProcDefController {
                          @RequestParam(required = false) String name,
                          @RequestParam Integer page,
                          @RequestParam Integer limit) {
-        return R.ok(procDefService.listProcessDefinition(key, name, page, limit));
+        return R.ok(processDefinitionService.listProcessDefinition(key, name, page, limit));
     }
 
 

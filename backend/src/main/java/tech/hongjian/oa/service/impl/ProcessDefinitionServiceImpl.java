@@ -10,7 +10,7 @@ import org.flowable.engine.repository.ProcessDefinitionQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.model.ProcDefVo;
-import tech.hongjian.oa.service.ProcDefService;
+import tech.hongjian.oa.service.ProcessDefinitionService;
 import tech.hongjian.oa.util.CommonUtil;
 
 import java.util.List;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  */
 @Setter(onMethod_ = {@Autowired})
 @Service
-public class ProcDefServiceImpl implements ProcDefService {
+public class ProcessDefinitionServiceImpl implements ProcessDefinitionService {
     private RepositoryService repoService;
 
     @Override
