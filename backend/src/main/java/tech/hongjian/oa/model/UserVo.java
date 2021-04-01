@@ -12,7 +12,7 @@ import java.util.List;
  * @time 2021/2/25 23:54
  */
 @Data
-public class UserVO extends User {
+public class UserVo extends User {
     private Integer id;
 
     private String username;

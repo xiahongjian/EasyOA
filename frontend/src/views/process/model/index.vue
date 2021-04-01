@@ -3,9 +3,9 @@
     <template #wrapper>
       <el-card class="box-card">
         <el-form ref="queryForm" :inline="true" :model="queryParams">
-          <el-form-item label="ID" prop="modelId">
+          <el-form-item label="Key" prop="key">
             <el-input
-              v-model="queryParams.modelId"
+              v-model="queryParams.key"
               clearable
               size="small"
               style="width: 240px"
@@ -49,8 +49,8 @@
               <el-row>
                 <el-col :span="12">
                   <el-form label-position="right" label-width="80px">
-                    <el-form-item label="ID" class="no-margin">
-                      <span>{{ props.row.modelId }}</span>
+                    <el-form-item label="Key" class="no-margin">
+                      <span>{{ props.row.key }}</span>
                     </el-form-item>
                     <el-form-item label="名称" class="no-margin">
                       <span>{{ props.row.name }}</span>
@@ -86,7 +86,7 @@
 
             </template>
           </el-table-column>
-          <el-table-column label="ID" prop="modelId" width="150" />
+          <el-table-column label="Key" prop="key" width="150" />
           <el-table-column label="名称" prop="name" :show-overflow-tooltip="true" />
           <el-table-column label="描述" prop="description" :show-overflow-tooltip="true" />
           <el-table-column label="版本" prop="version" align="center" />

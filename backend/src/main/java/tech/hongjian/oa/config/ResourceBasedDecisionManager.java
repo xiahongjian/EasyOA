@@ -79,7 +79,7 @@ public class ResourceBasedDecisionManager implements AccessDecisionManager {
             return false;
         }
         String path = menu.getRoutePath();
-        path = path.replaceAll("\\{[0-9a-zA-Z\\-_]+\\}", "[0-9a-zA-Z\\\\-_]+");
+        path = path.replaceAll("\\{[0-9a-zA-Z\\-_]+\\}", "[^/?&=#]+");
         uri = trimQueryParameterAndAnchor(uri);
         return uri.matches(path);
     }

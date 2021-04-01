@@ -12,4 +12,6 @@ public interface ModelImageService {
     byte[] generateThumbnailImage(Model model);
 
     byte[] generateProcessImage(Model model);
+
+    byte[] generateProcessImage(String procDefId);
 }

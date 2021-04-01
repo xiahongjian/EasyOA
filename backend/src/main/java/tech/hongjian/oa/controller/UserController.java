@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.model.R;
-import tech.hongjian.oa.model.UserVO;
+import tech.hongjian.oa.model.UserVo;
 import tech.hongjian.oa.service.UserService;
 
 /**
@@ -47,13 +47,13 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public R createUser(@RequestBody UserVO formData) {
+    public R createUser(@RequestBody UserVo formData) {
         userService.createUser(formData);
         return R.ok();
     }
 
     @PutMapping("/user/{id}")
-    public R updateUser(@PathVariable Integer id, @RequestBody UserVO formData) {
+    public R updateUser(@PathVariable Integer id, @RequestBody UserVo formData) {
         userService.updateUser(id, formData);
         return R.ok();
     }

@@ -20,7 +20,7 @@ import tech.hongjian.oa.entity.UserRoleRel;
 import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.UserMapper;
-import tech.hongjian.oa.model.UserVO;
+import tech.hongjian.oa.model.UserVo;
 import tech.hongjian.oa.service.DepartmentService;
 import tech.hongjian.oa.service.RoleService;
 import tech.hongjian.oa.service.UserRoleRelService;
@@ -110,7 +110,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public User createUser(UserVO formData) {
+    public User createUser(UserVo formData) {
         // 检查username是否重复
         if (usernameIsExisted(formData.getUsername(), null)) {
             throw new CommonServiceException("用户名为[" + formData.getUsername() +
@@ -155,7 +155,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public void updateUser(Integer id, UserVO vo) {
+    public void updateUser(Integer id, UserVo vo) {
         updateUser(id, (User) vo);
         // 更新用户角色关联
         List<Integer> roleIds = vo.getRoleIds();
@@ -202,13 +202,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public UserVO getUserInfo(Integer id) {
+    public UserVo getUserInfo(Integer id) {
         User user = getUserById(id);
         if (user == null) {
             return null;
         }
         List<Role> roles = roleService.getUserRoles(user.getId());
-        UserVO vo = new UserVO();
+        UserVo vo = new UserVo();
         BeanUtils.copyProperties(user, vo);
         vo.setRoleIds(roles.stream().map(Role::getId).collect(Collectors.toList()));
         vo.setRoles(roles.stream().map(Role::getName).collect(Collectors.toList()));
