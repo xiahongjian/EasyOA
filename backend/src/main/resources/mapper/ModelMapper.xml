@@ -68,7 +68,7 @@
         u.id u_id, u.username u_username, u.name u_name, u.email u_email, u.mobile u_mobile, u.gender u_gender
         from `model` m left join `user` c on m.created_by = c.id left join `user` u on m.updated_by = u.id
         <where>
-            <if test="params.modelId != null">
+            <if test="params.key != null">
                 upper(`key`) like upper(#{params.key})
             </if>
             <if test="params.name != null">

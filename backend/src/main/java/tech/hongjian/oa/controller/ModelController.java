@@ -32,11 +32,11 @@ public class ModelController {
     private ModelImageService modelImageService;
 
     @GetMapping("")
-    public R listModel(@RequestParam(required = false) String modelId,
+    public R listModel(@RequestParam(required = false) String key,
                        @RequestParam(required = false) String name,
                        @RequestParam Integer page,
                        @RequestParam Integer limit) {
-        return R.ok(modelService.findByParams(page, limit, ModelType.BPMN, modelId, name));
+        return R.ok(modelService.findByParams(page, limit, ModelType.BPMN, key, name));
     }
 
     @PostMapping("")
