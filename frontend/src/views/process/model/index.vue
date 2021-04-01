@@ -112,25 +112,14 @@
                 icon="el-icon-delete"
                 @click="handleDelete(scope.row)"
               >删除</el-button>
-              <el-dropdown style="margin-left: 10px;" @command="handleMoreAction">
-                <el-button type="text" size="mini">
-                  更多操作<i class="el-icon-arrow-down el-icon--right" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item
-                    :command="buildCommand('downloadXML', scope.row)"
-                    icon="el-icon-document"
-                  >下载XML</el-dropdown-item>
-                  <el-dropdown-item
-                    :command="buildCommand('showImage', scope.row)"
-                    icon="el-icon-picture-outline"
-                  >查看图片</el-dropdown-item>
-                  <el-dropdown-item
-                    :command="buildCommand('deployProcess', scope.row)"
-                    icon="el-icon-coin"
-                  >部署流程</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
+              <action-group
+                style="margin-left: 10px;"
+                text="更多操作"
+                size="mini"
+                type="text"
+                :data="scope.row"
+                :actions="moreActionCfg"
+              />
             </template>
           </el-table-column>
         </el-table>
@@ -189,8 +178,12 @@
 
 <script>
 import { listModel, createModel, deleteModel, updateModel, deployprocesses } from '@/api/process/model'
+import ActionGroup from '@/components/ActionGroup'
 export default {
   name: 'ProcessModel',
+  components: {
+    ActionGroup
+  },
   data() {
     return {
       loading: true,
@@ -225,7 +218,21 @@ export default {
 
       // image
       imageDialogOpen: false,
-      imageUrl: undefined
+      imageUrl: undefined,
+
+      moreActionCfg: [{
+        text: '查看图片',
+        icon: 'el-icon-picture-outline',
+        handler: this.showImage
+      }, {
+        text: '下载XML',
+        icon: 'el-icon-document',
+        handler: this.downloadXML
+      }, {
+        text: '部署流程',
+        icon: 'el-icon-coin',
+        handler: this.deployProcess
+      }]
     }
   },
   created() {
@@ -308,15 +315,6 @@ export default {
     cancel() {
       this.reset()
       this.open = false
-    },
-    buildCommand(command, data) {
-      return {
-        method: command,
-        data
-      }
-    },
-    handleMoreAction(command) {
-      return this[command.method](command.data)
     },
 
     listModel() {

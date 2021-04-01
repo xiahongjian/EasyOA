@@ -54,21 +54,14 @@
                 icon="el-icon-timer"
                 @click="handleSuspend(scope.row)"
               >挂起</el-button>
-              <el-dropdown style="margin-left: 10px;" @command="handleMoreAction">
-                <el-button type="text" size="mini">
-                  更多操作<i class="el-icon-arrow-down el-icon--right" />
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item
-                    :command="buildCommand('downloadXML', scope.row)"
-                    icon="el-icon-document"
-                  >下载XML</el-dropdown-item>
-                  <el-dropdown-item
-                    :command="buildCommand('showImage', scope.row)"
-                    icon="el-icon-picture-outline"
-                  >查看图片</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
+              <action-group
+                style="margin-left: 10px;"
+                text="更多操作"
+                size="mini"
+                type="text"
+                :data="scope.row"
+                :actions="moreActionCfg"
+              />
             </template>
           </el-table-column>
         </el-table>
@@ -97,8 +90,12 @@
 
 <script>
 import { listProcDef } from '@/api/process/definition'
+import ActionGroup from '@/components/ActionGroup'
 export default {
   name: 'ProcDef',
+  components: {
+    ActionGroup
+  },
 
   data() {
     return {
@@ -114,7 +111,17 @@ export default {
       total: 0,
 
       imageDialogOpen: false,
-      imageUrl: undefined
+      imageUrl: undefined,
+
+      moreActionCfg: [{
+        text: '查看图片',
+        icon: 'el-icon-picture-outline',
+        handler: this.showImage
+      }, {
+        text: '下载XML',
+        icon: 'el-icon-document',
+        handler: this.downloadXML
+      }]
     }
   },
   created() {
@@ -135,15 +142,6 @@ export default {
     resetQuery() {
       this.resetForm('queryForm')
       this.handleQuery()
-    },
-    buildCommand(command, data) {
-      return {
-        method: command,
-        data
-      }
-    },
-    handleMoreAction(command) {
-      return this[command.method](command.data)
     },
     showImage(record) {
       this.imageUrl = `processes/definitions/${encodeURIComponent(record.id)}/image`
