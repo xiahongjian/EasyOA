@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import tech.hongjian.oa.model.R;
-import tech.hongjian.oa.service.ModelImageService;
+import tech.hongjian.oa.service.ProcessResourceService;
 import tech.hongjian.oa.service.ProcDefService;
 
 import javax.servlet.ServletOutputStream;
@@ -20,7 +20,7 @@ import java.io.IOException;
 @RequestMapping("/processes/definitions")
 public class ProcDefController {
     private ProcDefService procDefService;
-    private ModelImageService modelImageService;
+    private ProcessResourceService processResourceService;
 
     @RequestMapping("")
     public R listProcDef(@RequestParam(required = false) String key,
@@ -39,7 +39,7 @@ public class ProcDefController {
 
     @GetMapping("/{id}/image")
     public void getProcessModelImage(@PathVariable String id, HttpServletResponse response) throws IOException {
-        byte[] bytes = modelImageService.generateProcessImage(id);
+        byte[] bytes = processResourceService.generateProcessImage(id);
         response.setContentType(MediaType.IMAGE_PNG_VALUE);
         ServletOutputStream outputStream = response.getOutputStream();
         outputStream.write(bytes);

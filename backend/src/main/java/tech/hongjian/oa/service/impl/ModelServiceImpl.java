@@ -29,7 +29,7 @@ import tech.hongjian.oa.entity.enums.ModelStatue;
 import tech.hongjian.oa.entity.enums.ModelType;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.ModelMapper;
-import tech.hongjian.oa.service.ModelImageService;
+import tech.hongjian.oa.service.ProcessResourceService;
 import tech.hongjian.oa.service.ModelService;
 import tech.hongjian.oa.util.CommonUtil;
 import tech.hongjian.oa.util.WebUtil;
@@ -65,7 +65,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
     private RepositoryService repositoryService;
 
     @Setter(onMethod_ = {@Autowired})
-    private ModelImageService modelImageService;
+    private ProcessResourceService processResourceService;
 
     @Override
     public boolean modelExisted(String modelId, ModelType modelType) {
@@ -84,7 +84,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
             if (entity.getModelType() == ModelType.BPMN) {
 
                 // Thumbnail
-                byte[] thumbnail = modelImageService.generateThumbnailImage(entity);
+                byte[] thumbnail = processResourceService.generateThumbnailImage(entity);
                 if (thumbnail != null) {
                     entity.setThumbnail(thumbnail);
                 }

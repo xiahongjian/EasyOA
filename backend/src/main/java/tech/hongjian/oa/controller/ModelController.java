@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import tech.hongjian.oa.entity.Model;
 import tech.hongjian.oa.entity.enums.ModelType;
 import tech.hongjian.oa.model.R;
-import tech.hongjian.oa.service.ModelImageService;
+import tech.hongjian.oa.service.ProcessResourceService;
 import tech.hongjian.oa.service.ModelService;
 
 import javax.servlet.ServletOutputStream;
@@ -29,7 +29,7 @@ import java.io.IOException;
 @RequestMapping("/processes/models")
 public class ModelController {
     private ModelService modelService;
-    private ModelImageService modelImageService;
+    private ProcessResourceService processResourceService;
 
     @GetMapping("")
     public R listModel(@RequestParam(required = false) String key,
@@ -79,7 +79,7 @@ public class ModelController {
     @GetMapping("/{id}/image")
     public void getProcessModelImage(@PathVariable Integer id, HttpServletResponse response) throws IOException {
         Model model = modelService.getModel(id);
-        byte[] bytes = modelImageService.generateProcessImage(model);
+        byte[] bytes = processResourceService.generateProcessImage(model);
         response.setContentType(MediaType.IMAGE_PNG_VALUE);
         ServletOutputStream outputStream = response.getOutputStream();
         outputStream.write(bytes);

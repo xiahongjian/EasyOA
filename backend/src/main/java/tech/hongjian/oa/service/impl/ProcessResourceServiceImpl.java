@@ -3,7 +3,6 @@ package tech.hongjian.oa.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.Process;
 import org.flowable.bpmn.model.*;
@@ -16,13 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.Model;
 import tech.hongjian.oa.exception.CommonServiceException;
-import tech.hongjian.oa.service.ModelImageService;
 import tech.hongjian.oa.service.ModelService;
+import tech.hongjian.oa.service.ProcessResourceService;
 import tech.hongjian.oa.util.ImageGenerator;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,7 +30,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class ModelImageServiceImpl implements ModelImageService {
+public class ProcessResourceServiceImpl implements ProcessResourceService {
     private static float THUMBNAIL_WIDTH = 300f;
     protected BpmnXMLConverter bpmnXmlConverter = new BpmnXMLConverter();
     protected BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
@@ -71,11 +68,7 @@ public class ModelImageServiceImpl implements ModelImageService {
     @Override
     public byte[] generateProcessImage(Model model) {
         BpmnModel bpmnModel = modelService.getBpmnModel(model);
-        DefaultProcessDiagramGenerator diagramGenerator = new DefaultProcessDiagramGenerator();
-        BufferedImage bufferedImage = diagramGenerator.generateImage(bpmnModel, DEFAULT_IMAGE_TYPE, Collections.emptyList(),
-                Collections.emptyList(), DEFAULT_FONT, DEFAULT_FONT, DEFAULT_FONT,
-                ClassLoader.getSystemClassLoader(), 1.0, true);
-        return ImageGenerator.createByteArrayForImage(bufferedImage, DEFAULT_IMAGE_TYPE);
+        return generateProcessImage(bpmnModel);
     }
 
     @Override
@@ -84,13 +77,16 @@ public class ModelImageServiceImpl implements ModelImageService {
         if (definition == null) {
             throw new CommonServiceException("为找到ID为[" + procDefId + "]的流程定义。");
         }
-        InputStream inputStream = repositoryService.getResourceAsStream(definition.getDeploymentId(), definition.getDiagramResourceName());
-        try {
-            return IOUtils.toByteArray(inputStream);
-        } catch (IOException e) {
-            log.error("读取流程定义图片失败， msg: {}", e.getMessage(), e);
-            throw new CommonServiceException("读取流程定义图片失败。");
-        }
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(procDefId);
+        return generateProcessImage(bpmnModel);
+    }
+
+    private byte[] generateProcessImage(BpmnModel bpmnModel) {
+        DefaultProcessDiagramGenerator diagramGenerator = new DefaultProcessDiagramGenerator();
+        BufferedImage bufferedImage = diagramGenerator.generateImage(bpmnModel, DEFAULT_IMAGE_TYPE, Collections.emptyList(),
+                Collections.emptyList(), DEFAULT_FONT, DEFAULT_FONT, DEFAULT_FONT,
+                ClassLoader.getSystemClassLoader(), 1.0, true);
+        return ImageGenerator.createByteArrayForImage(bufferedImage, DEFAULT_IMAGE_TYPE);
     }
 
     protected GraphicInfo calculateDiagramSize(BpmnModel bpmnModel) {
