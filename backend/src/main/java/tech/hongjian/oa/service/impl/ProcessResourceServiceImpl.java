@@ -73,13 +73,32 @@ public class ProcessResourceServiceImpl implements ProcessResourceService {
 
     @Override
     public byte[] generateProcessImage(String procDefId) {
+        BpmnModel bpmnModel = getBpmnModel(procDefId);
+        return generateProcessImage(bpmnModel);
+    }
+
+
+    @Override
+    public byte[] generateXmlData(Model model) {
+        BpmnModel bpmnModel = modelService.getBpmnModel(model);
+        return bpmnXmlConverter.convertToXML(bpmnModel);
+    }
+
+    @Override
+    public byte[] generateXmlData(String procDefId) {
+        BpmnModel bpmnModel = getBpmnModel(procDefId);
+        return bpmnXmlConverter.convertToXML(bpmnModel);
+    }
+
+    protected BpmnModel getBpmnModel(String procDefId) {
         ProcessDefinition definition = repositoryService.createProcessDefinitionQuery().processDefinitionId(procDefId).singleResult();
         if (definition == null) {
             throw new CommonServiceException("为找到ID为[" + procDefId + "]的流程定义。");
         }
         BpmnModel bpmnModel = repositoryService.getBpmnModel(procDefId);
-        return generateProcessImage(bpmnModel);
+        return bpmnModel;
     }
+
 
     private byte[] generateProcessImage(BpmnModel bpmnModel) {
         DefaultProcessDiagramGenerator diagramGenerator = new DefaultProcessDiagramGenerator();

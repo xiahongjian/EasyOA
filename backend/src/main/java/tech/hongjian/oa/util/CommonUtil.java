@@ -18,7 +18,7 @@ public class CommonUtil {
         return s + value + s;
     }
 
-    public static String wrapperWithPercent(String value) {
+    public static String wrapWithPercent(String value) {
         return wrapWith(value, "%");
     }
 

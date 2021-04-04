@@ -39,7 +39,7 @@ public class Model extends BaseEntityWithOperator {
 
     private byte[] thumbnail;
 
-    @Version
+//    @Version
     private Integer version;
 
     private ModelStatue status;

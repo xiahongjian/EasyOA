@@ -21,6 +21,9 @@
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
+          <el-form-item label="状态" prop="suspend">
+            <dict-select v-model="queryParams.suspend" placeholder="状态" :options="statusOpts" size="small" tyle="width: 240px" />
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
             <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -37,8 +40,8 @@
           <el-table-column label="名称" prop="name" :show-overflow-tooltip="true" />
           <el-table-column label="描述" prop="description" :show-overflow-tooltip="true" />
           <el-table-column label="版本" prop="version" align="center" />
-          <el-table-column label="状态" prop="isSuspended" align="center" width="80">
-            <template slot-scope="scope"><el-tag :type="scope.row.isSuspended ? 'danger' : 'primary'">{{ scope.row.isSuspended ? '挂起' : '正常' }}</el-tag></template>
+          <el-table-column label="状态" prop="suspended" align="center" width="80">
+            <template slot-scope="scope"><el-tag :type="scope.row.suspended ? 'danger' : 'primary'">{{ scope.row.suspended ? '挂起' : '激活' }}</el-tag></template>
           </el-table-column>
           <el-table-column label="操作" class-name="small-padding fixed-width" width="300" align="center">
             <template slot-scope="scope">
@@ -49,11 +52,19 @@
                 @click="handleDelete(scope.row)"
               >删除</el-button>
               <el-button
+                v-show="!scope.row.suspended"
                 size="mini"
                 type="text"
                 icon="el-icon-timer"
                 @click="handleSuspend(scope.row)"
               >挂起</el-button>
+              <el-button
+                v-show="scope.row.suspended"
+                size="mini"
+                type="text"
+                icon="el-icon-s-promotion"
+                @click="handleActive(scope.row)"
+              >激活</el-button>
               <action-group
                 style="margin-left: 10px;"
                 text="更多操作"
@@ -89,12 +100,14 @@
 </template>
 
 <script>
-import { listProcDef } from '@/api/process/definition'
+import { listProcDef, suspendProcDef, activeProcDef, deleteProcDef } from '@/api/process/definition'
 import ActionGroup from '@/components/ActionGroup'
+import DictSelect from '@/components/DictSelect'
 export default {
   name: 'ProcDef',
   components: {
-    ActionGroup
+    ActionGroup,
+    DictSelect
   },
 
   data() {
@@ -102,6 +115,7 @@ export default {
       queryParams: {
         key: undefined,
         name: undefined,
+        suspend: undefined,
         page: 0,
         limit: 10
       },
@@ -121,6 +135,15 @@ export default {
         text: '下载XML',
         icon: 'el-icon-document',
         handler: this.downloadXML
+      }],
+      statusOpts: [{
+        id: 1,
+        label: '挂起',
+        value: 2
+      }, {
+        id: 2,
+        label: '激活',
+        value: 1
       }]
     }
   },
@@ -159,6 +182,45 @@ export default {
       elink.click()
       URL.revokeObjectURL(elink.href) // 释放URL 对象
       document.body.removeChild(elink)
+    },
+    handleSuspend(record) {
+      const id = record.id
+      this.$confirm('是否确认挂起Key为"' + record.key + '"的流程定义（该流程定义的所有实例也都会被挂起）？', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return suspendProcDef(id)
+      }).then(() => {
+        this.handleQuery()
+        this.msgSuccess('挂起成功')
+      }).catch(() => {})
+    },
+    handleActive(record) {
+      const id = record.id
+      this.$confirm('是否确认激活Key为"' + record.key + '"的流程定义（该流程定义的所有挂起实例也都会被激活）？', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return activeProcDef(id)
+      }).then(() => {
+        this.handleQuery()
+        this.msgSuccess('激活成功')
+      }).catch(() => {})
+    },
+    handleDelete(record) {
+      const id = record.id
+      this.$confirm('是否确认删除Key为"' + record.key + '"的流程定义？', '警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        return deleteProcDef(id)
+      }).then(() => {
+        this.handleQuery()
+        this.msgSuccess('删除成功')
+      }).catch(() => {})
     }
   }
 }

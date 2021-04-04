@@ -1,9 +1,8 @@
 package tech.hongjian.oa.mapper;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import tech.hongjian.oa.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.entity.enums.Status;
 
 /**
@@ -16,6 +15,6 @@ import tech.hongjian.oa.entity.enums.Status;
  */
 public interface UserMapper extends BaseMapper<User> {
 
-    IPage<User> selectByParams(Page<User> objectPage, String keyword, Status status,
+    IPage<User> selectByParams(IPage<User> objectPage, String keyword, Status status,
                                Integer dept, String prop, String order);
 }

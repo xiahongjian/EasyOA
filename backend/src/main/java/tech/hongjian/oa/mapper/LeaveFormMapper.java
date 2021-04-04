@@ -1,15 +1,12 @@
 package tech.hongjian.oa.mapper;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import tech.hongjian.oa.entity.LeaveForm;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-
-import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import tech.hongjian.oa.entity.LeaveForm;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author xiahongjian
@@ -17,7 +14,7 @@ import java.util.List;
  */
 public interface LeaveFormMapper extends BaseMapper<LeaveForm> {
 
-    IPage<LeaveForm> queryByParams(Page<LeaveForm> page, String type, Integer creatorId);
+    IPage<LeaveForm> queryByParams(IPage<LeaveForm> page, String type, Integer creatorId);
 
     LeaveForm queryById(Integer id);
 }

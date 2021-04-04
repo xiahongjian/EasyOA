@@ -1,20 +1,26 @@
 package tech.hongjian.oa.util;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import tech.hongjian.oa.entity.User;
+
+import java.io.IOException;
 
 /**
  * @author xiahongjian
  * @time 2018-04-11 15:57:39
  *
  */
+@Slf4j
 public class WebUtil {
     /**
      * 获取请求反向代理之前的IP
@@ -143,5 +149,37 @@ public class WebUtil {
 
     public static User currentUser() {
         return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+    public static void writeImage(HttpServletResponse response, byte[] imageData) {
+        writeImage(response, imageData, MediaType.IMAGE_PNG_VALUE);
+    }
+
+    public static void writeImage(HttpServletResponse response, byte[] imageData, String type) {
+        try {
+            response.setContentType(type);
+            ServletOutputStream outputStream = response.getOutputStream();
+            outputStream.write(imageData);
+            outputStream.flush();
+        } catch (IOException e) {
+            log.error("图片数据写入失败，信息：{}", e.getMessage(), e);
+        }
+    }
+
+    public static void writeXml(HttpServletResponse response, byte[] xmlData, String xmlFileName) {
+        ServletOutputStream outputStream = null;
+        try {
+            response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+            response.addHeader("Content-Disposition", "attachment;fileName=" + xmlFileName);
+            outputStream = response.getOutputStream();
+            outputStream.write(xmlData);
+            outputStream.flush();
+        } catch (IOException e) {
+            log.error("XML数据写入失败，信息：{}", e.getMessage(), e);
+        }
+    }
+
+    public static void writeXml(HttpServletResponse response, byte[] xmlData) {
+        writeXml(response, xmlData, "export.xml");
     }
 }

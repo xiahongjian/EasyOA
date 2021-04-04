@@ -14,4 +14,8 @@ public interface ProcessResourceService {
     byte[] generateProcessImage(Model model);
 
     byte[] generateProcessImage(String procDefId);
+
+    byte[] generateXmlData(Model model);
+
+    byte[] generateXmlData(String procDefId);
 }

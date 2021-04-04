@@ -20,5 +20,5 @@ public interface DictValueMapper extends BaseMapper<DictValue> {
 
     List<DictValue> findValueByDictKey(String dictKey, Status status);
 
-    IPage<DictValue> findDictValue(Page<DictValue> page, String dictKey, String label, Status status);
+    IPage<DictValue> findDictValue(IPage<DictValue> page, String dictKey, String label, Status status);
 }

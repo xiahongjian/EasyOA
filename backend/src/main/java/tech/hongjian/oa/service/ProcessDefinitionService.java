@@ -8,7 +8,13 @@ import tech.hongjian.oa.model.ProcDefVo;
  * Created by xiahongjian on 2021/3/31.
  */
 public interface ProcessDefinitionService {
-    IPage<ProcDefVo> listProcessDefinition(String key, String name, int start, int limit);
+    IPage<ProcDefVo> listProcessDefinition(String key, String name, Integer suspend, int start, int limit);
 
     ProcessDefinition getProcDefById(String procDefId);
+
+    void suspend(String procDefId);
+
+    void active(String procDefId);
+
+    void delete(String procDefId);
 }

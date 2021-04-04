@@ -3,16 +3,15 @@ package tech.hongjian.oa.controller;
 
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tech.hongjian.oa.entity.Model;
 import tech.hongjian.oa.entity.enums.ModelType;
 import tech.hongjian.oa.model.R;
-import tech.hongjian.oa.service.ProcessResourceService;
 import tech.hongjian.oa.service.ModelService;
+import tech.hongjian.oa.service.ProcessResourceService;
+import tech.hongjian.oa.util.WebUtil;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -67,23 +66,16 @@ public class ModelController {
 
     // xml 下载
     @GetMapping("/{id}/xml")
-    public void getProcessModelXml(@PathVariable Integer id, HttpServletResponse response) throws IOException {
+    public void getProcessModelXml(@PathVariable Integer id, HttpServletResponse response) {
         Model model = modelService.getModel(id);
-        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-        response.addHeader("Content-Disposition", "attachment;fileName=" + model.getKey() + ".bpmn20.xml");
-        ServletOutputStream outputStream = response.getOutputStream();
-        outputStream.write(modelService.getXmlData(model));
-        outputStream.flush();
+        WebUtil.writeXml(response, processResourceService.generateXmlData(model), model.getKey() + ".bpmn20.xml");
     }
 
     @GetMapping("/{id}/image")
-    public void getProcessModelImage(@PathVariable Integer id, HttpServletResponse response) throws IOException {
+    public void getProcessModelImage(@PathVariable Integer id, HttpServletResponse response) {
         Model model = modelService.getModel(id);
         byte[] bytes = processResourceService.generateProcessImage(model);
-        response.setContentType(MediaType.IMAGE_PNG_VALUE);
-        ServletOutputStream outputStream = response.getOutputStream();
-        outputStream.write(bytes);
-        outputStream.flush();
+        WebUtil.writeImage(response, bytes);
     }
 
     @GetMapping("/{id}/deploy")

@@ -115,6 +115,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         byId.setUpdatedBy(WebUtil.currentUser().getId());
         byId.setUpdatedAt(LocalDateTime.now());
         byId.setModelComment(comment);
+        byId.setVersion(byId.getVersion() + 1);
         if (!updateById(byId)) {
             throw new CommonServiceException("更新失败。");
         }
@@ -206,26 +207,14 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
     }
 
     @Override
-    public byte[] getXmlData(Integer id) {
-        Model model = getModel(id);
-        return getXmlData(model);
-    }
-
-    @Override
-    public byte[] getXmlData(Model model) {
-        BpmnModel bpmnModel = getBpmnModel(model);
-        return bpmnXmlConverter.convertToXML(bpmnModel);
-    }
-
-    @Override
     public IPage<Model> findByParams(int page, int limit, ModelType modelType, String key, String name) {
         Map<String, Object> params = new HashMap<>(3);
         params.put("type", modelType);
         if (StringUtils.isNotBlank(key)) {
-            params.put("key", CommonUtil.wrapperWithPercent(key));
+            params.put("key", CommonUtil.wrapWithPercent(key));
         }
         if (StringUtils.isNotBlank(name)) {
-            params.put("name", CommonUtil.wrapperWithPercent(name));
+            params.put("name", CommonUtil.wrapWithPercent(name));
         }
         return baseMapper.selectByParams(new Page<>((page - 1L) * limit, limit), params);
     }
@@ -234,7 +223,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
     public void deploy(Integer id) {
         Model model = getModel(id);
         model.setStatus(ModelStatue.DEPLOYED);
-        if (updateById(model)) {
+        if (!updateById(model)) {
             throw new CommonServiceException("更新模板状态失败。");
         }
 
