@@ -2,16 +2,17 @@ package tech.hongjian.oa.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.Setter;
+import org.flowable.engine.RuntimeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.LeaveForm;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.LeaveFormMapper;
 import tech.hongjian.oa.service.FlowBizFormService;
 import tech.hongjian.oa.service.FlowService;
 import tech.hongjian.oa.service.LeaveFormService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.stereotype.Service;
 import tech.hongjian.oa.util.CommonUtil;
 
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ import java.util.Arrays;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author xiahongjian
@@ -29,6 +30,12 @@ import java.util.Arrays;
 @Service
 public class LeaveFormServiceImpl extends ServiceImpl<LeaveFormMapper, LeaveForm> implements LeaveFormService, FlowBizFormService<LeaveForm> {
     private FlowService flowService;
+    private RuntimeService runtimeService;
+
+    @Override
+    public String processDefinitionKey() {
+        return "LeaveFormFlow";
+    }
 
     @Override
     public IPage<LeaveForm> listForms(String type, Integer creatorId, Integer page, Integer limit) {
@@ -39,6 +46,7 @@ public class LeaveFormServiceImpl extends ServiceImpl<LeaveFormMapper, LeaveForm
     public LeaveForm create(LeaveForm form) {
         form = CommonUtil.setEntityDefault(form);
         save(form);
+        runtimeService.startProcessInstanceByKey(processDefinitionKey(), String.valueOf(form.getId()));
         return form;
     }
 

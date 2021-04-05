@@ -204,6 +204,30 @@ export default {
       }
       callback()
     }
+    const validateStartTime = (rule, value, callback) => {
+      const pattern = /\d{4}-\d{2}-\d{2} (\d{2}):(\d{2}):(\d{2})/
+      if (!pattern.test(value)) {
+        return callback(new Error('时间格式不正确'))
+      }
+      const hour = +RegExp.$1
+      if (hour < 9 || hour >= 18) {
+        return callback(new Error('开始时间应在9:00~18:00之间'))
+      }
+      callback()
+    }
+    const validateEndTime = (rule, value, callback) => {
+      const pattern = /\d{4}-\d{2}-\d{2} (\d{2}):(\d{2}):(\d{2})/
+      if (!pattern.test(value)) {
+        return callback(new Error('时间格式不正确'))
+      }
+      const hour = +RegExp.$1
+      const mintue = +RegExp.$2
+      const second = +RegExp.$3
+      if (hour < 9 || (hour === 9 && mintue === 0 && second === 0) || hour > 18 || (hour === 18 && mintue > 0 || second > 0)) {
+        return callback(new Error('结束时间应在9:00~18:00之间'))
+      }
+      callback()
+    }
     return {
       loading: false,
       userSelectLoading: false,
@@ -237,11 +261,17 @@ export default {
         }, {
           validator: validateStartEndTime,
           trigger: ['blur', 'change']
+        }, {
+          validator: validateStartTime,
+          trigger: ['blur', 'change']
         }],
         endTime: [{
           required: true, message: '结束时间不能为空', trigger: ['blur', 'change']
         }, {
           validator: validateStartEndTime,
+          trigger: ['blur', 'change']
+        }, {
+          validator: validateEndTime,
           trigger: ['blur', 'change']
         }],
         reason: [{
@@ -351,7 +381,49 @@ export default {
       })
     },
     caculateDuration(start, end) {
-      return ((new Date(end).getTime() - new Date(start).getTime()) / (1000 * 60 * 60)).toFixed(1)
+      const startTime = new Date(start)
+      const endTime = new Date(end)
+      // 如果开始时间和结束时间是同一天，则两个时间相减即可
+      if (start.substring(0, 10) === end.substring(0, 10)) {
+        if (startTime.getTime() > this.replaceTime(start, '13:00:00').getTime() || endTime.getTime() < this.replaceTime('12:00:00')) {
+          return this.durationHour(startTime, endTime)
+        } else if (this.inRestTime(start) && this.inRestTime(end)) {
+          return 0
+        } else if (this.inRestTime(start) && !this.inRestTime(end)) {
+          return this.durationHour(this.replaceTime(start, '13:00:00'), endTime)
+        } else if (!this.inRestTime(start) && this.inRestTime(end)) {
+          return this.durationHour(startTime, this.replaceTime(end, '12:00:00'))
+        } else {
+          return this.durationHour(startTime, endTime) - 1
+        }
+      }
+
+      let duration = ((this.getDayWorkEndTime(start).getTime() - startTime.getTime()) / (1000 * 60 * 60)).toFixed(1)
+      duration += ((endTime.getTime() - this.getDayWorkStartTime(end)) / (1000 * 60 * 60)).toFixed(1)
+      duration += (new Date(end.substring(0, 10)).getTime() - new Date(start.substring(0, 10)).getTime()) / (1000 * 60 * 60 * 24) * 8
+
+      return duration
+    },
+
+    inRestTime(dateStr) {
+      const hour = +dateStr.substring(11, 13)
+      const minute = +dateStr.substring(14, 16)
+      const second = +dateStr.substring(17, 19)
+
+      return hour === 12 || hour === 13 && minute === 0 && second === 0
+    },
+    durationHour(start, end) {
+      return ((end.getTime() - start.getTime) / (1000 * 60 * 60)).toFixed(1)
+    },
+    replaceTime(dateTime, timeStr) {
+      const dayStart = dateTime.replace(/(\d{2}:\d{2}:\d{2})/, timeStr)
+      return new Date(dayStart)
+    },
+    getDayWorkStartTime(dateStr) {
+      return this.replaceTime(dateStr, '09:00:00')
+    },
+    getDayWorkEndTime(dateStr) {
+      return this.replaceTime(dateStr, '18:00:00')
     },
     onStartEndTimeChange() {
       const { startTime, endTime } = this.form
