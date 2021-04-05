@@ -211,6 +211,7 @@ export default {
       single: true,
       multiple: true,
       ids: [],
+      leaveTypeOpts: [],
 
       edit: false,
       open: false,
@@ -255,6 +256,9 @@ export default {
   created() {
     this.selectUser('')
     this.listForm()
+    this.getDicts('sys_leave_type').then(resp => {
+      this.leaveTypeOpts = resp.data
+    })
   },
   methods: {
     reset() {
