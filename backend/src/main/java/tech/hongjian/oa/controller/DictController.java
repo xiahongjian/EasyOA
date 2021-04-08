@@ -26,12 +26,12 @@ public class DictController {
     public R listDictTypes(@RequestParam(required = false) String name, @RequestParam(required = false) String key,
                            @RequestParam(required = false) Integer status,
                            @RequestParam(required = false) Integer page, @RequestParam(required = false) Integer limit) {
-        return R.ok(dictService.getDict(name, key, Status.of(status), page, limit));
+        return R.ok(dictService.findDict(name, key, Status.of(status), page, limit));
     }
 
     @GetMapping("/type/{id}")
     public R getDictType(@PathVariable Integer id) {
-        return R.ok(dictService.getDictById(id));
+        return R.ok(dictService.findDictById(id));
     }
 
     @PostMapping("/type")

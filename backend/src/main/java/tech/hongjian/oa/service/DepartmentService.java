@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface DepartmentService extends IService<Department> {
 
-    Department getDepartmentById(Integer id);
+    Department findDepartmentById(Integer id);
 
     List<Department> getDepartmentTree(String query, Status status);
 
@@ -24,7 +24,7 @@ public interface DepartmentService extends IService<Department> {
 
     Department create(Department department);
 
-    Department getDepartmentByName(String name);
+    Department findDepartmentByName(String name);
 
     Department update(Integer id, Department department);
 

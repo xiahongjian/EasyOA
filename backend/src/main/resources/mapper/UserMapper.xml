@@ -55,4 +55,60 @@
         order by ${prop} ${order}
     </select>
 
+    <sql id="whereByParamMap">
+        <where>
+            <if test="id != null">
+                and u.id=#{id}
+            </if>
+            <if test="ids != null and !ids.isEmpty()">
+                and u.id in <foreach item="item" collection="ids" open="(" separator="," close=")">#{item}</foreach>
+            </if>
+            <if test="email != null">
+                and u.email=#{email}
+            </if>
+            <if test="emailLike != null">
+                and u.email like #{emialLike}
+            </if>
+            <if test="roleId != null or (roleIds != null and !roleIds.isEmpty())">
+                and u.id in (
+                    select r.user_id from user_role_rel r
+                    <where>
+                        <if test="roleId != null">
+                            and r.role_id=#{roleId}
+                        </if>
+                        <if test="roleIds != null and !roleIds.isEmpty()">
+                            and r.role_id in <foreach item="item" collection="roleIds" open="(" separator="," close=")">#{item}</foreach>
+                        </if>
+                    </where>
+                )
+            </if>
+        </where>
+    </sql>
+    <select id="countByParams" resultType="java.lang.Long">
+        select count(*)
+        from `user` u
+        <include refid="whereByParamMap" />
+        <if test="orderBy != null">
+            order by ${orderBy} <if test="direction != null">${direction}</if>
+        </if>
+    </select>
+
+
+    <select id="selectByParamMap" resultType="tech.hongjian.oa.entity.User">
+        select *
+        from `user` u
+        <include refid="whereByParamMap" />
+        <if test="orderBy != null">
+            order by t.${orderBy} <if test="direction != null">${direction}</if>
+        </if>
+    </select>
+    <select id="selectByParamsPage" resultType="tech.hongjian.oa.entity.User">
+        select *
+        from `user` u
+        <include refid="whereByParamMap" />
+        <if test="orderBy != null">
+            order by t.${orderBy} <if test="direction != null">${direction}</if>
+        </if>
+    </select>
+
 </mapper>

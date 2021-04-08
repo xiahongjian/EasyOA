@@ -12,7 +12,7 @@ import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-import tech.hongjian.oa.config.SysTokenConfig;
+import tech.hongjian.oa.config.security.SysTokenConfig;
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.service.UserService;
 import tech.hongjian.oa.service.UserTokenService;

@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.entity.enums.Status;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * Mapper 接口
@@ -17,4 +20,10 @@ public interface UserMapper extends BaseMapper<User> {
 
     IPage<User> selectByParams(IPage<User> objectPage, String keyword, Status status,
                                Integer dept, String prop, String order);
+
+    long countByParams(Map<String, Object> params);
+
+    List<User> selectByParamMap(Map<String, Object> params);
+
+    IPage<User> selectByParamsPage(IPage<User> page, Map<String, Object> params);
 }

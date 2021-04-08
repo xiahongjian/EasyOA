@@ -1,4 +1,4 @@
-package tech.hongjian.oa.config;
+package tech.hongjian.oa.config.security;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.HttpSecurityBuilder;
@@ -7,8 +7,8 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
-import tech.hongjian.oa.config.filter.JWTAuthenticationFilter;
-import tech.hongjian.oa.config.handler.LoginAuthFailureHandler;
+import tech.hongjian.oa.config.security.filter.JWTAuthenticationFilter;
+import tech.hongjian.oa.config.security.handler.LoginAuthFailureHandler;
 
 /**
  * @author xiahongjian

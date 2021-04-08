@@ -15,9 +15,9 @@ import tech.hongjian.oa.entity.enums.Status;
  */
 public interface DictService extends IService<Dict> {
 
-    IPage<Dict> getDict(String name, String key, Status status, Integer start, Integer limit);
+    IPage<Dict> findDict(String name, String key, Status status, Integer start, Integer limit);
 
-    Dict getDictById(Integer id);
+    Dict findDictById(Integer id);
 
     Dict create(Dict dict);
 

@@ -1,4 +1,4 @@
-package tech.hongjian.oa.config.filter;
+package tech.hongjian.oa.config.security.filter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 
 import lombok.extern.slf4j.Slf4j;
-import tech.hongjian.oa.config.token.JWTAuthenticationToken;
+import tech.hongjian.oa.config.security.token.JWTAuthenticationToken;
 
 /**
  * @author xiahongjian

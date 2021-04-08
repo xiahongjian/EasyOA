@@ -1,4 +1,4 @@
-package tech.hongjian.oa.flow.listener.globab;
+package tech.hongjian.oa.flowable.listener.globab;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,7 @@ import org.flowable.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tech.hongjian.oa.entity.FlowEntity;
-import tech.hongjian.oa.flow.FlowVariables;
+import tech.hongjian.oa.flowable.FlowVariables;
 import tech.hongjian.oa.service.FlowService;
 
 /**

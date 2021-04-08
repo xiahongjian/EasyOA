@@ -1,4 +1,4 @@
-package tech.hongjian.oa.config;
+package tech.hongjian.oa.config.security;
 
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +22,11 @@ import org.springframework.security.web.access.intercept.FilterSecurityIntercept
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import tech.hongjian.oa.config.Code;
 import tech.hongjian.oa.config.ConfigConsts.URLs;
-import tech.hongjian.oa.config.handler.JWTRefreshSuccessHandler;
-import tech.hongjian.oa.config.handler.LoginAuthSuccessHandler;
-import tech.hongjian.oa.config.handler.TokenClearLogoutHandler;
+import tech.hongjian.oa.config.security.handler.JWTRefreshSuccessHandler;
+import tech.hongjian.oa.config.security.handler.LoginAuthSuccessHandler;
+import tech.hongjian.oa.config.security.handler.TokenClearLogoutHandler;
 import tech.hongjian.oa.model.R;
 import tech.hongjian.oa.service.UserService;
 import tech.hongjian.oa.service.UserTokenService;

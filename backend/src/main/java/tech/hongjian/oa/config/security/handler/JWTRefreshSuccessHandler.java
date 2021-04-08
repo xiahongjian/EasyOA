@@ -1,9 +1,9 @@
-package tech.hongjian.oa.config.handler;
+package tech.hongjian.oa.config.security.handler;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import tech.hongjian.oa.config.filter.JWTAuthenticationFilter;
-import tech.hongjian.oa.config.token.JWTAuthenticationToken;
+import tech.hongjian.oa.config.security.filter.JWTAuthenticationFilter;
+import tech.hongjian.oa.config.security.token.JWTAuthenticationToken;
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.service.UserTokenService;
 

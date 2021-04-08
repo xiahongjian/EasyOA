@@ -19,10 +19,10 @@ public class DictServiceTest extends TestCaseBase {
     @Test
     @Transactional
     public void testGetDict() {
-        IPage<Dict> dict = dictService.getDict("性别", null, null, 0, 10);
+        IPage<Dict> dict = dictService.findDict("性别", null, null, 0, 10);
         System.out.println(JSONUtil.toJSON(dict));
 
-        IPage<Dict> res = dictService.getDict("性别", null, Status.NORMAL, 0, 10);
+        IPage<Dict> res = dictService.findDict("性别", null, Status.NORMAL, 0, 10);
         System.out.println(JSONUtil.toJSON(res));
     }
 }

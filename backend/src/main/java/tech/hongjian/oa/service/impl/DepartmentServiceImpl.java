@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department> implements DepartmentService {
 
     @Override
-    public Department getDepartmentById(Integer id) {
+    public Department findDepartmentById(Integer id) {
         if (id == null) {
             return null;
         }
@@ -72,7 +72,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     }
 
     private Department validate(Department department) {
-        Department found = getDepartmentByName(department.getName());
+        Department found = findDepartmentByName(department.getName());
         if ( found != null && !found.getId().equals(department.getId())) {
             throw new CommonServiceException("名称为[" + department.getName() + "]的部门已经存在");
         }
@@ -87,13 +87,13 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     }
 
     @Override
-    public Department getDepartmentByName(String name) {
+    public Department findDepartmentByName(String name) {
         return lambdaQuery().eq(Department::getName, name).one();
     }
 
     @Override
     public Department update(Integer id, Department department) {
-        if (getDepartmentById(id) == null) {
+        if (findDepartmentById(id) == null) {
             throw new CommonServiceException("ID为[" + id + "]的部门不存在");
         }
         department.setId(id);
@@ -105,7 +105,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
 
     @Override
     public void delete(Integer id) {
-        if (getDepartmentById(id) == null) {
+        if (findDepartmentById(id) == null) {
             throw new CommonServiceException("ID为[" + id + "]的部门不存在");
         }
         removeById(id);

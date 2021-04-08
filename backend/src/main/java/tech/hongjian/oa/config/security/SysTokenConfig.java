@@ -1,4 +1,4 @@
-package tech.hongjian.oa.config;
+package tech.hongjian.oa.config.security;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

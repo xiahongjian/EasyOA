@@ -5,7 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import tech.hongjian.oa.config.token.JWTAuthenticationToken;
+import tech.hongjian.oa.config.security.token.JWTAuthenticationToken;
 import tech.hongjian.oa.service.UserTokenService;
 
 /**

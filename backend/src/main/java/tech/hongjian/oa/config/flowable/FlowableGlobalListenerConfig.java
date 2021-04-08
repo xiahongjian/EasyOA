@@ -1,4 +1,4 @@
-package tech.hongjian.oa.config;
+package tech.hongjian.oa.config.flowable;
 
 import lombok.Setter;
 import org.flowable.common.engine.api.delegate.event.FlowableEngineEventType;
@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
-import tech.hongjian.oa.flow.listener.globab.ProcessCreatedListener;
+import tech.hongjian.oa.flowable.listener.globab.ProcessCreatedListener;
 
 /**
  * @author xiahongjian

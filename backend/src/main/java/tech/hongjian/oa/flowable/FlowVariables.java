@@ -1,4 +1,4 @@
-package tech.hongjian.oa.flow;
+package tech.hongjian.oa.flowable;
 
 /**
  * Created by xiahongjian on 2021/3/13.

@@ -1,4 +1,4 @@
-package tech.hongjian.oa.config.token;
+package tech.hongjian.oa.config.security.token;
 
 import java.util.Collection;
 import java.util.Collections;

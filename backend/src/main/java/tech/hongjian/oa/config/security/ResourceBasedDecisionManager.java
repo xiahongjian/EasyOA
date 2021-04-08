@@ -1,4 +1,4 @@
-package tech.hongjian.oa.config;
+package tech.hongjian.oa.config.security;
 
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;

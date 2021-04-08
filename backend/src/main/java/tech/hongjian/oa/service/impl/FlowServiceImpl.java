@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.FlowEntity;
 import tech.hongjian.oa.exception.CommonServiceException;
-import tech.hongjian.oa.flow.FlowVariables;
+import tech.hongjian.oa.flowable.FlowVariables;
 import tech.hongjian.oa.service.FlowBizFormService;
 import tech.hongjian.oa.service.FlowService;
 

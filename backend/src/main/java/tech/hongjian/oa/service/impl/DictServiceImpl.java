@@ -44,8 +44,8 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
     private DictValueService dictValueService;
 
     @Override
-    public IPage<Dict> getDict(String name, String key, Status status, Integer page,
-                               Integer limit) {
+    public IPage<Dict> findDict(String name, String key, Status status, Integer page,
+                                Integer limit) {
         LambdaQueryChainWrapper<Dict> query =
                 lambdaQuery().orderByAsc(Dict::getCreatedAt);
         if (StringUtils.isNotBlank(name)) {
@@ -64,7 +64,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
     }
 
     @Override
-    public Dict getDictById(Integer id) {
+    public Dict findDictById(Integer id) {
         return getBaseMapper().selectById(id);
     }
 
@@ -97,7 +97,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
 
     @Override
     public Dict delete(Integer id) {
-        Dict dict = getDictById(id);
+        Dict dict = findDictById(id);
         if (dict == null) {
             throw new CommonServiceException(M.NOT_EXISTED);
         }
@@ -112,7 +112,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         if (id == null) {
             return false;
         }
-        return getDictById(id) != null;
+        return findDictById(id) != null;
     }
 
     @Override

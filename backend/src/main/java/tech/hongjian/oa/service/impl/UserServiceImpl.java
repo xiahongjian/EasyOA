@@ -28,10 +28,7 @@ import tech.hongjian.oa.service.UserService;
 import tech.hongjian.oa.util.CommonUtil;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -213,10 +210,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         vo.setRoleIds(roles.stream().map(Role::getId).collect(Collectors.toList()));
         vo.setRoles(roles.stream().map(Role::getName).collect(Collectors.toList()));
         if (vo.getDepartmentId() != null) {
-            vo.setDepartment(Optional.ofNullable(deptService.getDepartmentById(vo.getDepartmentId()))
+            vo.setDepartment(Optional.ofNullable(deptService.findDepartmentById(vo.getDepartmentId()))
                     .map(Department::getName).orElse(null));
         }
         return vo;
+    }
+
+    @Override
+    public long countByParams(Map<String, Object> params) {
+        return baseMapper.countByParams(params);
+    }
+
+    @Override
+    public List<User> findByParamMap(Map<String, Object> params) {
+
+        return baseMapper.selectByParamMap(params);
+    }
+
+    public IPage<User> findByParamMapPage(IPage<User> page, Map<String, Object> params) {
+        return baseMapper.selectByParamsPage(page, params);
     }
 
     private User checkUserExisted(Integer id) {

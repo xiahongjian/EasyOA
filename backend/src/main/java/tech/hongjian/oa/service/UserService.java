@@ -9,6 +9,9 @@ import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.model.UserVo;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * 服务类
@@ -43,4 +46,10 @@ public interface UserService extends IService<User>, UserDetailsService {
     boolean emailIsExisted(String email, Integer excludeId);
 
     UserVo getUserInfo(Integer id);
+
+    long countByParams(Map<String, Object> params);
+
+    List<User> findByParamMap(Map<String, Object> params);
+
+    IPage<User> findByParamMapPage(IPage<User> page, Map<String, Object> params);
 }
