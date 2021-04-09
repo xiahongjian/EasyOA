@@ -47,7 +47,7 @@ public interface UserService extends IService<User>, UserDetailsService {
 
     UserVo getUserInfo(Integer id);
 
-    long countByParams(Map<String, Object> params);
+    long countByParamMap(Map<String, Object> params);
 
     List<User> findByParamMap(Map<String, Object> params);
 

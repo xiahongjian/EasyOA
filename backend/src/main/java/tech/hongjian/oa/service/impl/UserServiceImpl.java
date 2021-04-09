@@ -217,8 +217,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public long countByParams(Map<String, Object> params) {
-        return baseMapper.countByParams(params);
+    public long countByParamMap(Map<String, Object> params) {
+        return baseMapper.countByParamMap(params);
     }
 
     @Override
@@ -228,7 +228,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     public IPage<User> findByParamMapPage(IPage<User> page, Map<String, Object> params) {
-        return baseMapper.selectByParamsPage(page, params);
+        return baseMapper.selectByParamMapPage(page, params);
     }
 
     private User checkUserExisted(Integer id) {

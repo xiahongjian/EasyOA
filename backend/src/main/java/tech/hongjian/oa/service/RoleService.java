@@ -1,12 +1,14 @@
 package tech.hongjian.oa.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import tech.hongjian.oa.model.RoleWithMenu;
 import tech.hongjian.oa.entity.Role;
 import tech.hongjian.oa.entity.enums.Status;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -41,4 +43,10 @@ public interface RoleService extends IService<Role> {
     List<Integer> getRoleTreeSelect(Integer id);
 
     List<Role> findAllRoles();
+
+    long countByParamMap(Map<String, Object> params);
+
+    List<Role> findByParamMap(Map<String, Object> params);
+
+    IPage<Role> findByParamMapPage(Page<Role> rolePage, Map<String, Object> params);
 }

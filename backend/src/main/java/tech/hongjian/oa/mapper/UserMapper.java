@@ -21,9 +21,9 @@ public interface UserMapper extends BaseMapper<User> {
     IPage<User> selectByParams(IPage<User> objectPage, String keyword, Status status,
                                Integer dept, String prop, String order);
 
-    long countByParams(Map<String, Object> params);
+    long countByParamMap(Map<String, Object> params);
 
     List<User> selectByParamMap(Map<String, Object> params);
 
-    IPage<User> selectByParamsPage(IPage<User> page, Map<String, Object> params);
+    IPage<User> selectByParamMapPage(IPage<User> page, Map<String, Object> params);
 }

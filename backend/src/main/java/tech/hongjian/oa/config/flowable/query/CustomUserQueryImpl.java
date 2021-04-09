@@ -208,7 +208,7 @@ public class CustomUserQueryImpl implements UserQuery {
 
     @Override
     public long count() {
-        return userService.countByParams(buildParamMap());
+        return userService.countByParamMap(buildParamMap());
     }
 
 
@@ -243,7 +243,7 @@ public class CustomUserQueryImpl implements UserQuery {
         params.put("id", id);
         params.put("ids", ids);
         params.put("email", email);
-        params.put("emailLike", emailLike);
+        params.put("emailLike", emailLike == null ? null :  CommonUtil.wrapWithPercent(emailLike));
         params.put("roleId", roleId);
         params.put("roleIds", roleIds);
         params.put("orderBy", orderBy);

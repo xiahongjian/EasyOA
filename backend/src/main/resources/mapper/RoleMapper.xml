@@ -47,4 +47,44 @@
         where r.role_id=#{roleId} and not exists (select * from `menu` where parent_id=m.id)
     </select>
 
+
+    <sql id="whereByParamMap">
+        <where>
+            <if test="id != null">
+                and r.id=#{id}
+            </if>
+            <if test="ids != null and !ids.isEmpty()">
+                and r.id in <foreach item="item" collection="ids" open="(" separator="," close=")">#{item}</foreach>
+            </if>
+            <if test="name != null">
+                and r.name=#{name}
+            </if>
+            <if test="nameLike != null">
+                and r.nameLike like #{nameLike}
+            </if>
+        </where>
+    </sql>
+
+    <select id="countByParamMap" resultType="java.lang.Long">
+        select *
+        from `role` r
+        <include refid="whereByParamMap" />
+    </select>
+    <select id="selectByParamMap" resultType="tech.hongjian.oa.entity.Role">
+        select *
+        from `role` r
+        <include refid="whereByParamMap" />
+        <if test="orderBy != null">
+            order by ${orderBy} <if test="direction != null">${direction}</if>
+        </if>
+    </select>
+    <select id="selectByParamMapPage" resultType="tech.hongjian.oa.entity.Role">
+        select *
+        from `role` r
+        <include refid="whereByParamMap" />
+        <if test="orderBy != null">
+            order by ${orderBy} <if test="direction != null">${direction}</if>
+        </if>
+    </select>
+
 </mapper>

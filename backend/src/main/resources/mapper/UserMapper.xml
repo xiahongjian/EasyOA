@@ -84,7 +84,7 @@
             </if>
         </where>
     </sql>
-    <select id="countByParams" resultType="java.lang.Long">
+    <select id="countByParamMap" resultType="java.lang.Long">
         select count(*)
         from `user` u
         <include refid="whereByParamMap" />
@@ -102,7 +102,7 @@
             order by t.${orderBy} <if test="direction != null">${direction}</if>
         </if>
     </select>
-    <select id="selectByParamsPage" resultType="tech.hongjian.oa.entity.User">
+    <select id="selectByParamMapPage" resultType="tech.hongjian.oa.entity.User">
         select *
         from `user` u
         <include refid="whereByParamMap" />

@@ -18,10 +18,7 @@ import tech.hongjian.oa.service.RoleService;
 import tech.hongjian.oa.util.CommonUtil;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -157,6 +154,21 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     @Override
     public List<Role> findAllRoles() {
         return lambdaQuery().eq(Role::getStatus, Status.NORMAL).orderByAsc(Role::getSort).list();
+    }
+
+    @Override
+    public long countByParamMap(Map<String, Object> params) {
+        return baseMapper.countByParamMap(params);
+    }
+
+    @Override
+    public List<Role> findByParamMap(Map<String, Object> params) {
+        return baseMapper.selectByParamMap(params);
+    }
+
+    @Override
+    public IPage<Role> findByParamMapPage(Page<Role> rolePage, Map<String, Object> params) {
+        return baseMapper.selectByParamMapPage(rolePage, params);
     }
 
     private Role checkExisted(Integer id) {
