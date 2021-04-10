@@ -4,6 +4,8 @@ package tech.hongjian.oa.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.flowable.task.api.Task;
+import tech.hongjian.oa.entity.User;
+import tech.hongjian.oa.util.CommonUtil;
 
 import java.util.Date;
 
@@ -12,14 +14,19 @@ import java.util.Date;
  */
 @NoArgsConstructor
 @Data
-public class TaskVo {
+public class TaskBo {
     private String id;
     private String name;
     private String description;
     private int priority;
     private Integer owner;
+    private User ownerUserInfo;
     private Integer assignee;
+    private User assigneeUserInfo;
     private String processInstanceId;
+    private String processDefinitionId;
+    private String processDefinitionKey;
+    private String processDefinitionName;
     private String executionId;
     private String taskDefinitionId;
     private String taskDefinitionKey;
@@ -31,14 +38,14 @@ public class TaskVo {
     private Date dueDate;
     private Date claimTime;
 
-    public TaskVo(Task task) {
+    public TaskBo(Task task) {
         if (task != null) {
             this.id = task.getId();
             this.name = task.getName();
             this.description = task.getDescription();
             this.priority = task.getPriority();
-            this.owner = Integer.valueOf(task.getOwner());
-            this.assignee = Integer.valueOf(task.getAssignee());
+            this.owner = CommonUtil.toInteger(task.getOwner());
+            this.assignee = CommonUtil.toInteger(task.getAssignee());
             this.processInstanceId = task.getProcessInstanceId();
             this.executionId = task.getExecutionId();
             this.taskDefinitionId = task.getTaskDefinitionId();

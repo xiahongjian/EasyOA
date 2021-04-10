@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.flowable.ProcessDefinitionMapper;
-import tech.hongjian.oa.model.ProcDefVo;
+import tech.hongjian.oa.model.ProcDefBo;
 import tech.hongjian.oa.service.BizProcessDefinitionService;
 import tech.hongjian.oa.util.CommonUtil;
 
@@ -28,7 +28,7 @@ public class BizProcessDefinitionServiceImpl implements BizProcessDefinitionServ
     private ProcessDefinitionMapper processDefinitionMapper;
 
     @Override
-    public IPage<ProcDefVo> listProcessDefinition(String key, String name, Integer suspend, int page, int limit) {
+    public IPage<ProcDefBo> listProcessDefinition(String key, String name, Integer suspend, int page, int limit) {
 
 
         IPage<ProcessDefinitionEntityImpl> list = processDefinitionMapper.queryByParams(new Page<>(page, limit),
@@ -36,8 +36,8 @@ public class BizProcessDefinitionServiceImpl implements BizProcessDefinitionServ
                 CommonUtil.wrapWithPercent(name),
                 suspend);
 
-        Page<ProcDefVo> result = new Page<>();
-        result.setRecords(list.getRecords().stream().map(ProcDefVo::new).collect(Collectors.toList()));
+        Page<ProcDefBo> result = new Page<>();
+        result.setRecords(list.getRecords().stream().map(ProcDefBo::new).collect(Collectors.toList()));
         result.setTotal(list.getTotal());
         return result;
     }

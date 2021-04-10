@@ -2,13 +2,13 @@ package tech.hongjian.oa.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.flowable.engine.repository.ProcessDefinition;
-import tech.hongjian.oa.model.ProcDefVo;
+import tech.hongjian.oa.model.ProcDefBo;
 
 /**
  * Created by xiahongjian on 2021/3/31.
  */
 public interface BizProcessDefinitionService {
-    IPage<ProcDefVo> listProcessDefinition(String key, String name, Integer suspend, int start, int limit);
+    IPage<ProcDefBo> listProcessDefinition(String key, String name, Integer suspend, int start, int limit);
 
     ProcessDefinition getProcDefById(String procDefId);
 

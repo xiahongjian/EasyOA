@@ -89,6 +89,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public User getUserBriefInfo(Integer id) {
+        User byId = getUserById(id);
+        if (byId == null) {
+            return null;
+        }
+        User user = new User();
+        user.setId(byId.getId());
+        user.setName(byId.getName());
+        user.setGender(byId.getGender());
+        user.setUsername(byId.getUsername());
+        user.setEmail(byId.getEmail());
+        user.setDepartment(byId.getDepartment());
+        user.setPost(byId.getPost());
+        user.setStatus(byId.getStatus());
+        return user;
+    }
+
+    @Override
     public void deleteById(Integer id) {
         checkUserExisted(id);
         this.removeById(id);

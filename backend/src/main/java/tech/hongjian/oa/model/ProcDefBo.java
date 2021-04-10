@@ -9,7 +9,7 @@ import org.flowable.engine.repository.ProcessDefinition;
  */
 @Data
 @NoArgsConstructor
-public class ProcDefVo {
+public class ProcDefBo {
     private String id;
     private String key;
     private String name;
@@ -17,10 +17,10 @@ public class ProcDefVo {
     private int version;
     private String category;
     private String deploymentId;
-    private boolean isSuspended;
+    private boolean suspended;
     private String tenantId;
 
-    public ProcDefVo(ProcessDefinition definition) {
+    public ProcDefBo(ProcessDefinition definition) {
         this.id = definition.getId();
         this.key = definition.getKey();
         this.name = definition.getName();
@@ -29,6 +29,6 @@ public class ProcDefVo {
         this.category = definition.getCategory();
         this.deploymentId = definition.getDeploymentId();
         this.tenantId = definition.getTenantId();
-        this.isSuspended = definition.isSuspended();
+        this.suspended = definition.isSuspended();
     }
 }

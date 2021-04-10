@@ -1,10 +1,8 @@
 package tech.hongjian.oa.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springframework.security.core.userdetails.UserDetailsService;
-
 import com.baomidou.mybatisplus.extension.service.IService;
-
+import org.springframework.security.core.userdetails.UserDetailsService;
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.model.UserVo;
@@ -26,6 +24,8 @@ public interface UserService extends IService<User>, UserDetailsService {
                          String order, Integer page, Integer limit);
 
     User getUserById(Integer id);
+
+    User getUserBriefInfo(Integer id);
 
     void deleteById(Integer id);
 

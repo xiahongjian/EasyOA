@@ -1,5 +1,6 @@
 package tech.hongjian.oa.util;
 
+import org.flowable.common.engine.impl.db.SuspensionState;
 import tech.hongjian.oa.entity.BaseEntity;
 import tech.hongjian.oa.entity.BaseEntityWithOperator;
 
@@ -41,5 +42,13 @@ public class CommonUtil {
         entity.setUpdatedAt(LocalDateTime.now());
         entity.setUpdatedBy(updatedBy);
         return entity;
+    }
+
+    public static boolean isSuspendState(Integer code) {
+        return code != null && code == SuspensionState.SUSPENDED.getStateCode();
+    }
+
+    public static Integer toInteger(String value) {
+        return value == null ? null : Integer.valueOf(value);
     }
 }

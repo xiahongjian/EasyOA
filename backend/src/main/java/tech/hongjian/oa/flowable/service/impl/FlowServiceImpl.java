@@ -122,6 +122,15 @@ public class FlowServiceImpl implements FlowService {
         taskService.complete(taskId, variables);
     }
 
+    @Override
+    public void reassign(String taskId, Integer userId, String comment) {
+        checkTaskExisted(taskId);
+        if (StringUtils.isNotBlank(comment)) {
+            taskService.addComment(taskId, null, comment);
+        }
+        taskService.setAssignee(taskId, String.valueOf(userId));
+    }
+
     private FlowBizFormService<? extends FlowEntity> getBizFormService(String formClass) {
         if (StringUtils.isBlank(formClass)) {
             return null;

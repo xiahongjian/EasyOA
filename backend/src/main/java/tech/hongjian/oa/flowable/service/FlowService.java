@@ -33,4 +33,6 @@ public interface FlowService {
     void reject(String taskId, String comment);
 
     void completeTask(String taskId, String comment, Map<String, Object> variables);
+
+    void reassign(String taskId, Integer userId, String comment);
 }
