@@ -8,7 +8,6 @@ import tech.hongjian.oa.flowable.FlowVariables;
 import tech.hongjian.oa.flowable.service.FlowService;
 import tech.hongjian.oa.model.R;
 import tech.hongjian.oa.service.BizTaskService;
-import tech.hongjian.oa.util.CommonUtil;
 import tech.hongjian.oa.util.WebUtil;
 
 import java.util.Collections;
@@ -28,19 +27,19 @@ public class TaskController {
     @GetMapping("")
     public R listTask(@RequestParam(required = false) String procDefKey,
                       @RequestParam(required = false) String name,
-                      @RequestParam(required = false) Integer suspend,
+                      @RequestParam(required = false) Integer suspended,
                       @RequestParam int page,
                       @RequestParam int limit) {
-        return R.ok(bizTaskService.listTask(procDefKey, name, null, CommonUtil.isSuspendState(suspend), page, limit, true));
+        return R.ok(bizTaskService.listTask(procDefKey, name, null, suspended, page, limit, true));
     }
 
     @GetMapping("/mine")
     public R listMyTask(@RequestParam(required = false) String procDefKey,
                         @RequestParam(required = false) String name,
-                        @RequestParam(required = false) Integer suspend,
+                        @RequestParam(required = false) Integer suspended,
                         @RequestParam int page,
                         @RequestParam int limit) {
-        return R.ok(bizTaskService.listTask(procDefKey, name, WebUtil.currentUser().getId(), CommonUtil.isSuspendState(suspend), page, limit, true));
+        return R.ok(bizTaskService.listTask(procDefKey, name, WebUtil.currentUser().getId(), suspended, page, limit, true));
     }
 
     @PutMapping("/{taskId}/complete")

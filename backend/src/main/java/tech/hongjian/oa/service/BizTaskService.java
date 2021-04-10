@@ -12,9 +12,9 @@ public interface BizTaskService {
 
     TaskBo findById(String id, boolean withUserInfo);
 
-    IPage<TaskBo> listTask(String procDefName, String name, Integer assigneeId, boolean suspend, int page, int limit);
+    IPage<TaskBo> listTask(String procDefName, String name, Integer assigneeId, Integer suspend, int page, int limit);
 
-    IPage<TaskBo> listTask(String procDefName, String name, Integer assigneeId, boolean suspend, int page, int limit, boolean withUserInfo);
+    IPage<TaskBo> listTask(String procDefName, String name, Integer assigneeId, Integer suspend, int page, int limit, boolean withUserInfo);
 
     TaskBo getUserInfo(TaskBo entity);
 }

@@ -43,12 +43,12 @@ public class BizTaskServiceImpl implements BizTaskService {
     }
 
     @Override
-    public IPage<TaskBo> listTask(String procDefName, String name, Integer assigneeId, boolean suspend, int page, int limit) {
-        return listTask(procDefName, name, assigneeId, suspend, page, limit, false);
+    public IPage<TaskBo> listTask(String procDefName, String name, Integer assigneeId, Integer suspended, int page, int limit) {
+        return listTask(procDefName, name, assigneeId, suspended, page, limit, false);
     }
 
     @Override
-    public IPage<TaskBo> listTask(String procDefName, String name, Integer assigneeId, boolean suspend, int page, int limit, boolean withUserInfo) {
+    public IPage<TaskBo> listTask(String procDefName, String name, Integer assigneeId, Integer suspended, int page, int limit, boolean withUserInfo) {
         Page<TaskBo> result = new Page<>();
         TaskQuery query = taskService.createTaskQuery();
         if (StringUtils.isNotBlank(procDefName)) {
@@ -57,8 +57,10 @@ public class BizTaskServiceImpl implements BizTaskService {
         if (StringUtils.isNotBlank(name)) {
             query.taskNameLikeIgnoreCase(CommonUtil.wrapWithPercent(name));
         }
-        if (suspend) {
+        if (CommonUtil.isSuspendState(suspended)) {
             query.suspended();
+        } else if (CommonUtil.isActiveState(suspended)) {
+            query.active();
         }
         if (assigneeId != null) {
             query.taskAssignee(String.valueOf(assigneeId));

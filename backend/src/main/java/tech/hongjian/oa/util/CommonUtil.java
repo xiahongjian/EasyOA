@@ -48,6 +48,10 @@ public class CommonUtil {
         return code != null && code == SuspensionState.SUSPENDED.getStateCode();
     }
 
+    public static boolean isActiveState(Integer code) {
+        return code != null && code == SuspensionState.ACTIVE.getStateCode();
+    }
+
     public static Integer toInteger(String value) {
         return value == null ? null : Integer.valueOf(value);
     }

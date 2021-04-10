@@ -3,26 +3,28 @@
     <template #wrapper>
       <el-card class="box-card">
         <el-form ref="queryForm" :inline="true" :model="queryParams">
-          <el-form-item label="流程名" prop="procDefKey">
+          <el-form-item label="流程名称" prop="procDefKey">
             <el-input
               v-model="queryParams.modelId"
               clearable
               size="small"
               style="width: 240px"
+              placeholder="流程名称"
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="名称" prop="name">
+          <el-form-item label="任务名称" prop="name">
             <el-input
               v-model="queryParams.name"
               clearable
               size="small"
               style="width: 240px"
+              placeholder="任务名称"
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="状态" prop="suspend">
-            <dict-select v-model="queryParams.suspend" placeholder="状态" :options="statusOpts" size="small" tyle="width: 240px" />
+          <el-form-item label="状态" prop="suspended">
+            <dict-select v-model="queryParams.suspended" placeholder="状态" :options="statusOpts" size="small" tyle="width: 240px" />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -35,8 +37,8 @@
           v-loading="loading"
           :data="records"
         >
-          <el-table-column label="名称" prop="name" :show-overflow-tooltip="true" />
-          <el-table-column label="流程名" prop="processDefinitionName" />
+          <el-table-column label="任务名称" prop="name" :show-overflow-tooltip="true" />
+          <el-table-column label="流程名称" prop="processDefinitionName" />
           <el-table-column label="审批者" prop="assigneeUserInfo.name" />
           <el-table-column label="描述" prop="description" :show-overflow-tooltip="true" />
 
@@ -117,7 +119,7 @@ export default {
       queryParams: {
         procDefName: undefined,
         name: undefined,
-        suspend: undefined,
+        suspended: undefined,
         page: 0,
         limit: 10
       },

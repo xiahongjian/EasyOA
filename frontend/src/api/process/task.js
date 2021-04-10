@@ -18,8 +18,8 @@ export function listMyTask(params) {
 
 export function completeTask(taskId, action, comment) {
   return request({
-    url: `/processes/tasks/${taskId}`,
-    data: {
+    url: `/processes/tasks/${taskId}/complete`,
+    params: {
       action,
       comment
     },
@@ -29,8 +29,8 @@ export function completeTask(taskId, action, comment) {
 
 export function reassignTask(taskId, userId, comment) {
   return request({
-    url: `/processes/tasks/${taskId}`,
-    data: {
+    url: `/processes/tasks/${taskId}/reassign`,
+    params: {
       userId,
       comment
     },
