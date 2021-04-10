@@ -37,8 +37,8 @@
           v-loading="loading"
           :data="records"
         >
-          <el-table-column label="任务名称" prop="name" :show-overflow-tooltip="true" />
           <el-table-column label="流程名称" prop="processDefinitionName" />
+          <el-table-column label="任务名称" prop="name" :show-overflow-tooltip="true" />
           <el-table-column label="审批者" prop="assigneeUserInfo.name" />
           <el-table-column label="描述" prop="description" :show-overflow-tooltip="true" />
 
@@ -183,8 +183,8 @@ export default {
         this.listTask()
       }
     },
-    async handleReject() {
-      const resp = await completeTask(this.record.id, 'reject', 'Reject for testing')
+    async handleReject(record) {
+      const resp = await completeTask(record.id, 'reject', 'Reject for testing')
       if (resp.success) {
         this.msgSuccess('驳回成功')
         this.listTask()
