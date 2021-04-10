@@ -3,14 +3,13 @@ package tech.hongjian.oa.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.NonNull;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tech.hongjian.oa.entity.DictValue;
 import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.exception.CommonServiceException;
@@ -30,6 +29,7 @@ import java.util.List;
  * @since 2021-01-12
  */
 @Setter(onMethod_ = {@Autowired})
+@Transactional(rollbackFor = Exception.class)
 @Service()
 public class DictValueServiceImpl extends ServiceImpl<DictValueMapper, DictValue> implements DictValueService {
 

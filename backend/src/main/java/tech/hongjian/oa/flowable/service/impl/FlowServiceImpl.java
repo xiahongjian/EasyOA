@@ -1,4 +1,4 @@
-package tech.hongjian.oa.service.impl;
+package tech.hongjian.oa.flowable.service.impl;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.FlowEntity;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.flowable.FlowVariables;
-import tech.hongjian.oa.service.FlowBizFormService;
-import tech.hongjian.oa.service.FlowService;
+import tech.hongjian.oa.flowable.service.FlowBizFormService;
+import tech.hongjian.oa.flowable.service.FlowService;
 
 import java.util.Collections;
 import java.util.Map;
@@ -92,7 +92,15 @@ public class FlowServiceImpl implements FlowService {
 
     @Override
     public void approve(String taskId) {
+        approve(taskId, null);
+    }
+
+    @Override
+    public void approve(String taskId, String comment) {
         checkTaskExisted(taskId);
+        if (StringUtils.isNoneBlank(comment)) {
+            taskService.addComment(taskId, null, comment);
+        }
         taskService.complete(taskId, Collections.singletonMap(FlowVariables.V_ACTION, FlowVariables.APPROVE));
     }
 
@@ -103,6 +111,15 @@ public class FlowServiceImpl implements FlowService {
             taskService.addComment(taskId, null, comment);
         }
         taskService.complete(taskId, Collections.singletonMap(FlowVariables.V_ACTION, FlowVariables.REJECT));
+    }
+
+    @Override
+    public void completeTask(String taskId, String comment, Map<String, Object> variables) {
+        checkTaskExisted(taskId);
+        if (StringUtils.isNotBlank(comment)) {
+            taskService.addComment(taskId, null, comment);
+        }
+        taskService.complete(taskId, variables);
     }
 
     private FlowBizFormService<? extends FlowEntity> getBizFormService(String formClass) {

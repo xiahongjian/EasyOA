@@ -5,6 +5,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tech.hongjian.oa.entity.Menu;
 import tech.hongjian.oa.entity.enums.MenuType;
 import tech.hongjian.oa.exception.CommonServiceException;
@@ -13,24 +14,21 @@ import tech.hongjian.oa.service.MenuService;
 import tech.hongjian.oa.util.CommonUtil;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author xiahongjian
  * @since 2021-01-12
  */
+
 @Slf4j
 @Setter(onMethod_ = {@Autowired})
+@Transactional(rollbackFor = Exception.class)
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements MenuService {
 
@@ -112,7 +110,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
                 tree.add(menu);
                 continue;
             }
-            if (idMenuMap.containsKey(menu.getParentId())){
+            if (idMenuMap.containsKey(menu.getParentId())) {
                 idMenuMap.get(menu.getParentId()).getChildren().add(menu);
             }
         }
@@ -145,7 +143,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         menu.setUpdatedAt(LocalDateTime.now());
         updateById(menu);
     }
-
 
 
 }

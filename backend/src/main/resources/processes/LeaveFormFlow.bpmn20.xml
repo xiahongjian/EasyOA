@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.flowable.org/processdef">
   <process id="LeaveFormFlow" name="LeaveFormFlow" isExecutable="true">
     <startEvent id="start" flowable:formFieldValidation="true"></startEvent>
     <sequenceFlow id="Flow_1n38udv" sourceRef="start" targetRef="creator"></sequenceFlow>
@@ -9,12 +13,16 @@
     <exclusiveGateway id="Gateway_0ecf8ny"></exclusiveGateway>
     <sequenceFlow id="Flow_05bv1v7" sourceRef="manager" targetRef="Gateway_0ecf8ny"></sequenceFlow>
     <endEvent id="Event_1oqj691"></endEvent>
-    <userTask id="creator" name="创建者" flowable:assignee="${form.creatorId}" flowable:formFieldValidation="true">
+    <userTask id="creator" name="创建者" flowable:assignee="${form.creatorId}" flowable:formKey="leave_form" flowable:formFieldValidation="true" flowable:skipExpression="${skipCreator}">
       <extensionElements>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
     </userTask>
-    <userTask id="manager" name="经理" flowable:formFieldValidation="true"></userTask>
+    <userTask id="manager" name="经理" flowable:assignee="1" flowable:formFieldValidation="true">
+      <extensionElements>
+        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+      </extensionElements>
+    </userTask>
     <sequenceFlow id="Flow_1xvcbcr" name="驳回" sourceRef="Gateway_0ecf8ny" targetRef="creator">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action == 'reject'}]]></conditionExpression>
     </sequenceFlow>

@@ -12,6 +12,7 @@ import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tech.hongjian.oa.config.security.SysTokenConfig;
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.service.UserService;
@@ -30,6 +31,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Setter(onMethod_ = {@Autowired})
+@Transactional(rollbackFor = Exception.class)
 @Service
 public class UserTokenServiceImpl implements UserTokenService {
     private SysTokenConfig tokenConfig;

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tech.hongjian.oa.entity.FlowEntity;
 import tech.hongjian.oa.flowable.FlowVariables;
-import tech.hongjian.oa.service.FlowService;
+import tech.hongjian.oa.flowable.service.FlowService;
 
 /**
  * @author xiahongjian

@@ -1,8 +1,8 @@
 package tech.hongjian.oa.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import tech.hongjian.oa.entity.LeaveForm;
 import com.baomidou.mybatisplus.extension.service.IService;
+import tech.hongjian.oa.entity.LeaveForm;
 
 /**
  * <p>
@@ -13,8 +13,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2021-03-11
  */
 public interface LeaveFormService extends IService<LeaveForm> {
-
-    String processDefinitionKey();
 
     IPage<LeaveForm> listForms(String type, Integer creatorId, Integer page, Integer limit);
 

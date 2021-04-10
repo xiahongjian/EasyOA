@@ -23,14 +23,15 @@ import org.flowable.validation.ValidationError;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tech.hongjian.oa.entity.Model;
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.entity.enums.ModelStatue;
 import tech.hongjian.oa.entity.enums.ModelType;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.ModelMapper;
-import tech.hongjian.oa.service.ProcessResourceService;
 import tech.hongjian.oa.service.ModelService;
+import tech.hongjian.oa.service.ProcessResourceService;
 import tech.hongjian.oa.util.CommonUtil;
 import tech.hongjian.oa.util.WebUtil;
 import tech.hongjian.oa.util.XmlUtil;
@@ -55,6 +56,7 @@ import java.util.Map;
  * @since 2021-03-20
  */
 @Slf4j
+@Transactional(rollbackFor = Exception.class)
 @Service
 public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements ModelService {
     protected BpmnXMLConverter bpmnXmlConverter = new BpmnXMLConverter();
@@ -116,6 +118,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         byId.setUpdatedAt(LocalDateTime.now());
         byId.setModelComment(comment);
         byId.setVersion(byId.getVersion() + 1);
+        byId.setStatus(ModelStatue.NOT_DEPLOYED);
         if (!updateById(byId)) {
             throw new CommonServiceException("更新失败。");
         }

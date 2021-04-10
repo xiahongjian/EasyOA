@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tech.hongjian.oa.config.ConfigConsts;
 import tech.hongjian.oa.entity.Department;
 import tech.hongjian.oa.entity.Role;
@@ -40,6 +41,7 @@ import java.util.stream.Collectors;
  * @since 2021-01-12
  */
 @Setter(onMethod_ = {@Autowired})
+@Transactional(rollbackFor = Exception.class)
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
     private static final String DEFAULT_PASSWORD = "123456";

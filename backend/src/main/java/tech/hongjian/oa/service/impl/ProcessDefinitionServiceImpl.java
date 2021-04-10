@@ -8,6 +8,7 @@ import org.flowable.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.flowable.ProcessDefinitionMapper;
 import tech.hongjian.oa.model.ProcDefVo;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
  * Created by xiahongjian on 2021/3/31.
  */
 @Setter(onMethod_ = {@Autowired})
+@Transactional(rollbackFor = Exception.class)
 @Service
 public class ProcessDefinitionServiceImpl implements ProcessDefinitionService {
     private RepositoryService repoService;

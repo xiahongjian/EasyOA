@@ -7,12 +7,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tech.hongjian.oa.model.RoleWithMenu;
+import org.springframework.transaction.annotation.Transactional;
 import tech.hongjian.oa.entity.Role;
 import tech.hongjian.oa.entity.RoleMenuRel;
 import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.RoleMapper;
+import tech.hongjian.oa.model.RoleWithMenu;
 import tech.hongjian.oa.service.RoleMenuRelService;
 import tech.hongjian.oa.service.RoleService;
 import tech.hongjian.oa.util.CommonUtil;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
  * @since 2021-01-12
  */
 @Setter(onMethod_ = {@Autowired})
+@Transactional(rollbackFor = Exception.class)
 @Service
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements RoleService {
     private RoleMenuRelService roleMenuRelService;

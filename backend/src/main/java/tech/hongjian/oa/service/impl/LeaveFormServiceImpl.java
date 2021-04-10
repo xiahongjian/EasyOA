@@ -2,21 +2,18 @@ package tech.hongjian.oa.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import lombok.Setter;
-import org.flowable.engine.RuntimeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.LeaveForm;
 import tech.hongjian.oa.exception.CommonServiceException;
+import tech.hongjian.oa.flowable.FlowVariables;
+import tech.hongjian.oa.flowable.service.BaseFlowBizFormService;
 import tech.hongjian.oa.mapper.LeaveFormMapper;
-import tech.hongjian.oa.service.FlowBizFormService;
-import tech.hongjian.oa.service.FlowService;
 import tech.hongjian.oa.service.LeaveFormService;
 import tech.hongjian.oa.util.CommonUtil;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * <p>
@@ -26,16 +23,8 @@ import java.util.Arrays;
  * @author xiahongjian
  * @since 2021-03-11
  */
-@Setter(onMethod_ = {@Autowired})
 @Service
-public class LeaveFormServiceImpl extends ServiceImpl<LeaveFormMapper, LeaveForm> implements LeaveFormService, FlowBizFormService<LeaveForm> {
-    private FlowService flowService;
-    private RuntimeService runtimeService;
-
-    @Override
-    public String processDefinitionKey() {
-        return "LeaveFormFlow";
-    }
+public class LeaveFormServiceImpl extends BaseFlowBizFormService<LeaveFormMapper, LeaveForm> implements LeaveFormService {
 
     @Override
     public IPage<LeaveForm> listForms(String type, Integer creatorId, Integer page, Integer limit) {
@@ -46,7 +35,7 @@ public class LeaveFormServiceImpl extends ServiceImpl<LeaveFormMapper, LeaveForm
     public LeaveForm create(LeaveForm form) {
         form = CommonUtil.setEntityDefault(form);
         save(form);
-        runtimeService.startProcessInstanceByKey(processDefinitionKey(), String.valueOf(form.getId()));
+        startProcess(form, supplyProcessDefinitionKey(), Collections.singletonMap(FlowVariables.V_SKIP_CREATOR, true));
         return form;
     }
 
@@ -100,5 +89,10 @@ public class LeaveFormServiceImpl extends ServiceImpl<LeaveFormMapper, LeaveForm
             return null;
         }
         return getById(flowService.bizKey2Id(bizKey));
+    }
+
+    @Override
+    public String supplyProcessDefinitionKey() {
+        return "LeaveFormFlow";
     }
 }

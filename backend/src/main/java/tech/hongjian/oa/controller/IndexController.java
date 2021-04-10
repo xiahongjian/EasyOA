@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import tech.hongjian.oa.entity.LeaveForm;
 import tech.hongjian.oa.entity.Model;
+import tech.hongjian.oa.flowable.service.FlowService;
 import tech.hongjian.oa.model.R;
-import tech.hongjian.oa.service.FlowService;
 import tech.hongjian.oa.service.LeaveFormService;
 import tech.hongjian.oa.service.ModelService;
 import tech.hongjian.oa.util.ImageGenerator;
@@ -25,7 +25,6 @@ import tech.hongjian.oa.util.ImageGenerator;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 

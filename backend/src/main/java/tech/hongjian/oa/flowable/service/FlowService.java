@@ -1,4 +1,4 @@
-package tech.hongjian.oa.service;
+package tech.hongjian.oa.flowable.service;
 
 import tech.hongjian.oa.entity.FlowEntity;
 
@@ -28,5 +28,9 @@ public interface FlowService {
 
     void approve(String taskId);
 
+    void approve(String taskId, String comment);
+
     void reject(String taskId, String comment);
+
+    void completeTask(String taskId, String comment, Map<String, Object> variables);
 }
