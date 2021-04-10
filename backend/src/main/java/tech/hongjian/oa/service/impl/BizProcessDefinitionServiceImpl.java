@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.mapper.flowable.ProcessDefinitionMapper;
 import tech.hongjian.oa.model.ProcDefVo;
-import tech.hongjian.oa.service.ProcessDefinitionService;
+import tech.hongjian.oa.service.BizProcessDefinitionService;
 import tech.hongjian.oa.util.CommonUtil;
 
 import java.util.stream.Collectors;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Setter(onMethod_ = {@Autowired})
 @Transactional(rollbackFor = Exception.class)
 @Service
-public class ProcessDefinitionServiceImpl implements ProcessDefinitionService {
+public class BizProcessDefinitionServiceImpl implements BizProcessDefinitionService {
     private RepositoryService repoService;
     private ProcessDefinitionMapper processDefinitionMapper;
 

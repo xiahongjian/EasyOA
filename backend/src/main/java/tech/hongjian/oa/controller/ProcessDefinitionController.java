@@ -5,7 +5,7 @@ import org.flowable.engine.repository.ProcessDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tech.hongjian.oa.model.R;
-import tech.hongjian.oa.service.ProcessDefinitionService;
+import tech.hongjian.oa.service.BizProcessDefinitionService;
 import tech.hongjian.oa.service.ProcessResourceService;
 import tech.hongjian.oa.util.WebUtil;
 
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/processes/definitions")
 public class ProcessDefinitionController {
-    private ProcessDefinitionService processDefinitionService;
+    private BizProcessDefinitionService bizProcessDefinitionService;
     private ProcessResourceService processResourceService;
 
     @RequestMapping("")
@@ -27,14 +27,14 @@ public class ProcessDefinitionController {
                          @RequestParam(required = false) Integer suspend,
                          @RequestParam Integer page,
                          @RequestParam Integer limit) {
-        return R.ok(processDefinitionService.listProcessDefinition(key, name, suspend, page, limit));
+        return R.ok(bizProcessDefinitionService.listProcessDefinition(key, name, suspend, page, limit));
     }
 
 
     // xml 下载
     @GetMapping("/{id}/xml")
     public void getProcessModelXml(@PathVariable String id, HttpServletResponse response) {
-        ProcessDefinition definition = processDefinitionService.getProcDefById(id);
+        ProcessDefinition definition = bizProcessDefinitionService.getProcDefById(id);
         byte[] bytes = processResourceService.generateXmlData(id);
         WebUtil.writeXml(response, bytes, definition.getKey() + ".bpmn20.xml");
     }
@@ -47,19 +47,19 @@ public class ProcessDefinitionController {
 
     @GetMapping("/{id}/suspend")
     public R suspendProcessDefinition(@PathVariable String id) {
-        processDefinitionService.suspend(id);
+        bizProcessDefinitionService.suspend(id);
         return R.ok();
     }
 
     @GetMapping("/{id}/active")
     public R activeProcessDefinition(@PathVariable String id) {
-        processDefinitionService.active(id);
+        bizProcessDefinitionService.active(id);
         return R.ok();
     }
 
     @DeleteMapping("/{id}")
     public R deleteProcessDefinition(@PathVariable String id) {
-        processDefinitionService.delete(id);
+        bizProcessDefinitionService.delete(id);
         return R.ok();
     }
 }
