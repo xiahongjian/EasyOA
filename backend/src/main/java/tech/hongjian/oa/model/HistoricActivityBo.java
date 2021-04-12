@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.flowable.engine.history.HistoricActivityInstance;
 import tech.hongjian.oa.entity.User;
+import tech.hongjian.oa.model.anno.UserInfo;
 import tech.hongjian.oa.util.CommonUtil;
 
 import java.util.Date;
@@ -25,6 +26,7 @@ public class HistoricActivityBo {
     private String taskId;
     private String calledProcessInstanceId;
     private Integer assignee;
+    @UserInfo(userField = "assignee")
     private User assigneeUserInfo;
     private Date startTime;
     private Date endTime;

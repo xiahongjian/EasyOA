@@ -20,6 +20,8 @@ public class HistoricTaskBo extends TaskInfoBo {
     private Long durationInMillis;
     private Long workTimeInMillis;
 
+    private String comment;
+
     public HistoricTaskBo(HistoricTaskInstance instance) {
         super(instance);
         if (instance != null) {

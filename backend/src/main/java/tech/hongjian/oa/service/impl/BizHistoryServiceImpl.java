@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import tech.hongjian.oa.model.HistoricActivityBo;
 import tech.hongjian.oa.model.HistoricTaskBo;
 import tech.hongjian.oa.service.BizHistoryService;
-import tech.hongjian.oa.service.UserService;
+import tech.hongjian.oa.util.CommonUtil;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,9 +22,6 @@ import java.util.stream.Collectors;
 public class BizHistoryServiceImpl implements BizHistoryService {
     @Setter(onMethod_ = {@Autowired})
     private HistoryService historyService;
-
-    @Setter(onMethod_ = {@Autowired})
-    private UserService userService;
 
     @Override
     public List<HistoricActivityBo> listHistoricActivity(String processInstanceId,
@@ -44,17 +41,17 @@ public class BizHistoryServiceImpl implements BizHistoryService {
                 .processInstanceId(processInstanceId)
                 .orderByHistoricTaskInstanceStartTime()
                 .list();
-
-        return null;
+        return list.stream().map(e -> createHistoricTaskBo(e, withUserInfo)).collect(Collectors.toList());
     }
+
 
     private HistoricActivityBo createHistoricActivityBo(HistoricActivityInstance instance, boolean withUserInfo) {
         HistoricActivityBo historicActivityBo = new HistoricActivityBo(instance);
-        return withUserInfo ? getUserInfo(historicActivityBo) : historicActivityBo;
+        return withUserInfo ? CommonUtil.fetchUserInfo(historicActivityBo) : historicActivityBo;
     }
 
-    private HistoricActivityBo getUserInfo(HistoricActivityBo bo) {
-        bo.setAssigneeUserInfo(userService.getUserBriefInfo(bo.getAssignee()));
-        return bo;
+    private HistoricTaskBo createHistoricTaskBo(HistoricTaskInstance instance, boolean withUserInfo) {
+        HistoricTaskBo historicTaskBo = new HistoricTaskBo(instance);
+        return withUserInfo ? CommonUtil.fetchUserInfo(historicTaskBo) : historicTaskBo;
     }
 }

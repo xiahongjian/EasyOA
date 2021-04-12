@@ -16,7 +16,7 @@ import java.io.IOException;
 /**
  * Created by xiahongjian on 2021/3/28.
  */
-public class ImageGenerator {
+public abstract class ImageGenerator {
     public static BufferedImage createImage(BpmnModel bpmnModel) {
         ProcessDiagramGenerator diagramGenerator = new DefaultProcessDiagramGenerator();
         BufferedImage diagramImage = diagramGenerator.generatePngImage(bpmnModel, 1.0);

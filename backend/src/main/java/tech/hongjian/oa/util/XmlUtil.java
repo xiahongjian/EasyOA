@@ -5,7 +5,7 @@ import javax.xml.stream.XMLInputFactory;
 /**
  * Created by xiahongjian on 2021/3/20.
  */
-public class XmlUtil {
+public abstract class XmlUtil {
 
     /**
      * 'safe' is here reflecting: http://www.jorambarrez.be/blog/2013/02/19/uploading -a-funny-xml-can-bring-down-your-server/ and

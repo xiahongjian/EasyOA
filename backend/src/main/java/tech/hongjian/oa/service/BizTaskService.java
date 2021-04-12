@@ -15,6 +15,4 @@ public interface BizTaskService {
     IPage<TaskBo> listTask(String procDefName, String name, Integer assigneeId, Integer suspend, int page, int limit);
 
     IPage<TaskBo> listTask(String procDefName, String name, Integer assigneeId, Integer suspend, int page, int limit, boolean withUserInfo);
-
-    TaskBo getUserInfo(TaskBo entity);
 }

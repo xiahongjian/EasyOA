@@ -79,15 +79,6 @@ public class BizTaskServiceImpl implements BizTaskService {
         bo.setProcessDefinitionId(instance.getProcessDefinitionId());
         // TODO 关联业务表单信息
 
-        return withUserInfo ? getUserInfo(bo) : bo;
-    }
-
-    @Override
-    public TaskBo getUserInfo(TaskBo entity) {
-        if (entity != null) {
-            entity.setAssigneeUserInfo(userService.getUserBriefInfo(entity.getAssignee()));
-            entity.setOwnerUserInfo(userService.getUserBriefInfo(entity.getOwner()));
-        }
-        return entity;
+        return withUserInfo ? CommonUtil.fetchUserInfo(bo) : bo;
     }
 }

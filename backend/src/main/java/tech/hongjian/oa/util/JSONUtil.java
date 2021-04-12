@@ -1,19 +1,5 @@
 package tech.hongjian.oa.util;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +11,17 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * JSON工具类（json库使用的是jackson）
@@ -34,7 +31,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
  * @time   2018-05-25 16:30:51
  *
  */
-public class JSONUtil {
+public abstract class JSONUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(JSONUtil.class);
 	private static final ObjectMapper DEFAULT_MAPPER = new ObjectMapper();
 	private static final JavaTimeModule DEFAULT_JAVA_TIME_MODULE = new JavaTimeModule();

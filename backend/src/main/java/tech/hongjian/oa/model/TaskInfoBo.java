@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.flowable.task.api.TaskInfo;
 import tech.hongjian.oa.entity.User;
+import tech.hongjian.oa.model.anno.UserInfo;
 import tech.hongjian.oa.util.CommonUtil;
 
 import java.util.Date;
@@ -20,8 +21,10 @@ public class TaskInfoBo {
     private String description;
     private int priority;
     private Integer owner;
+    @UserInfo(userField = "owner")
     private User ownerUserInfo;
     private Integer assignee;
+    @UserInfo(userField = "assignee")
     private User assigneeUserInfo;
     private String processInstanceId;
     private String executionId;
