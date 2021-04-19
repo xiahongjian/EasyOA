@@ -63,12 +63,12 @@
                 icon="el-icon-timer"
                 @click="handleReject(scope.row)"
               >驳回</el-button>
-              <el-button
+              <!-- <el-button
                 size="mini"
                 type="text"
                 icon="el-icon-s-promotion"
                 @click="handleMoreInfo(scope.row)"
-              >详情</el-button>
+              >详情</el-button> -->
               <action-group
                 style="margin-left: 10px;"
                 text="更多操作"
@@ -132,6 +132,10 @@ export default {
       imageUrl: undefined,
 
       moreActionCfg: [{
+        text: '详情',
+        icon: 'el-icon-s-promotion',
+        handler: this.handleMoreInfo
+      }, {
         text: '查看图片',
         icon: 'el-icon-picture-outline',
         handler: this.showImage
