@@ -50,6 +50,16 @@ export function getUser(id) {
   })
 }
 
+export function getUserByIds(ids) {
+  return request({
+    url: 'users/ids',
+    method: 'get',
+    params: {
+      ids: ids + ''
+    }
+  })
+}
+
 function handleDept(param) {
   const data = Object.assign({}, param)
   // 处理所属部门为最上级的情况

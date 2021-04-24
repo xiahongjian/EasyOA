@@ -66,7 +66,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public IPage<User> listUser(String keyword, Status status, Integer dept,
+        public IPage<User> listUser(String keyword, Status status, Integer dept,
                                 String prop, String order, Integer page, Integer limit) {
         if (keyword != null) {
             keyword = "%" + keyword + "%";
@@ -249,6 +249,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     public IPage<User> findByParamMapPage(IPage<User> page, Map<String, Object> params) {
         return baseMapper.selectByParamMapPage(page, params);
+    }
+
+    @Override
+    public List<User> getUserByIds(Integer[] ids) {
+        return baseMapper.selectBatchIds(Arrays.asList(ids));
     }
 
     private User checkUserExisted(Integer id) {

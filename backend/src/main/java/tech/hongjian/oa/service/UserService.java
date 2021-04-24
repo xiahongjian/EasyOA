@@ -52,4 +52,6 @@ public interface UserService extends IService<User>, UserDetailsService {
     List<User> findByParamMap(Map<String, Object> params);
 
     IPage<User> findByParamMapPage(IPage<User> page, Map<String, Object> params);
+
+    List<User> getUserByIds(Integer[] ids);
 }

@@ -116,3 +116,10 @@ export function dictFormat(opts, value) {
   })
   return label
 }
+
+export function isEmpty(value) {
+  return (value instanceof Array && value.length === 0) ||
+    (value === '') ||
+    (typeof (value) === 'undefined') ||
+    (!value && value !== 0)
+}
