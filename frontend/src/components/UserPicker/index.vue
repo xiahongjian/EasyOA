@@ -149,6 +149,7 @@ export default {
     return {
       originUser: undefined,
       orginUserSelection: undefined,
+      okClick: false, // 标识是否是通过确认关闭dialog的
 
       queryParams: {
         dept: undefined,
@@ -211,30 +212,32 @@ export default {
       this.queryParams.dept = undefined
       this.handleQuery()
     },
-    async handleQuery() {
+    handleQuery() {
       this.userRecordLoading = true
-      const { data } = await listUsers(this.queryParams)
-      data.records.forEach(e => {
-        this.selectedRecords.forEach(selected => {
-          if (e.id === selected.id) {
-            e.checked = true
-          }
+      this.records = []
+      listUsers(this.queryParams).then(({ data }) => {
+        data.records.forEach(e => {
+          this.selectedRecords.forEach(selected => {
+            if (e.id === selected.id) {
+              e.checked = true
+            }
+          })
         })
+        this.records = data.records
+        this.total = data.total
+        this.userRecordLoading = false
       })
-      this.records = data.records
-
-      this.total = data.total
-      this.userRecordLoading = false
     },
     showWindow() {
       this.open = true
+      this.okClick = false
       // 将原值保存下来
       this.originUser = this.multiSelect ? Object.assign([], this.user) : this.user
       this.orginUserSelection = Object.assign([], this.selectedRecords)
       this.handleQuery()
       this.initDeptSelect()
     },
-    async initTableSelected() {
+    initTableSelected() {
       this.records.forEach((e, index) => {
         this.selectedRecords.forEach(selected => {
           e.checked = selected.id === e.id
@@ -242,18 +245,19 @@ export default {
         })
       })
     },
-    async initDeptSelect() {
+    initDeptSelect() {
       if (!this.isEmpty(this.deptOptions)) {
         return
       }
       // 获取部门选项
-      const { data } = await listDept()
-      const options = [{
-        id: -1,
-        name: '主类目',
-        children: data
-      }]
-      this.deptOptions = options
+      listDept().then(({ data }) => {
+        const options = [{
+          id: -1,
+          name: '主类目',
+          children: data
+        }]
+        this.deptOptions = options
+      })
     },
     // 获取绑定User对应的用户信息
     async initUserSelection() {
@@ -314,11 +318,14 @@ export default {
       const selectedUser = this.selectedUser()
       // 触发change事件
       this.$emit('change', selectedUser, this.originUser)
+      this.okClick = true
       this.open = false
     },
     cancel() {
-      this.selectedRecords = this.orginUserSelection
-      this.open = false
+      if (!this.okClick) {
+        this.selectedRecords = this.orginUserSelection
+        this.open = false
+      }
     },
     filterNode(value, data) {
       if (!value) {
