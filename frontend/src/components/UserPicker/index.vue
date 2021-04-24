@@ -133,7 +133,7 @@ export default {
   },
   props: {
     user: {
-      type: Number || Array,
+      type: [Array, Number],
       default: undefined
     },
     multiSelect: {

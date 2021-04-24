@@ -36,6 +36,7 @@
               v-model="queryParams.testUser"
               placeholder="选中用户"
               prop="testUser"
+              :multi-select="true"
             />
             {{ queryParams.testUser }}
           </el-form-item>
