@@ -10,7 +10,7 @@
         icon="el-icon-search"
         @click="showWindow"
       >
-        选择
+        {{ triggerText }}
       </el-button>
     </el-input>
     <el-dialog
@@ -147,6 +147,10 @@ export default {
     displayField: {
       type: String,
       default: 'name'
+    },
+    triggerText: {
+      type: String,
+      default: '选择'
     }
   },
   data() {
