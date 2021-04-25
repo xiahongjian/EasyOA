@@ -105,7 +105,7 @@
                     size="mini"
                     icon="el-icon-delete"
                     type="text"
-                    @click="deleteSelected(scope.index, scope.row)"
+                    @click="deleteSelected(scope.$index, scope.row)"
                   >删除</el-button>
                 </template>
               </el-table-column>
@@ -143,6 +143,10 @@ export default {
     title: {
       type: String,
       default: '选择用户'
+    },
+    displayField: {
+      type: String,
+      default: 'name'
     }
   },
   data() {
@@ -182,9 +186,9 @@ export default {
   computed: {
     userNames() {
       return this.multiSelect
-        ? this.selectedRecords.map(e => e.name).join(',')
+        ? this.selectedRecords.map(e => e[this.displayField]).join(',')
         : (this.selectedRecords.length > 0
-          ? this.selectedRecords[0].name
+          ? this.selectedRecords[0][this.displayField]
           : undefined
         )
     }
@@ -318,6 +322,7 @@ export default {
       const selectedUser = this.selectedUser()
       // 触发change事件
       this.$emit('change', selectedUser, this.originUser)
+      this.$emit('selectionChange', this.selectedRecords, this.orginUserSelection)
       this.okClick = true
       this.open = false
     },
