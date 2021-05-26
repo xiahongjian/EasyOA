@@ -65,6 +65,7 @@ public class BizTaskServiceImpl implements BizTaskService {
         if (assigneeId != null) {
             query.taskAssignee(String.valueOf(assigneeId));
         }
+        query.orderByTaskCreateTime().desc();
         result.setTotal(query.count());
         result.setRecords(query.listPage((page - 1) * limit, limit)
                 .stream().map(e -> createTaskBo(e, withUserInfo)).collect(Collectors.toList()));

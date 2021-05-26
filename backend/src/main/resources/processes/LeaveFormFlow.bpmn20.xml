@@ -13,19 +13,16 @@
     <exclusiveGateway id="Gateway_0ecf8ny"></exclusiveGateway>
     <sequenceFlow id="Flow_05bv1v7" sourceRef="manager" targetRef="Gateway_0ecf8ny"></sequenceFlow>
     <endEvent id="Event_1oqj691"></endEvent>
-    <userTask id="creator" name="创建者" flowable:assignee="${form.creatorId}" flowable:formKey="leave_form" flowable:formFieldValidation="true" flowable:skipExpression="${skipCreator}">
+    <userTask id="creator" name="创建者修改表单" flowable:assignee="${form.creatorId}" flowable:formKey="leave_form" flowable:formFieldValidation="true" flowable:skipExpression="${skipCreator}">
       <extensionElements>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
     </userTask>
-    <userTask id="manager" name="经理" flowable:assignee="1" flowable:formFieldValidation="true">
+    <userTask id="manager" name="经理审批" flowable:formFieldValidation="true">
       <extensionElements>
-        <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+        <flowable:taskListener event="create" delegateExpression="${leaderSetter}"></flowable:taskListener>
       </extensionElements>
     </userTask>
-    <sequenceFlow id="Flow_1xvcbcr" name="驳回" sourceRef="Gateway_0ecf8ny" targetRef="creator">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action == 'reject'}]]></conditionExpression>
-    </sequenceFlow>
     <sequenceFlow id="Flow_010810t" name="作废" sourceRef="Gateway_0n7h7pe" targetRef="Event_17zrya9">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action == 'reject'}]]></conditionExpression>
     </sequenceFlow>
@@ -34,6 +31,9 @@
     </sequenceFlow>
     <sequenceFlow id="Flow_1og4yky" name="同意" sourceRef="Gateway_0ecf8ny" targetRef="Event_1oqj691">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action == 'approve'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_1xvcbcr" name="驳回" sourceRef="Gateway_0ecf8ny" targetRef="creator">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action == 'reject'}]]></conditionExpression>
     </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_LeaveFormFlow">
@@ -71,16 +71,16 @@
         <omgdi:waypoint x="699.9499999999302" y="235.0"></omgdi:waypoint>
         <omgdi:waypoint x="800.0" y="235.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="Flow_010810t" id="BPMNEdge_Flow_010810t">
+        <omgdi:waypoint x="460.0" y="254.9408570119157"></omgdi:waypoint>
+        <omgdi:waypoint x="460.0" y="344.0"></omgdi:waypoint>
+        <omgdi:waypoint x="515.0" y="344.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="Flow_1xvcbcr" id="BPMNEdge_Flow_1xvcbcr">
         <omgdi:waypoint x="820.0" y="215.0"></omgdi:waypoint>
         <omgdi:waypoint x="820.0" y="100.0"></omgdi:waypoint>
         <omgdi:waypoint x="290.0" y="100.0"></omgdi:waypoint>
         <omgdi:waypoint x="290.0" y="195.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="Flow_010810t" id="BPMNEdge_Flow_010810t">
-        <omgdi:waypoint x="460.0" y="254.9408570119157"></omgdi:waypoint>
-        <omgdi:waypoint x="460.0" y="344.0"></omgdi:waypoint>
-        <omgdi:waypoint x="515.0" y="344.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="Flow_1reze75" id="BPMNEdge_Flow_1reze75">
         <omgdi:waypoint x="479.9447527616619" y="235.0"></omgdi:waypoint>

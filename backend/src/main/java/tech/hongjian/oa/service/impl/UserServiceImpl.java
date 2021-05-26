@@ -256,6 +256,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return baseMapper.selectBatchIds(Arrays.asList(ids));
     }
 
+    @Override
+    public User getUserLeader(Integer userId) {
+        if (userId == null) {
+            return null;
+        }
+        User user = getUserById(userId);
+        if (user == null) {
+            return null;
+        }
+        Integer departmentId = user.getDepartmentId();
+        if (departmentId == null) {
+            return null;
+        }
+        Department dept = deptService.getById(departmentId);
+        if (dept == null || dept.getLeaderId() == null) {
+            return null;
+        }
+        return getUserById(dept.getLeaderId());
+    }
+
     private User checkUserExisted(Integer id) {
         User user = this.getUserById(id);
         if (user == null) {

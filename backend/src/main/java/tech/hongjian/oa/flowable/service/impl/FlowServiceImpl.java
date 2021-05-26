@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.FlowEntity;
 import tech.hongjian.oa.exception.CommonServiceException;
-import tech.hongjian.oa.flowable.FlowVariables;
+import tech.hongjian.oa.flowable.FlowConstants;
 import tech.hongjian.oa.flowable.service.FlowBizFormService;
 import tech.hongjian.oa.flowable.service.FlowService;
 
@@ -79,7 +79,7 @@ public class FlowServiceImpl implements FlowService {
 
     @Override
     public <T extends FlowEntity> void updateBizFormVariable(String processInstanceId, T bizForm) {
-        runtimeService.setVariable(processInstanceId, FlowVariables.V_FORM, bizForm);
+        runtimeService.setVariable(processInstanceId, FlowConstants.V_FORM, bizForm);
     }
 
     private Task checkTaskExisted(String taskId) {
@@ -101,7 +101,7 @@ public class FlowServiceImpl implements FlowService {
         if (StringUtils.isNoneBlank(comment)) {
             taskService.addComment(taskId, null, comment);
         }
-        taskService.complete(taskId, Collections.singletonMap(FlowVariables.V_ACTION, FlowVariables.APPROVE));
+        taskService.complete(taskId, Collections.singletonMap(FlowConstants.V_ACTION, FlowConstants.APPROVE));
     }
 
     @Override
@@ -110,7 +110,7 @@ public class FlowServiceImpl implements FlowService {
         if (StringUtils.isNoneBlank(comment)) {
             taskService.addComment(taskId, null, comment);
         }
-        taskService.complete(taskId, Collections.singletonMap(FlowVariables.V_ACTION, FlowVariables.REJECT));
+        taskService.complete(taskId, Collections.singletonMap(FlowConstants.V_ACTION, FlowConstants.REJECT));
     }
 
     @Override

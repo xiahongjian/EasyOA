@@ -4,7 +4,7 @@ import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import tech.hongjian.oa.flowable.FlowVariables;
+import tech.hongjian.oa.flowable.FlowConstants;
 import tech.hongjian.oa.flowable.service.FlowService;
 import tech.hongjian.oa.model.R;
 import tech.hongjian.oa.service.BizTaskService;
@@ -45,7 +45,7 @@ public class TaskController {
     @PutMapping("/{taskId}/complete")
     public R completeTask(@PathVariable String taskId, @RequestParam(required = false) String action, @RequestParam(required = false) String comment) {
         if (StringUtils.isNotBlank(action)) {
-            flowService.completeTask(taskId, comment, Collections.singletonMap(FlowVariables.V_ACTION, action));
+            flowService.completeTask(taskId, comment, Collections.singletonMap(FlowConstants.V_ACTION, action));
         } else {
             flowService.completeTask(taskId, comment, null);
         }

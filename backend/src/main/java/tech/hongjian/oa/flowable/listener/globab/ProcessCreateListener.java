@@ -10,7 +10,7 @@ import org.flowable.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import tech.hongjian.oa.entity.FlowEntity;
-import tech.hongjian.oa.flowable.FlowVariables;
+import tech.hongjian.oa.flowable.FlowConstants;
 import tech.hongjian.oa.flowable.service.FlowService;
 
 /**
@@ -20,7 +20,7 @@ import tech.hongjian.oa.flowable.service.FlowService;
 @Slf4j
 @Setter(onMethod_ = {@Autowired})
 @Component
-public class ProcessCreatedListener extends AbstractFlowableEngineEventListener {
+public class ProcessCreateListener extends AbstractFlowableEngineEventListener {
     private RuntimeService runtimeService;
     private FlowService flowService;
 
@@ -34,8 +34,10 @@ public class ProcessCreatedListener extends AbstractFlowableEngineEventListener 
             String bizKey = processInstance.getBusinessKey();
             if (bizKey != null) {
                 FlowEntity entity = flowService.getBizFormByBizKey(bizKey);
-                runtimeService.setVariable(instanceId, FlowVariables.V_FORM, entity);
+                runtimeService.setVariable(instanceId, FlowConstants.V_FORM, entity);
             }
+            // 设置启用跳过表达式
+            runtimeService.setVariable(instanceId, FlowConstants.V_ENABLE_SKIP_EXPRESSION, true);
         }
     }
 }

@@ -112,7 +112,10 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         Model byId = getById(id);
         if (inputStream != null) {
             Model model = parseXml(inputStream);
-            BeanUtils.copyProperties(model, byId);
+            byId.setName(model.getName());
+            byId.setKey(model.getKey());
+            byId.setDescription(model.getDescription());
+            byId.setModelEditorJson(model.getModelEditorJson());
         }
         byId.setUpdatedBy(WebUtil.currentUser().getId());
         byId.setUpdatedAt(LocalDateTime.now());

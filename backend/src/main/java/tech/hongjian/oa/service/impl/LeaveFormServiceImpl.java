@@ -2,10 +2,11 @@ package tech.hongjian.oa.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.common.collect.Maps;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.LeaveForm;
 import tech.hongjian.oa.exception.CommonServiceException;
-import tech.hongjian.oa.flowable.FlowVariables;
+import tech.hongjian.oa.flowable.FlowConstants;
 import tech.hongjian.oa.flowable.service.BaseFlowBizFormService;
 import tech.hongjian.oa.mapper.LeaveFormMapper;
 import tech.hongjian.oa.service.LeaveFormService;
@@ -13,7 +14,7 @@ import tech.hongjian.oa.util.CommonUtil;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Map;
 
 /**
  * <p>
@@ -35,7 +36,11 @@ public class LeaveFormServiceImpl extends BaseFlowBizFormService<LeaveFormMapper
     public LeaveForm create(LeaveForm form) {
         form = CommonUtil.setEntityDefault(form);
         save(form);
-        startProcess(form, supplyProcessDefinitionKey(), Collections.singletonMap(FlowVariables.V_SKIP_CREATOR, true));
+        Map<String, Object> vars = Maps.newHashMap();
+        vars.put(FlowConstants.V_SKIP_CREATOR, true);
+        vars.put(FlowConstants.V_ACTION, FlowConstants.APPROVE);
+        vars.put(FlowConstants.V_FLOW_SUBMITTER, form.getCreatorId());
+        startProcess(form, supplyProcessDefinitionKey(), vars);
         return form;
     }
 
