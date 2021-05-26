@@ -26,6 +26,9 @@ public class TaskInfoBo {
     private Integer assignee;
     @UserInfo(userField = "assignee")
     private User assigneeUserInfo;
+    private Integer submitter;
+    @UserInfo(userField = "submitter")
+    private User submitterUserInfo;
     private String processInstanceId;
     private String executionId;
     private String taskDefinitionId;

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.runtime.ProcessInstance;
@@ -75,6 +76,10 @@ public class BizTaskServiceImpl implements BizTaskService {
     private TaskBo createTaskBo(Task task, boolean withUserInfo) {
         TaskBo bo = new TaskBo(task);
         ProcessInstance instance = runtimeService.createProcessInstanceQuery().processInstanceId(bo.getProcessInstanceId()).singleResult();
+
+        if (NumberUtils.isDigits(instance.getStartUserId())) {
+            bo.setSubmitter(CommonUtil.toInteger(instance.getStartUserId()));
+        }
         bo.setProcessDefinitionKey(instance.getProcessDefinitionKey());
         bo.setProcessDefinitionName(instance.getProcessDefinitionName());
         bo.setProcessDefinitionId(instance.getProcessDefinitionId());

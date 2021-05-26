@@ -3,6 +3,7 @@ package tech.hongjian.oa.flowable.service.impl;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.flowable.engine.IdentityService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.runtime.ProcessInstance;
@@ -11,10 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.FlowEntity;
+import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.flowable.FlowConstants;
 import tech.hongjian.oa.flowable.service.FlowBizFormService;
 import tech.hongjian.oa.flowable.service.FlowService;
+import tech.hongjian.oa.util.WebUtil;
 
 import java.util.Collections;
 import java.util.Map;
@@ -32,6 +35,7 @@ public class FlowServiceImpl implements FlowService {
     private RuntimeService runtimeService;
     private ApplicationContext appCtx;
     private TaskService taskService;
+    private IdentityService identityService;
 
     @Override
     public <T extends FlowEntity> String startProcess(T form, String processDefKey, Map<String, Object> variables) {
@@ -55,6 +59,11 @@ public class FlowServiceImpl implements FlowService {
             return instance.getId();
         }
 
+        // 设置当前user，使得能保存流程的发起者
+        User currentUser = WebUtil.currentUser();
+        if (currentUser != null) {
+            identityService.setAuthenticatedUserId(String.valueOf(currentUser.getId()));
+        }
         String bizKey = id2BizKey(clazz.getSimpleName(), id);
         ProcessInstance instance = runtimeService.startProcessInstanceByKey(processDefKey, bizKey, variables);
         return instance.getId();

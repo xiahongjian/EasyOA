@@ -37,6 +37,8 @@
               placeholder="选中用户"
               prop="testUser"
               :multi-select="true"
+              display-field="email"
+              trigger-text="Select"
             />
             {{ queryParams.testUser }}
           </el-form-item>

@@ -40,6 +40,7 @@
           <el-table-column label="流程名称" prop="processDefinitionName" />
           <el-table-column label="任务名称" prop="name" :show-overflow-tooltip="true" />
           <el-table-column label="办理人" prop="assigneeUserInfo.name" />
+          <el-table-column label="发起人" prop="submitterUserInfo.name" />
           <el-table-column label="描述" prop="description" :show-overflow-tooltip="true" />
 
           <el-table-column label="状态" prop="suspended" align="center" width="80">
