@@ -25,12 +25,12 @@ public class TaskController {
     private FlowService flowService;
 
     @GetMapping("")
-    public R listTask(@RequestParam(required = false) String procDefKey,
+    public R listTask(@RequestParam(required = false) String procDefName,
                       @RequestParam(required = false) String name,
                       @RequestParam(required = false) Integer suspended,
                       @RequestParam int page,
                       @RequestParam int limit) {
-        return R.ok(bizTaskService.listTask(procDefKey, name, null, suspended, page, limit, true));
+        return R.ok(bizTaskService.listTask(procDefName, name, null, suspended, page, limit, true));
     }
 
     @GetMapping("/mine")

@@ -3,9 +3,9 @@
     <template #wrapper>
       <el-card class="box-card">
         <el-form ref="queryForm" :inline="true" :model="queryParams">
-          <el-form-item label="流程名称" prop="procDefKey">
+          <el-form-item label="流程名称" prop="name">
             <el-input
-              v-model="queryParams.modelId"
+              v-model="queryParams.name"
               clearable
               size="small"
               style="width: 240px"
@@ -13,7 +13,7 @@
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="任务名称" prop="name">
+          <!-- <el-form-item label="任务名称" prop="name">
             <el-input
               v-model="queryParams.name"
               clearable
@@ -22,10 +22,10 @@
               placeholder="任务名称"
               @keyup.enter.native="handleQuery"
             />
-          </el-form-item>
-          <el-form-item label="状态" prop="suspended">
+          </el-form-item> -->
+          <!-- <el-form-item label="状态" prop="suspended">
             <dict-select v-model="queryParams.suspended" placeholder="状态" :options="statusOpts" size="small" tyle="width: 240px" />
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
             <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -37,7 +37,7 @@
           v-loading="loading"
           :data="records"
         >
-          <el-table-column label="流程名称" prop="processDefinitionName" />
+          <el-table-column label="流程名称" prop="name" />
           <el-table-column label="任务名称" prop="name" :show-overflow-tooltip="true" />
           <el-table-column label="办理人" prop="assigneeUserInfo.name" />
           <el-table-column label="发起人" prop="submitterUserInfo.name" />
@@ -46,7 +46,7 @@
           <el-table-column label="状态" prop="suspended" align="center" width="80">
             <template slot-scope="scope"><el-tag :type="scope.row.suspended ? 'danger' : 'primary'">{{ scope.row.suspended ? '挂起' : '激活' }}</el-tag></template>
           </el-table-column>
-          <el-table-column label="创建时间" prop="createTime" width="200" align="center" />
+          <el-table-column label="开始时间" prop="createTime" width="200" align="center" />
           <el-table-column label="到期时间" prop="dueDate" width="200" align="center" />
           <el-table-column label="操作" class-name="small-padding fixed-width" width="300" align="center">
             <template slot-scope="scope">
@@ -106,13 +106,11 @@
 
 <script>
 import ActionGroup from '@/components/ActionGroup'
-import DictSelect from '@/components/DictSelect'
 import { listTask, completeTask/*, reassignTask*/ } from '@/api/process/task'
 export default {
   name: 'Task',
   components: {
-    ActionGroup,
-    DictSelect
+    ActionGroup
   },
 
   data() {

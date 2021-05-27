@@ -41,6 +41,8 @@ public class TaskInfoBo {
     private Date dueDate;
     private Date claimTime;
 
+    private String businessKey;
+
     public TaskInfoBo(TaskInfo info) {
         if (info != null) {
             this.id = info.getId();

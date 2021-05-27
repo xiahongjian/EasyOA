@@ -3,7 +3,7 @@
     <el-input
       :value="userNames"
       v-bind="$attrs"
-      readonly
+      @clear="onClear"
     >
       <el-button
         slot="append"
@@ -335,6 +335,11 @@ export default {
         this.selectedRecords = this.orginUserSelection
         this.open = false
       }
+    },
+    onClear() {
+      this.selectedRecords = []
+      this.$emit('change', null, this.originUser)
+      this.$emit('selectionChange', null, this.orginUserSelection)
     },
     filterNode(value, data) {
       if (!value) {

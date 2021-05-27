@@ -53,7 +53,7 @@ public class BizTaskServiceImpl implements BizTaskService {
         Page<TaskBo> result = new Page<>();
         TaskQuery query = taskService.createTaskQuery();
         if (StringUtils.isNotBlank(procDefName)) {
-            query.processDefinitionKeyLikeIgnoreCase(CommonUtil.wrapWithPercent(procDefName));
+            query.processDefinitionNameLike(CommonUtil.wrapWithPercent(procDefName));
         }
         if (StringUtils.isNotBlank(name)) {
             query.taskNameLikeIgnoreCase(CommonUtil.wrapWithPercent(name));
@@ -83,7 +83,8 @@ public class BizTaskServiceImpl implements BizTaskService {
         bo.setProcessDefinitionKey(instance.getProcessDefinitionKey());
         bo.setProcessDefinitionName(instance.getProcessDefinitionName());
         bo.setProcessDefinitionId(instance.getProcessDefinitionId());
-        // TODO 关联业务表单信息
+        // 关联业务表单信息
+        bo.setBusinessKey(instance.getBusinessKey());
 
         return withUserInfo ? CommonUtil.fetchUserInfo(bo) : bo;
     }
