@@ -18,8 +18,8 @@ public class HistoricProcessInstanceController {
     private BizHistoricProcessInstanceService bizHistoricProcessInstanceService;
 
     @GetMapping("")
-    public R list(String name, Integer creator, int page, int limit) {
+    public R list(String name, Integer creator, Integer state, int page, int limit) {
 
-        return R.ok(bizHistoricProcessInstanceService.listHistoricProcessInstance(name, creator, page, limit, true));
+        return R.ok(bizHistoricProcessInstanceService.listHistoricProcessInstance(name, creator, state, page, limit, true));
     }
 }

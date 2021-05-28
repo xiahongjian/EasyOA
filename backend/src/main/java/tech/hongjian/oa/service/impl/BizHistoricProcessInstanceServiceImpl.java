@@ -5,7 +5,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.flowable.engine.HistoryService;
+import org.flowable.engine.RuntimeService;
+import org.flowable.engine.TaskService;
 import org.flowable.engine.history.HistoricProcessInstanceQuery;
+import org.flowable.engine.runtime.ProcessInstance;
+import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.model.HistoricProcessInstanceBo;
@@ -22,9 +26,16 @@ import java.util.stream.Collectors;
 @Service
 public class BizHistoricProcessInstanceServiceImpl implements BizHistoricProcessInstanceService {
     private HistoryService historyService;
+    private RuntimeService runtimeService;
+    private TaskService taskService;
 
     @Override
-    public IPage<HistoricProcessInstanceBo> listHistoricProcessInstance(String processName, Integer creator, int page, int limit, boolean withUserInfo) {
+    public IPage<HistoricProcessInstanceBo> listHistoricProcessInstance(String processName,
+                                                                        Integer creator,
+                                                                        Integer state,
+                                                                        int page,
+                                                                        int limit,
+                                                                        boolean withUserInfo) {
         HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery();
         if (StringUtils.isNotBlank(processName)) {
             query.processInstanceNameLikeIgnoreCase(CommonUtil.wrapWithPercent(processName));
@@ -32,9 +43,23 @@ public class BizHistoricProcessInstanceServiceImpl implements BizHistoricProcess
         if (creator != null) {
             query.startedBy(creator.toString());
         }
-
+        query.orderByProcessInstanceStartTime().desc();
         List<HistoricProcessInstanceBo> records = query.listPage((page - 1) * limit, limit).stream().map(i -> {
             HistoricProcessInstanceBo historicProcessInstanceBo = new HistoricProcessInstanceBo(i);
+            if (historicProcessInstanceBo.getEndTime() != null) {
+                historicProcessInstanceBo.setState(HistoricProcessInstanceBo.State.FINISHED);
+            } else {
+                ProcessInstance instance = runtimeService.createProcessInstanceQuery().processInstanceId(historicProcessInstanceBo.getProcessInstanceId()).singleResult();
+                if (instance.isSuspended()) {
+                    historicProcessInstanceBo.setState(HistoricProcessInstanceBo.State.SUSPENDED);
+                }
+            }
+            Task task = taskService.createTaskQuery().processInstanceId(historicProcessInstanceBo.getProcessInstanceId()).active().singleResult();
+            if (task != null) {
+                historicProcessInstanceBo.setCurrentAssignee(CommonUtil.toInteger(task.getAssignee()));
+                historicProcessInstanceBo.setCurrentTask(task.getId());
+                historicProcessInstanceBo.setCurrentTaskName(task.getName());
+            }
             return withUserInfo ? CommonUtil.fetchUserInfo(historicProcessInstanceBo) : historicProcessInstanceBo;
         }).collect(Collectors.toList());
         long total = query.count();

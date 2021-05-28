@@ -8,5 +8,5 @@ import tech.hongjian.oa.model.HistoricProcessInstanceBo;
  */
 public interface BizHistoricProcessInstanceService {
 
-    IPage<HistoricProcessInstanceBo> listHistoricProcessInstance(String processName, Integer creator, int page, int limit, boolean withUserInfo);
+    IPage<HistoricProcessInstanceBo> listHistoricProcessInstance(String processName, Integer creator, Integer state, int page, int limit, boolean withUserInfo);
 }

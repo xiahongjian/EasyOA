@@ -18,6 +18,10 @@ import java.time.LocalDateTime;
  */
 @Slf4j
 public class CommonUtil {
+    public static final long DAY_IN_SECOND = 24 * 3600;
+    public static final long HOUR_IN_SECOND = 3600;
+    public static final long MINUTES_IN_SECOND = 60;
+    private static final String DURATION_STR_FORMATTER = "%d天%d小时%d分";
 
     public static String wrapWith(String value, String s) {
         if (value == null) {
@@ -82,5 +86,12 @@ public class CommonUtil {
             }
         }
         return entity;
+    }
+
+    public static String durationToStr(long durationInSecond) {
+        long days = durationInSecond / DAY_IN_SECOND;
+        long hours = durationInSecond % DAY_IN_SECOND / HOUR_IN_SECOND;
+        long seconds = durationInSecond % HOUR_IN_SECOND / MINUTES_IN_SECOND;
+        return String.format(DURATION_STR_FORMATTER, days, hours, seconds);
     }
 }

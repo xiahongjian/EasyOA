@@ -22,9 +22,9 @@
               placeholder="发起人"
             />
           </el-form-item>
-          <el-form-item label="状态" prop="suspended">
-            <dict-select v-model="queryParams.suspended" placeholder="状态" :options="statusOpts" size="small" tyle="width: 240px" />
-          </el-form-item>
+          <!-- <el-form-item label="状态" prop="state">
+            <dict-select v-model="queryParams.state" placeholder="状态" :options="stateOpts" size="small" tyle="width: 240px" />
+          </el-form-item> -->
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
             <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -36,25 +36,39 @@
           v-loading="loading"
           :data="records"
         >
-          <el-table-column label="流程名称" prop="processDefinitionName" />
-          <el-table-column label="实例ID" prop="id" />
+          <el-table-column label="流程名称" prop="processDefinitionName" :show-overflow-tooltip="true" />
+          <el-table-column label="实例ID" prop="id" :show-overflow-tooltip="true" />
           <el-table-column label="业务表单" prop="businessKey" />
           <el-table-column label="发起人" prop="startUserInfo.name" />
+          <el-table-column label="当前任务" prop="currentTaskName" :show-overflow-tooltip="true" />
+          <el-table-column label="办理人" prop="currentAssigneeUserInfo.name" />
 
-          <el-table-column label="开始时间" prop="startTime" width="200" align="center" />
-          <el-table-column label="结束时间" prop="endDate" width="200" align="center" />
-          <el-table-column label="操作" class-name="small-padding fixed-width" width="300" align="center">
+          <el-table-column label="开始时间" prop="startTime" width="180" align="center" />
+          <el-table-column label="结束时间" prop="endTime" width="180" align="center" />
+          <el-table-column label="耗时" prop="durationStr" width="180" align="center" />
+          <el-table-column label="状态" prop="state" align="center">
+            <template slot-scope="scope">
+              <el-tag :type="tagType(scope.row.state)">{{ selectDictLabel(stateOpts, scope.row.state) }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" class-name="small-padding fixed-width" width="150" align="center">
             <template slot-scope="scope">
               <el-button
-                :disabled="scope.row.suspended"
+                v-show="scope.row.state !== 3"
+                :disabled="scope.row.state === 2"
                 size="mini"
                 type="text"
                 icon="el-icon-timer"
                 @click="handleSuspend(scope.row)"
               >挂起</el-button>
+              <el-button
+                v-show="scope.row.state === 3"
+                size="mini"
+                type="text"
+                icon="el-icon-s-promotion"
+                @click="handleActive(scope.row)"
+              >激活</el-button>
               <action-group
-                style="margin-left: 10px;"
-                text="更多操作"
                 size="mini"
                 type="text"
                 :data="scope.row"
@@ -79,14 +93,14 @@
 <script>
 import UserPicker from '@/components/UserPicker'
 import ActionGroup from '@/components/ActionGroup'
-import DictSelect from '@/components/DictSelect'
+// import DictSelect from '@/components/DictSelect'
 import { listInstance } from '@/api/process/instance'
 export default {
   name: 'Task',
   components: {
     UserPicker,
-    ActionGroup,
-    DictSelect
+    ActionGroup
+    // DictSelect
   },
 
   data() {
@@ -107,18 +121,40 @@ export default {
       imageUrl: undefined,
 
       moreActionCfg: [{
-        text: '详情',
+        text: '关闭',
+        icon: 'el-icon-close',
+        show(record) {
+          return record.state !== 2
+        }
+      }, {
+        text: '委派',
         icon: 'el-icon-s-promotion',
-        handler: this.handleMoreInfo
+        handler: this.handleMoreInfo,
+        show(record) {
+          return record.state === 1
+        }
+      }, {
+        text: '跳转',
+        icon: 'el-icon-location-outline',
+        show(record) {
+          return record.state === 1
+        }
+      }, {
+        text: '历史',
+        icon: 'el-icon-tickets'
       }],
-      statusOpts: [{
+      stateOpts: [{
         id: 1,
-        label: '挂起',
-        value: 2
+        label: '启动',
+        value: 1
       }, {
         id: 2,
-        label: '激活',
-        value: 1
+        label: '完成',
+        value: 2
+      }, {
+        id: 3,
+        label: '挂起',
+        value: 3
       }]
     }
   },
@@ -140,6 +176,9 @@ export default {
     resetQuery() {
       this.resetForm('queryForm')
       this.handleQuery()
+    },
+    tagType(state) {
+      return state === 3 ? 'warning' : (state === 1 ? 'success' : 'default')
     }
   }
 }

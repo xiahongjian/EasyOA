@@ -1,11 +1,11 @@
 <template>
-  <el-dropdown v-bind="$attrs" @command="handleMoreAction">
+  <el-dropdown v-show="showActions.length > 0" v-bind="$attrs" @command="handleMoreAction">
     <el-button :type="type" :size="size">
       {{ text }}<i class="el-icon-arrow-down el-icon--right" />
     </el-button>
     <el-dropdown-menu slot="dropdown">
       <el-dropdown-item
-        v-for="(action, index) in actions"
+        v-for="(action, index) in showActions"
         :key="index"
         :command="buildCommand(action.handler, data)"
         :icon="action.icon || ''"
@@ -45,6 +45,14 @@ export default {
   },
   data() {
     return {
+    }
+  },
+  computed: {
+    showActions() {
+      return this.actions.filter(action => {
+        const showFun = action.show || (() => true)
+        return showFun(this.data)
+      })
     }
   },
   methods: {
