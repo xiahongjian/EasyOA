@@ -132,12 +132,32 @@ public class FlowServiceImpl implements FlowService {
     }
 
     @Override
+    public void completeTask(String taskId, String comment, Map<String, Object> variables, boolean isAdmin) {
+        Task task = checkTaskExisted(taskId);
+        if (!isAdmin) {
+            // 对于非管理员操作
+            if (!WebUtil.currentUser().getId().toString().equals(task.getAssignee())) {
+                throw new CommonServiceException("只有任务的办理人才能执行办理操作。");
+            }
+        }
+        if (StringUtils.isNotBlank(comment)) {
+            taskService.addComment(taskId, null, comment);
+        }
+        taskService.complete(taskId, variables);
+    }
+
+    @Override
     public void reassign(String taskId, Integer userId, String comment) {
         checkTaskExisted(taskId);
         if (StringUtils.isNotBlank(comment)) {
             taskService.addComment(taskId, null, comment);
         }
         taskService.setAssignee(taskId, String.valueOf(userId));
+    }
+
+    @Override
+    public void claim(String taskId, Integer userId) {
+        // TODO
     }
 
     private FlowBizFormService<? extends FlowEntity> getBizFormService(String formClass) {

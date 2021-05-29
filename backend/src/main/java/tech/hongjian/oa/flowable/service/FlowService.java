@@ -34,5 +34,20 @@ public interface FlowService {
 
     void completeTask(String taskId, String comment, Map<String, Object> variables);
 
+    void completeTask(String taskId, String comment, Map<String, Object> variables, boolean isAdmin);
+
+    /**
+     * 委派任务
+     * @param taskId
+     * @param userId
+     * @param comment
+     */
     void reassign(String taskId, Integer userId, String comment);
+
+    /**
+     * 签收任务
+     * @param taskId
+     * @param userId
+     */
+    void claim(String taskId, Integer userId);
 }
