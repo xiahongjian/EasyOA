@@ -69,16 +69,15 @@
             <if test="emailLike != null">
                 and u.email like #{emialLike}
             </if>
-            <if test="roleId != null or (roleIds != null and !roleIds.isEmpty())">
+            <if test="roles != null and !roles.isEmpty()">
                 and u.id in (
-                    select r.user_id from user_role_rel r
+                    select rel.user_id from `user_role_rel` rel, `role` r
                     <where>
-                        <if test="roleId != null">
-                            and r.role_id=#{roleId}
+                        rel.role_id = r.id
+                        <if test="roles != null and !roles.isEmpty()">
+                            and r.name in <foreach item="item" collection="roles" open="(" separator="," close=")">#{item}</foreach>
                         </if>
-                        <if test="roleIds != null and !roleIds.isEmpty()">
-                            and r.role_id in <foreach item="item" collection="roleIds" open="(" separator="," close=")">#{item}</foreach>
-                        </if>
+
                     </where>
                 )
             </if>

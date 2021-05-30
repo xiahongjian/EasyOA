@@ -53,8 +53,15 @@
             <if test="id != null">
                 and r.id=#{id}
             </if>
-            <if test="names != null and !ids.isEmpty()">
+            <if test="names != null and !names.isEmpty()">
                 and r.name in <foreach item="item" collection="names" open="(" separator="," close=")">#{item}</foreach>
+            </if>
+            <if test="members != null and !members.isEmpty()">
+                and r.id in (
+                    select r1.id
+                    from `role` r1, `user_role_rel` rel
+                    where r1.id = rel.role_id and rel.user_id in <foreach item="item" collection="members" open="(" separator="," close=")">#{item}</foreach>
+                )
             </if>
             <if test="name != null">
                 and r.name=#{name}
@@ -70,7 +77,7 @@
         from `role` r
         <include refid="whereByParamMap" />
     </select>
-    <select id="selectByParamMap" resultType="tech.hongjian.oa.entity.Role">
+    <select id="selectByParamMap"  resultMap="BaseResultMap">
         select *
         from `role` r
         <include refid="whereByParamMap" />
@@ -78,7 +85,7 @@
             order by ${orderBy} <if test="direction != null">${direction}</if>
         </if>
     </select>
-    <select id="selectByParamMapPage" resultType="tech.hongjian.oa.entity.Role">
+    <select id="selectByParamMapPage"  resultMap="BaseResultMap">
         select *
         from `role` r
         <include refid="whereByParamMap" />

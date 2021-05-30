@@ -3,12 +3,17 @@ package tech.hongjian.oa.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.editor.language.json.converter.BpmnJsonConverter;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RuntimeService;
+import org.flowable.engine.TaskService;
 import org.flowable.engine.runtime.ProcessInstance;
+import org.flowable.identitylink.api.IdentityLink;
 import org.flowable.image.impl.DefaultProcessDiagramGenerator;
+import org.flowable.task.api.Task;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,15 +23,18 @@ import tech.hongjian.oa.entity.LeaveForm;
 import tech.hongjian.oa.entity.Model;
 import tech.hongjian.oa.flowable.service.FlowService;
 import tech.hongjian.oa.model.R;
+import tech.hongjian.oa.model.TaskBo;
 import tech.hongjian.oa.service.LeaveFormService;
 import tech.hongjian.oa.service.ModelService;
+import tech.hongjian.oa.util.CommonUtil;
 import tech.hongjian.oa.util.ImageGenerator;
 
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author xiahongjian
@@ -108,5 +116,54 @@ public class IndexController {
 
         response.setHeader("Content-type", "image/png");
         response.getOutputStream().write(ImageGenerator.createByteArrayForImage(bufferedImage, "png"));
+    }
+
+    @Autowired
+    private TaskService taskService;
+
+    @GetMapping("/test/task/{id}")
+    public List<TaskBo> listTask(@PathVariable String id) {
+        List<Task> list = taskService.createTaskQuery().taskCandidateOrAssigned(id).active().list();
+        return list.stream().map(this::createTaskBo).collect(Collectors.toList());
+    }
+
+    private TaskBo createTaskBo(Task task) {
+        TaskBo bo = new TaskBo(task);
+        ProcessInstance instance = runtimeService.createProcessInstanceQuery().processInstanceId(bo.getProcessInstanceId()).singleResult();
+
+        if (NumberUtils.isDigits(instance.getStartUserId())) {
+            bo.setSubmitter(CommonUtil.toInteger(instance.getStartUserId()));
+        }
+        bo.setProcessDefinitionKey(instance.getProcessDefinitionKey());
+        bo.setProcessDefinitionName(instance.getProcessDefinitionName());
+        bo.setProcessDefinitionId(instance.getProcessDefinitionId());
+        // 关联业务表单信息
+        bo.setBusinessKey(instance.getBusinessKey());
+        if (bo.getAssignee() == null) {
+
+            List<IdentityLink> identityLinksForTask = taskService.getIdentityLinksForTask(task.getId());
+            List<Integer> candidateUsers = new ArrayList<>();
+            List<String> candidateGroups = new ArrayList<>();
+            for (IdentityLink link : identityLinksForTask) {
+                String userId = link.getUserId();
+                if (StringUtils.isNotBlank(userId)) {
+                    String[] ids = link.getUserId().split(",");
+                    if (ids != null && ids.length > 0) {
+                        candidateUsers.addAll(Stream.of(ids).map(CommonUtil::toInteger).filter(Objects::nonNull).collect(Collectors.toList()));
+                    }
+                }
+                String groupIds = link.getGroupId();
+                if (StringUtils.isNotBlank(groupIds)) {
+                    String[] groups = groupIds.split(",");
+                    if (groups != null && groups.length > 0) {
+                        candidateGroups.addAll(Arrays.asList(groups));
+                    }
+                }
+            }
+            bo.setCandidateUserIds(candidateUsers);
+            bo.setCandidateGroups(candidateGroups);
+        }
+
+        return bo;
     }
 }

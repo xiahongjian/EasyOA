@@ -29,11 +29,6 @@ mybatis-plus:
     db-config:
       id-type: auto
 
-# log配置
-logging:
-  level:
-    tech.hongjian.oa.mapper: debug
-
 # flowable 配置
 flowable:
   # 关闭异步，不关闭历史数据的插入就是异步的，会在同一个事物里面，无法回滚
