@@ -10,12 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.Role;
 import tech.hongjian.oa.service.RoleService;
-import tech.hongjian.oa.util.CommonUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * 自定义GroupQuery，用于映射Flowable的group到自己的Role
@@ -26,10 +25,7 @@ public class CustomGroupQueryImpl implements GroupQuery {
     @Setter(onMethod_ = {@Autowired})
     private RoleService roleService;
 
-    private Integer id;
-    private List<Integer> ids;
-    private String name;
-    private String nameLike;
+    private List<String> names = new ArrayList<>();
     private String orderBy;
     private String direction;
 
@@ -37,27 +33,27 @@ public class CustomGroupQueryImpl implements GroupQuery {
 
     @Override
     public GroupQuery groupId(String groupId) {
-        id = Integer.valueOf(groupId);
+        names.add(groupId);
         return this;
     }
 
     @Override
     public GroupQuery groupIds(List<String> groupIds) {
         if (CollectionUtils.isNotEmpty(groupIds)) {
-            ids = groupIds.stream().map(Integer::valueOf).collect(Collectors.toList());
+            names.addAll(groupIds);
         }
         return this;
     }
 
     @Override
     public GroupQuery groupName(String groupName) {
-        name = groupName;
+        // 不支持此参数
         return this;
     }
 
     @Override
     public GroupQuery groupNameLike(String groupNameLike) {
-        nameLike = groupNameLike;
+        // 不支持此参数
         return this;
     }
 
@@ -151,11 +147,8 @@ public class CustomGroupQueryImpl implements GroupQuery {
     }
 
     private Map<String, Object> buildQueryMap() {
-        Map<String, Object> map = new HashMap<>(6);
-        map.put("id", id);
-        map.put("ids", ids);
-        map.put("name", name);
-        map.put("nameLike", nameLike == null ? null : CommonUtil.wrapWithPercent(nameLike));
+        Map<String, Object> map = new HashMap<>(3);
+        map.put("names", names);
         map.put("orderBy", orderBy);
         map.put("direction", direction);
         return map;

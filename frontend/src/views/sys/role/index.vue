@@ -133,7 +133,7 @@
         />
 
         <!-- 添加、修改角色对话框 -->
-        <el-dialog v-if="open" :title="title" :visible.sync="open" width="500px">
+        <el-dialog v-if="open" :title="title" :visible.sync="open" :close-on-click-modal="false" width="500px">
           <el-form ref="form" :model="form" :rules="rules" label-width="80px">
             <el-form-item label="角色名称" prop="name">
               <el-input v-model="form.name" placeholder="请输入角色名称" :disabled="isEdit" />

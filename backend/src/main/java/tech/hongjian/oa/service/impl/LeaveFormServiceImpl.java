@@ -37,9 +37,7 @@ public class LeaveFormServiceImpl extends BaseFlowBizFormService<LeaveFormMapper
         form = CommonUtil.setEntityDefault(form);
         save(form);
         Map<String, Object> vars = Maps.newHashMap();
-        vars.put(FlowConstants.V_SKIP_CREATOR, true);
         vars.put(FlowConstants.V_ACTION, FlowConstants.APPROVE);
-        vars.put(FlowConstants.V_FLOW_SUBMITTER, form.getCreatorId());
         startProcess(form, supplyProcessDefinitionKey(), vars);
         return form;
     }

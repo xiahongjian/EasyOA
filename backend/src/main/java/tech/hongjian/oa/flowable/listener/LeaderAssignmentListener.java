@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.flowable.FlowConstants;
 import tech.hongjian.oa.service.UserService;
+import tech.hongjian.oa.util.CommonUtil;
 
 /**
  * Created by xiahongjian on 2021/5/26.
@@ -19,7 +20,7 @@ public class LeaderAssignmentListener  implements TaskListener {
 
     @Override
     public void notify(DelegateTask delegateTask) {
-        Integer submitter = (Integer) delegateTask.getVariable(FlowConstants.V_FLOW_SUBMITTER);
+        Integer submitter = CommonUtil.toInteger((String) delegateTask.getVariable(FlowConstants.V_FLOW_SUBMITTER));
         User leader = userService.getUserLeader(submitter);
         Integer assignee = leader == null ? submitter : leader.getId();
         delegateTask.setAssignee(String.valueOf(assignee));

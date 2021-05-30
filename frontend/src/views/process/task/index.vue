@@ -37,9 +37,14 @@
           v-loading="loading"
           :data="records"
         >
-          <el-table-column label="流程名称" prop="name" />
+          <el-table-column label="流程名称" prop="processDefinitionName" />
           <el-table-column label="任务名称" prop="name" :show-overflow-tooltip="true" />
           <el-table-column label="办理人" prop="assigneeUserInfo.name" />
+          <el-table-column label="候选人/组" prop="candidateUserIds" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              {{ candidates(scope.row.candidateUserInfos, scope.row.candidateGroups) }}
+            </template>
+          </el-table-column>
           <el-table-column label="发起人" prop="submitterUserInfo.name" />
           <el-table-column label="描述" prop="description" :show-overflow-tooltip="true" />
 
@@ -48,7 +53,7 @@
           </el-table-column>
           <el-table-column label="开始时间" prop="createTime" width="200" align="center" />
           <el-table-column label="到期时间" prop="dueDate" width="200" align="center" />
-          <el-table-column label="操作" class-name="small-padding fixed-width" width="300" align="center">
+          <el-table-column label="操作" class-name="small-padding fixed-width" width="220" align="center">
             <template slot-scope="scope">
               <el-button
                 :disabled="scope.row.suspended"
@@ -72,7 +77,6 @@
               >详情</el-button> -->
               <action-group
                 style="margin-left: 10px;"
-                text="更多操作"
                 size="mini"
                 type="text"
                 :data="scope.row"
@@ -195,6 +199,19 @@ export default {
     },
     handleMoreInfo() {
 
+    },
+    candidates(users, groups) {
+      let condidates = ''
+      if (users.length > 0) {
+        condidates += users.map(u => u.name).join(',')
+      }
+      if (groups.length > 0) {
+        if (users.length > 0) {
+          condidates += ','
+        }
+        condidates += groups.join(',')
+      }
+      return condidates
     }
   }
 }

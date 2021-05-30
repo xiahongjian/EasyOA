@@ -56,4 +56,6 @@ public interface UserService extends IService<User>, UserDetailsService {
     List<User> getUserByIds(Integer[] ids);
 
     User getUserLeader(Integer userId);
+
+    List<Integer> findUserWithRole(String role);
 }

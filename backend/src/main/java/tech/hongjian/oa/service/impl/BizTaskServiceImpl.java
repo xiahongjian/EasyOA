@@ -8,6 +8,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.runtime.ProcessInstance;
+import org.flowable.identitylink.api.IdentityLink;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskQuery;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,12 @@ import tech.hongjian.oa.service.BizTaskService;
 import tech.hongjian.oa.service.UserService;
 import tech.hongjian.oa.util.CommonUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by xiahongjian on 2021/4/10.
@@ -85,6 +91,30 @@ public class BizTaskServiceImpl implements BizTaskService {
         bo.setProcessDefinitionId(instance.getProcessDefinitionId());
         // 关联业务表单信息
         bo.setBusinessKey(instance.getBusinessKey());
+        if (bo.getAssignee() == null) {
+
+            List<IdentityLink> identityLinksForTask = taskService.getIdentityLinksForTask(task.getId());
+            List<Integer> candidateUsers = new ArrayList<>();
+            List<String> candidateGroups = new ArrayList<>();
+            for (IdentityLink link : identityLinksForTask) {
+                String userId = link.getUserId();
+                if (StringUtils.isNotBlank(userId)) {
+                    String[] ids = link.getUserId().split(",");
+                    if (ids != null && ids.length > 0) {
+                        candidateUsers.addAll(Stream.of(ids).map(CommonUtil::toInteger).filter(Objects::nonNull).collect(Collectors.toList()));
+                    }
+                }
+                String groupIds = link.getGroupId();
+                if (StringUtils.isNotBlank(groupIds)) {
+                    String[] groups = groupIds.split(",");
+                    if (groups != null && groups.length > 0) {
+                        candidateGroups.addAll(Arrays.asList(groups));
+                    }
+                }
+            }
+            bo.setCandidateUserIds(candidateUsers);
+            bo.setCandidateGroups(candidateGroups);
+        }
 
         return withUserInfo ? CommonUtil.fetchUserInfo(bo) : bo;
     }

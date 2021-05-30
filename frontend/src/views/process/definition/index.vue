@@ -43,7 +43,7 @@
           <el-table-column label="状态" prop="suspended" align="center" width="80">
             <template slot-scope="scope"><el-tag :type="scope.row.suspended ? 'danger' : 'primary'">{{ scope.row.suspended ? '挂起' : '激活' }}</el-tag></template>
           </el-table-column>
-          <el-table-column label="操作" class-name="small-padding fixed-width" width="300" align="center">
+          <el-table-column label="操作" class-name="small-padding fixed-width" width="220" align="center">
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -67,7 +67,6 @@
               >激活</el-button>
               <action-group
                 style="margin-left: 10px;"
-                text="更多操作"
                 size="mini"
                 type="text"
                 :data="scope.row"

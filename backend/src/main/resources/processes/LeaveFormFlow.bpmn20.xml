@@ -5,10 +5,10 @@
              typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
              targetNamespace="http://flowable.org/test">
   <collaboration id="Collaboration">
-    <participant id="sid-62617CAD-BDF8-4A82-95C6-BF7EAB36BD70" name="请假流程" processRef="process"></participant>
+    <participant id="sid-62617CAD-BDF8-4A82-95C6-BF7EAB36BD70" name="请假流程" processRef="LeaveFormFlow"></participant>
   </collaboration>
-  <process id="process" name="请假流程" isExecutable="true">
-    <laneSet id="laneSet_process">
+  <process id="LeaveFormFlow" name="请假流程" isExecutable="true">
+    <laneSet id="laneSet_LeaveFormFlow">
       <lane id="sid-CA044A84-B544-4359-A0A2-8482FCE3917F" name="申请者">
         <flowNodeRef>start</flowNodeRef>
         <flowNodeRef>creator_update</flowNodeRef>
@@ -31,12 +31,12 @@
         <flowNodeRef>Gateway_0ecf8ny</flowNodeRef>
         <flowNodeRef>manager_aduit</flowNodeRef>
         <flowNodeRef>Flow_05bv1v7</flowNodeRef>
-        <flowNodeRef>Flow_1og4yky</flowNodeRef>
         <flowNodeRef>Flow_1xvcbcr</flowNodeRef>
+        <flowNodeRef>Flow_1og4yky</flowNodeRef>
       </lane>
     </laneSet>
-    <startEvent id="start" flowable:formFieldValidation="true"></startEvent>
-    <userTask id="creator_update" name="创建者修改表单" flowable:assignee="${form.creatorId}" flowable:formKey="leave_form" flowable:formFieldValidation="true">
+    <startEvent id="start" flowable:initiator="_submitter" flowable:formFieldValidation="true"></startEvent>
+    <userTask id="creator_update" name="创建者修改表单" flowable:assignee="${_submitter}" flowable:formKey="leave_form" flowable:formFieldValidation="true">
       <extensionElements>
         <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
       </extensionElements>
@@ -54,25 +54,25 @@
     </userTask>
     <sequenceFlow id="Flow_0b2jjvd" sourceRef="creator_update" targetRef="Gateway_0n7h7pe"></sequenceFlow>
     <sequenceFlow id="Flow_05bv1v7" sourceRef="manager_aduit" targetRef="Gateway_0ecf8ny"></sequenceFlow>
-    <sequenceFlow id="Flow_1og4yky" name="同意" sourceRef="Gateway_0ecf8ny" targetRef="hr_aduit">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action == 'approve'}]]></conditionExpression>
-    </sequenceFlow>
     <sequenceFlow id="sid-9CE03171-1232-450C-9D3B-474AB8AB90FE" sourceRef="start" targetRef="manager_aduit"></sequenceFlow>
     <sequenceFlow id="sid-56699CBB-4CD5-4C07-B4B3-5A285C4FF366" sourceRef="hr_aduit" targetRef="sid-6C95AFA3-D16D-4961-9BA3-86E0F355A54D"></sequenceFlow>
-    <sequenceFlow id="Flow_1xvcbcr" name="驳回" sourceRef="Gateway_0ecf8ny" targetRef="creator_update">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action == 'reject'}]]></conditionExpression>
-    </sequenceFlow>
-    <sequenceFlow id="sid-9512660D-2C0C-4918-B102-A9D3B7BD9FF0" name="驳回" sourceRef="sid-6C95AFA3-D16D-4961-9BA3-86E0F355A54D" targetRef="creator_update">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action=='reject'}]]></conditionExpression>
-    </sequenceFlow>
-    <sequenceFlow id="sid-E679FD13-0048-4EDA-83DC-628D9F1EFDF0" name="同意" sourceRef="sid-6C95AFA3-D16D-4961-9BA3-86E0F355A54D" targetRef="Event_1oqj691">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action='approve'}]]></conditionExpression>
-    </sequenceFlow>
     <sequenceFlow id="sid-888DE8DE-A041-4567-A871-D0F5B7590AC5" name="继续申请" sourceRef="Gateway_0n7h7pe" targetRef="manager_aduit">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action='approve'}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${_action=='approve'}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="sid-E606CD55-313C-4B7D-889C-FE77C6B244A0" name="放弃申请" sourceRef="Gateway_0n7h7pe" targetRef="Event_17zrya9">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${action='reject'}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${_action=='reject'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_1xvcbcr" name="拒绝" sourceRef="Gateway_0ecf8ny" targetRef="creator_update">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${_action == 'reject'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_1og4yky" name="同意" sourceRef="Gateway_0ecf8ny" targetRef="hr_aduit">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${_action == 'approve'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-9512660D-2C0C-4918-B102-A9D3B7BD9FF0" name="拒绝" sourceRef="sid-6C95AFA3-D16D-4961-9BA3-86E0F355A54D" targetRef="creator_update">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${_action=='reject'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-E679FD13-0048-4EDA-83DC-628D9F1EFDF0" name="同意" sourceRef="sid-6C95AFA3-D16D-4961-9BA3-86E0F355A54D" targetRef="Event_1oqj691">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${_action='approve'}]]></conditionExpression>
     </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_Collaboration">

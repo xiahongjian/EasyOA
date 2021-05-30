@@ -5,11 +5,11 @@ package tech.hongjian.oa.flowable;
  */
 public interface FlowConstants {
     // 变量名 开始
-    String V_FORM = "form";
-    String V_ACTION = "action";
+    String V_FORM = "_form";
+    String V_ACTION = "_action";
     String V_SKIP_CREATOR = "skipCreator";
     String V_ENABLE_SKIP_EXPRESSION = "_ACTIVITI_SKIP_EXPRESSION_ENABLED";
-    String V_FLOW_SUBMITTER = "flowSubmitter";
+    String V_FLOW_SUBMITTER = "_submitter";
 
     // 变量名 结束
 

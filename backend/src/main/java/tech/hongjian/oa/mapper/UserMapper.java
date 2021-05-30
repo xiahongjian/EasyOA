@@ -26,4 +26,6 @@ public interface UserMapper extends BaseMapper<User> {
     List<User> selectByParamMap(Map<String, Object> params);
 
     IPage<User> selectByParamMapPage(IPage<User> page, Map<String, Object> params);
+
+    List<Integer> selectUserWithRole(String role);
 }

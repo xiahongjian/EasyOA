@@ -7,7 +7,9 @@ import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.model.anno.UserInfo;
 import tech.hongjian.oa.util.CommonUtil;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author xiahongjian
@@ -29,6 +31,11 @@ public class TaskInfoBo {
     private Integer submitter;
     @UserInfo(userField = "submitter")
     private User submitterUserInfo;
+    private List<Integer> candidateUserIds = new ArrayList<>();
+    @UserInfo(userField = "candidateUserIds")
+    private List<User> candidateUserInfos = new ArrayList<>();
+    private List<String> candidateGroups = new ArrayList<>();
+
     private String processInstanceId;
     private String executionId;
     private String taskDefinitionId;

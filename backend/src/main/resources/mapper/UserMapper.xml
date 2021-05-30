@@ -110,5 +110,10 @@
             order by t.${orderBy} <if test="direction != null">${direction}</if>
         </if>
     </select>
+    <select id="selectUserWithRole" resultType="java.lang.Integer">
+        select id
+        from `user` u, `user_role_rel` r, `role` r
+        where u.id = r.user_id and r.role_id = r.id and r.name=#{role}
+    </select>
 
 </mapper>

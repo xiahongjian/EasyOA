@@ -1,6 +1,7 @@
 package tech.hongjian.oa.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.flowable.common.engine.impl.db.SuspensionState;
 import tech.hongjian.oa.entity.BaseEntity;
@@ -11,6 +12,8 @@ import tech.hongjian.oa.service.UserService;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author xiahongjian
@@ -64,7 +67,7 @@ public class CommonUtil {
     }
 
     public static Integer toInteger(String value) {
-        return value == null ? null : Integer.valueOf(value);
+        return value == null || !NumberUtils.isDigits(value) ? null : Integer.valueOf(value);
     }
 
     public static <T> T fetchUserInfo(T entity) {
@@ -77,8 +80,20 @@ public class CommonUtil {
                     String userField = annotation.userField();
                     Object value = FieldUtils.readField(entity, userField, true);
                     if (value != null) {
-                        User userBriefInfo = userService.getUserBriefInfo((Integer) value);
-                        FieldUtils.writeField(field, entity, userBriefInfo, true);
+                        if (value instanceof Integer) {
+                            User userBriefInfo = userService.getUserBriefInfo((Integer) value);
+                            FieldUtils.writeField(field, entity, userBriefInfo, true);
+                        } else if (value instanceof List) {
+                            List<Integer> ids = (List<Integer>) value;
+                            List<User> userInfos = new ArrayList<>(ids.size());
+                            for (Integer id : ids) {
+                                User info = userService.getUserBriefInfo(id);
+                                if (info != null) {
+                                    userInfos.add(info);
+                                }
+                            }
+                            FieldUtils.writeField(field, entity, userInfos, true);
+                        }
                     }
                 }
             } catch (IllegalAccessException e) {

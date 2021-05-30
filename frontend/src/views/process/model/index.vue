@@ -98,7 +98,7 @@
           <el-table-column label="创建时间" align="center" prop="createdAt" width="200px" /> -->
           <el-table-column label="更新者" prop="updatedByUser.name" align="center" />
           <el-table-column label="更新时间" prop="updatedAt" width="200px" align="center" />
-          <el-table-column label="操作" class-name="small-padding fixed-width" width="300" align="center">
+          <el-table-column label="操作" class-name="small-padding fixed-width" width="220" align="center">
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -114,7 +114,6 @@
               >删除</el-button>
               <action-group
                 style="margin-left: 10px;"
-                text="更多操作"
                 size="mini"
                 type="text"
                 :data="scope.row"

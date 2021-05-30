@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapp
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
@@ -274,6 +275,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return null;
         }
         return getUserById(dept.getLeaderId());
+    }
+
+    @Override
+    public List<Integer> findUserWithRole(String role) {
+        if (StringUtils.isBlank(role)) {
+            return Collections.emptyList();
+        }
+        return baseMapper.selectUserWithRole(role);
     }
 
     private User checkUserExisted(Integer id) {
