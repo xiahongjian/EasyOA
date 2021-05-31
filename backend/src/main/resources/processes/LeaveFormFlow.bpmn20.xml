@@ -54,10 +54,13 @@
             <flowable:expression><![CDATA[${_submitter}]]></flowable:expression>
           </flowable:field>
           <flowable:field name="level">
-            <flowable:expression><![CDATA[${2}]]></flowable:expression>
+            <flowable:expression><![CDATA[${loopCounter+1}]]></flowable:expression>
           </flowable:field>
         </flowable:taskListener>
       </extensionElements>
+      <multiInstanceLoopCharacteristics isSequential="true">
+        <loopCardinality>2</loopCardinality>
+      </multiInstanceLoopCharacteristics>
     </userTask>
     <sequenceFlow id="Flow_0b2jjvd" sourceRef="creator_update" targetRef="Gateway_0n7h7pe"></sequenceFlow>
     <sequenceFlow id="Flow_05bv1v7" sourceRef="manager_aduit" targetRef="Gateway_0ecf8ny"></sequenceFlow>
