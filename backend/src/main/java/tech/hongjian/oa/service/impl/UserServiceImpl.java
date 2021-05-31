@@ -259,22 +259,49 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public User getUserLeader(Integer userId) {
-        if (userId == null) {
-            return null;
+        return getUserLeader(userId, 1);
+    }
+
+    @Override
+    public User getUserLeader(Integer userId, int level) {
+        if (level <= 0) {
+            throw new IllegalArgumentException("level只能为正整数");
         }
+
         User user = getUserById(userId);
         if (user == null) {
             return null;
         }
+        Integer leaderId = lookupLeader(user);
+        // 当leaderId为null时，无论是否还需要往上层查找都返回null，结束查找
+        if (leaderId == null) {
+            return null;
+        }
+
+        // 当level为1时，停止往上层查找
+        if (level == 1) {
+            return getUserById(leaderId);
+        }
+
+        return getUserLeader(leaderId, level - 1);
+    }
+
+    private Integer lookupLeader(User user) {
         Integer departmentId = user.getDepartmentId();
         if (departmentId == null) {
             return null;
         }
-        Department dept = deptService.getById(departmentId);
-        if (dept == null || dept.getLeaderId() == null) {
-            return null;
+        Integer leaderId = user.getId();
+        for (;user.getId().equals(leaderId);) {
+            Department dept = deptService.getById(departmentId);
+            if (dept != null) {
+                leaderId = dept.getLeaderId();
+                departmentId = dept.getParentId();
+            } else {
+                leaderId = null;
+            }
         }
-        return getUserById(dept.getLeaderId());
+        return leaderId;
     }
 
     @Override

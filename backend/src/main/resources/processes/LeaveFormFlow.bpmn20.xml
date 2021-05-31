@@ -49,7 +49,14 @@
     <exclusiveGateway id="Gateway_0ecf8ny"></exclusiveGateway>
     <userTask id="manager_aduit" name="经理审批" flowable:formFieldValidation="true">
       <extensionElements>
-        <flowable:taskListener event="create" delegateExpression="${leaderSetter}"></flowable:taskListener>
+        <flowable:taskListener event="create" delegateExpression="${leaderSetter}">
+          <flowable:field name="user">
+            <flowable:expression><![CDATA[${_submitter}]]></flowable:expression>
+          </flowable:field>
+          <flowable:field name="level">
+            <flowable:expression><![CDATA[${2}]]></flowable:expression>
+          </flowable:field>
+        </flowable:taskListener>
       </extensionElements>
     </userTask>
     <sequenceFlow id="Flow_0b2jjvd" sourceRef="creator_update" targetRef="Gateway_0n7h7pe"></sequenceFlow>

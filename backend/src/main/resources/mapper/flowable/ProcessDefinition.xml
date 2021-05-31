@@ -24,6 +24,7 @@
             <if test='name != null'>and NAME_ like #{name}</if>
             <if test='suspend != null'>and SUSPENSION_STATE_ = #{suspend}</if>
         </where>
+        order by `KEY_` ASC, `VERSION_` DESC
     </select>
 
 </mapper>

@@ -55,7 +55,20 @@ public interface UserService extends IService<User>, UserDetailsService {
 
     List<User> getUserByIds(Integer[] ids);
 
+    /**
+     * 查找指定用户的上一级领导（如果此用户为自己部门负责人，则会往上再找一层）
+     * @param userId
+     * @return
+     */
     User getUserLeader(Integer userId);
+
+    /**
+     * 查找指定用户的领导，根据传入的level决定往上找几级
+     * @param userId 需要查找领导用户的ID
+     * @param level 向上查找领导的层级
+     * @return
+     */
+    User getUserLeader(Integer userId, int level);
 
     List<Integer> findUserWithRole(String role);
 }
