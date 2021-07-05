@@ -18,9 +18,11 @@ public interface FlowService {
 
     <T extends FlowEntity> String startProcess(T form, String processDefKey);
 
+    <T extends FlowEntity> String startProcess(Class<T> clazz, Integer id, String processDefKey);
+
     <T extends FlowEntity> String startProcess(Class<T> clazz, Integer id, String processDefKey, Map<String, Object> variables);
 
-    <T extends FlowEntity> String startProcess(Class<T> clazz, Integer id, String processDefKey);
+    <T extends FlowEntity> String startProcess(Class<T> clazz, Integer id, String processDefKey, Map<String, Object> variables, Integer submitter);
 
     <T extends FlowEntity> T getBizFormByBizKey(String bizKey);
 

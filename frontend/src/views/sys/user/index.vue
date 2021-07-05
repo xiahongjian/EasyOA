@@ -31,17 +31,6 @@
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
             <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
           </el-form-item>
-          <el-form-item label="测试">
-            <user-picker
-              v-model="queryParams.testUser"
-              placeholder="选中用户"
-              prop="testUser"
-              :multi-select="true"
-              display-field="email"
-              trigger-text="Select"
-            />
-            {{ queryParams.testUser }}
-          </el-form-item>
         </el-form>
 
         <el-row :gutter="10" class="mb8">
@@ -249,11 +238,10 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import DictSelect from '@/components/DictSelect'
 import StatusTag from '@/components/StatusTag'
 import StatusRadioGroup from '@/components/StatusRadioGroup'
-import UserPicker from '@/components/UserPicker'
 
 export default {
   name: 'User',
-  components: { Treeselect, DictSelect, StatusTag, StatusRadioGroup, UserPicker },
+  components: { Treeselect, DictSelect, StatusTag, StatusRadioGroup },
   data() {
     return {
       loading: true,

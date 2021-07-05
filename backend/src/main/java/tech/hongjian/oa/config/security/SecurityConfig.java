@@ -23,7 +23,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import tech.hongjian.oa.config.Code;
-import tech.hongjian.oa.config.ConfigConsts.URLs;
+import tech.hongjian.oa.config.ConfigConstants.URLs;
 import tech.hongjian.oa.config.security.handler.JWTRefreshSuccessHandler;
 import tech.hongjian.oa.config.security.handler.LoginAuthSuccessHandler;
 import tech.hongjian.oa.config.security.handler.TokenClearLogoutHandler;

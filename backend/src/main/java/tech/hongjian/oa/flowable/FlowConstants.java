@@ -10,7 +10,6 @@ public interface FlowConstants {
     String V_SKIP_CREATOR = "skipCreator";
     String V_ENABLE_SKIP_EXPRESSION = "_ACTIVITI_SKIP_EXPRESSION_ENABLED";
     String V_FLOW_SUBMITTER = "_submitter";
-
     // 变量名 结束
 
     // 变量值

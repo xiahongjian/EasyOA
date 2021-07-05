@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.stereotype.Component;
-import tech.hongjian.oa.config.ConfigConsts.URLs;
+import tech.hongjian.oa.config.ConfigConstants.URLs;
 import tech.hongjian.oa.entity.Menu;
 import tech.hongjian.oa.entity.Role;
 import tech.hongjian.oa.service.MenuService;

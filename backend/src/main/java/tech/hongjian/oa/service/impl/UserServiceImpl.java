@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tech.hongjian.oa.config.ConfigConsts;
+import tech.hongjian.oa.config.ConfigConstants;
 import tech.hongjian.oa.entity.Department;
 import tech.hongjian.oa.entity.Role;
 import tech.hongjian.oa.entity.User;
@@ -148,7 +148,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setGender(formData.getGender());
         user.setDepartmentId(formData.getDepartmentId() == null || formData.getDepartmentId() == -1 ? null :
                 formData.getDepartmentId());
-        user.setPassword(passwordEncoder.encode(ConfigConsts.DEFAULT_PASSWORD));
+        user.setPassword(passwordEncoder.encode(ConfigConstants.DEFAULT_PASSWORD));
         user.setStatus(formData.getStatus());
         user = CommonUtil.setEntityDefault(user);
         baseMapper.insert(user);

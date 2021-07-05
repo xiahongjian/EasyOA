@@ -12,4 +12,4 @@ spring:
 logging:
   level:
 #    tech.hongjian.oa.mapper: debug
-    org.flowable: debug
+#    org.flowable: debug

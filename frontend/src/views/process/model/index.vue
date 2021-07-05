@@ -193,7 +193,7 @@ export default {
       queryParams: {
         modelId: undefined,
         name: undefined,
-        page: 0,
+        page: 1,
         limit: 10
       },
       records: [],

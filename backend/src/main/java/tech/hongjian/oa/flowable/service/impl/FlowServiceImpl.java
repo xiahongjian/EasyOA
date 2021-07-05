@@ -11,16 +11,21 @@ import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import tech.hongjian.oa.config.ConfigConstants;
+import tech.hongjian.oa.entity.DictValue;
 import tech.hongjian.oa.entity.FlowEntity;
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.flowable.FlowConstants;
 import tech.hongjian.oa.flowable.service.FlowBizFormService;
 import tech.hongjian.oa.flowable.service.FlowService;
+import tech.hongjian.oa.service.DictValueService;
 import tech.hongjian.oa.util.WebUtil;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Created by xiahongjian on 2021/3/16.
@@ -36,6 +41,7 @@ public class FlowServiceImpl implements FlowService {
     private ApplicationContext appCtx;
     private TaskService taskService;
     private IdentityService identityService;
+    private DictValueService dictValueService;
 
     @Override
     public <T extends FlowEntity> String startProcess(T form, String processDefKey, Map<String, Object> variables) {
@@ -51,19 +57,32 @@ public class FlowServiceImpl implements FlowService {
 
     @Override
     public <T extends FlowEntity> String startProcess(Class<T> clazz, Integer id, String processDefKey, Map<String, Object> variables) {
+        return startProcess(clazz, id, processDefKey, variables, Optional.ofNullable(WebUtil.currentUser()).map(User::getId).orElse(null));
+    }
+
+    @Override
+    public <T extends FlowEntity> String startProcess(Class<T> clazz, Integer id, String processDefKey, Map<String, Object> variables, Integer submitter) {
         if (StringUtils.isBlank(processDefKey)) {
             throw new IllegalArgumentException("Process key不能为空");
         }
+
+        if (submitter == null) {
+            // 设置流程的默认提交者
+            List<DictValue> values = dictValueService.getValueByDictKey(ConfigConstants.DictKeys.FLOW_DEFAULT_SUBMITTER);
+            if (!values.isEmpty()) {
+                submitter = Integer.parseInt(values.get(0).getValue());
+            } else {
+                submitter = 1; // 如果系统没有配置流程的默认提交者，就用ID为1的用户
+            }
+        }
+        // 设置当前user，使得能保存流程的发起者
+        identityService.setAuthenticatedUserId(String.valueOf(submitter));
+
         if (clazz == null || id == null) {
             ProcessInstance instance = runtimeService.startProcessInstanceByKey(processDefKey, variables);
             return instance.getId();
         }
 
-        // 设置当前user，使得能保存流程的发起者
-        User currentUser = WebUtil.currentUser();
-        if (currentUser != null) {
-            identityService.setAuthenticatedUserId(String.valueOf(currentUser.getId()));
-        }
         String bizKey = id2BizKey(clazz.getSimpleName(), id);
         ProcessInstance instance = runtimeService.startProcessInstanceByKey(processDefKey, bizKey, variables);
         return instance.getId();
