@@ -7,6 +7,7 @@ import org.flowable.engine.IdentityService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.runtime.ProcessInstance;
+import org.flowable.task.api.DelegationState;
 import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -22,7 +23,7 @@ import tech.hongjian.oa.flowable.service.FlowService;
 import tech.hongjian.oa.service.DictValueService;
 import tech.hongjian.oa.util.WebUtil;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -125,29 +126,17 @@ public class FlowServiceImpl implements FlowService {
 
     @Override
     public void approve(String taskId, String comment) {
-        checkTaskExisted(taskId);
-        if (StringUtils.isNoneBlank(comment)) {
-            taskService.addComment(taskId, null, comment);
-        }
-        taskService.complete(taskId, Collections.singletonMap(FlowConstants.V_ACTION, FlowConstants.APPROVE));
+        doTask(taskId, FlowConstants.APPROVE, comment, null);
     }
 
     @Override
     public void reject(String taskId, String comment) {
-        checkTaskExisted(taskId);
-        if (StringUtils.isNoneBlank(comment)) {
-            taskService.addComment(taskId, null, comment);
-        }
-        taskService.complete(taskId, Collections.singletonMap(FlowConstants.V_ACTION, FlowConstants.REJECT));
+        doTask(taskId, FlowConstants.REJECT, comment, null);
     }
 
     @Override
     public void completeTask(String taskId, String comment, Map<String, Object> variables) {
-        checkTaskExisted(taskId);
-        if (StringUtils.isNotBlank(comment)) {
-            taskService.addComment(taskId, null, comment);
-        }
-        taskService.complete(taskId, variables);
+        doTask(taskId, null, comment, variables);
     }
 
     @Override
@@ -159,24 +148,39 @@ public class FlowServiceImpl implements FlowService {
                 throw new CommonServiceException("只有任务的办理人才能执行办理操作。");
             }
         }
-        if (StringUtils.isNotBlank(comment)) {
-            taskService.addComment(taskId, null, comment);
+        doTask(taskId, null, comment, variables);
+    }
+
+    private void doTask(String taskId, String action, String comment, Map<String, Object> variables) {
+        Task task = checkTaskExisted(taskId);
+        if (StringUtils.isNoneBlank(comment)) {
+            taskService.addComment(taskId, task.getProcessInstanceId(), comment);
         }
-        taskService.complete(taskId, variables);
+        // 如果此任务目前是委派状态为pending，则调用resolveTask而不是complete方法
+        if (DelegationState.PENDING.equals(task.getDelegationState())) {
+            taskService.resolveTask(task.getId(), variables);
+            return;
+        }
+        if (variables == null && StringUtils.isNotBlank(action)) {
+            variables = new HashMap<>();
+            variables.put(FlowConstants.V_ACTION, action);
+        }
+        taskService.complete(task.getId(), variables);
     }
 
     @Override
     public void reassign(String taskId, Integer userId, String comment) {
-        checkTaskExisted(taskId);
+        Task task = checkTaskExisted(taskId);
         if (StringUtils.isNotBlank(comment)) {
-            taskService.addComment(taskId, null, comment);
+            taskService.addComment(taskId, task.getProcessInstanceId(), comment);
         }
         taskService.setAssignee(taskId, String.valueOf(userId));
     }
 
     @Override
     public void claim(String taskId, Integer userId) {
-        // TODO
+        checkTaskExisted(taskId);
+        taskService.claim(taskId, String.valueOf(taskId));
     }
 
     private FlowBizFormService<? extends FlowEntity> getBizFormService(String formClass) {
