@@ -107,7 +107,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 // 配置登录请求数据以JSON格式传到后端时的认证处理
                 .apply(new AdvancedLoginConfigurer<>())
-                .loginSuccessHanlder(new LoginAuthSuccessHandler(tokenService))
+                .loginSuccessHandler(new LoginAuthSuccessHandler(tokenService))
                 .and()
                 // 配置JWT的认证处理
                 .apply(new JWTAuthConfigurer<>())

@@ -7,7 +7,6 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
-
 import tech.hongjian.oa.config.security.filter.AdvancedLoginAuthenticationFilter;
 import tech.hongjian.oa.config.security.handler.LoginAuthFailureHandler;
 
@@ -32,12 +31,12 @@ public class AdvancedLoginConfigurer<T extends AdvancedLoginConfigurer<T, B>, B 
         http.addFilterAfter(postProcess(authFilter), UsernamePasswordAuthenticationFilter.class);
     }
 
-    public AdvancedLoginConfigurer<T, B> loginSuccessHanlder(AuthenticationSuccessHandler successHandler) {
+    public AdvancedLoginConfigurer<T, B> loginSuccessHandler(AuthenticationSuccessHandler successHandler) {
         authFilter.setAuthenticationSuccessHandler(successHandler);
         return this;
     }
 
-    public AdvancedLoginConfigurer<T, B> loginFailureHanlder(AuthenticationFailureHandler failureHandler) {
+    public AdvancedLoginConfigurer<T, B> loginFailureHandler(AuthenticationFailureHandler failureHandler) {
         authFilter.setAuthenticationFailureHandler(failureHandler);
         return this;
     }
