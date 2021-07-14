@@ -1,11 +1,11 @@
 package tech.hongjian.oa.config.security.token;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author xiahongjian
@@ -15,24 +15,24 @@ public class JWTAuthenticationToken extends AbstractAuthenticationToken {
     private static final long serialVersionUID = 8080914751985777332L;
 
     private UserDetails principal;
-    private String credientials;
+    private String credentials;
 
-    public JWTAuthenticationToken(String credientials) {
+    public JWTAuthenticationToken(String credentials) {
         super(Collections.emptyList());
-        this.credientials = credientials;
+        this.credentials = credentials;
     }
 
-    public JWTAuthenticationToken(UserDetails principal, String credientials,
+    public JWTAuthenticationToken(UserDetails principal, String credentials,
             Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
-        this.credientials = credientials;
+        this.credentials = credentials;
         setAuthenticated(false);
     }
 
     @Override
     public Object getCredentials() {
-        return credientials;
+        return credentials;
     }
 
     @Override
