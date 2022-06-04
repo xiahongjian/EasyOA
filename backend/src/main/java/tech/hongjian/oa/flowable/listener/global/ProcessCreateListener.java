@@ -1,4 +1,4 @@
-package tech.hongjian.oa.flowable.listener.globab;
+package tech.hongjian.oa.flowable.listener.global;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -14,12 +14,13 @@ import tech.hongjian.oa.flowable.FlowConstants;
 import tech.hongjian.oa.flowable.service.FlowService;
 
 /**
- * Created by xiahongjian on 2021/5/26.
+ * @author xiahongjian
+ * @time 2021/3/15 21:25
  */
 @Slf4j
 @Setter(onMethod_ = {@Autowired})
 @Component
-public class UpdateBizFormVariableListener extends AbstractFlowableEngineEventListener {
+public class ProcessCreateListener extends AbstractFlowableEngineEventListener {
     private RuntimeService runtimeService;
     private FlowService flowService;
 
@@ -35,6 +36,8 @@ public class UpdateBizFormVariableListener extends AbstractFlowableEngineEventLi
                 FlowEntity entity = flowService.getBizFormByBizKey(bizKey);
                 runtimeService.setVariable(instanceId, FlowConstants.V_FORM, entity);
             }
+            // 设置启用跳过表达式
+            runtimeService.setVariable(instanceId, FlowConstants.V_ENABLE_SKIP_EXPRESSION, true);
         }
     }
 }
