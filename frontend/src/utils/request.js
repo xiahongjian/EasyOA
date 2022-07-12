@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 // import router from '@/router'
@@ -56,7 +56,7 @@ service.interceptors.response.use(
       // 30000: 未登录 30002: token过期 30006: token无效
       if (res.code === 30000 || res.code === 30002 || res.code === 30006) {
         // to re-login
-        MessageBox.confirm(res.message, 'Confirm logout', {
+        MessageBox.confirm(res.message, '注意', {
           confirmButtonText: '重新登录',
           cancelButtonText: '取消',
           type: 'warning'

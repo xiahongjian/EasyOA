@@ -40,8 +40,8 @@
           <el-table-column label="名称" prop="name" :show-overflow-tooltip="true" />
           <el-table-column label="描述" prop="description" :show-overflow-tooltip="true" />
           <el-table-column label="版本" prop="version" align="center" />
-          <el-table-column label="状态" prop="suspended" align="center" width="80">
-            <template slot-scope="scope"><el-tag :type="scope.row.suspended ? 'danger' : 'primary'">{{ scope.row.suspended ? '挂起' : '激活' }}</el-tag></template>
+          <el-table-column label="状态" prop="suspended" align="center" width="120">
+            <template slot-scope="scope"><el-tag :type="scope.row.suspended ? 'danger' : 'success'">{{ scope.row.suspended ? '挂起' : '激活' }}</el-tag></template>
           </el-table-column>
           <el-table-column label="操作" class-name="small-padding fixed-width" width="220" align="center">
             <template slot-scope="scope">

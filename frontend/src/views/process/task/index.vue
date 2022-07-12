@@ -49,7 +49,7 @@
           <el-table-column label="描述" prop="description" :show-overflow-tooltip="true" />
 
           <el-table-column label="状态" prop="suspended" align="center" width="80">
-            <template slot-scope="scope"><el-tag :type="scope.row.suspended ? 'danger' : 'primary'">{{ scope.row.suspended ? '挂起' : '激活' }}</el-tag></template>
+            <template slot-scope="scope"><el-tag :type="scope.row.suspended ? 'danger' : 'success'">{{ scope.row.suspended ? '挂起' : '激活' }}</el-tag></template>
           </el-table-column>
           <el-table-column label="开始时间" prop="createTime" width="200" align="center" />
           <el-table-column label="到期时间" prop="dueDate" width="200" align="center" />
