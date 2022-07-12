@@ -30,7 +30,7 @@ public class LoginAuthSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
         String token = tokenService.createToken((User) authentication.getPrincipal());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         PrintWriter out = response.getWriter();
         out.print(JSONUtil.toJSON(R.ok(token)));
         out.flush();

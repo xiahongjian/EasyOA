@@ -2,6 +2,7 @@ package tech.hongjian.oa.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import tech.hongjian.oa.exception.CommonServiceException;
 import tech.hongjian.oa.model.R;
@@ -16,14 +17,16 @@ import javax.servlet.http.HttpServletResponse;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ResponseBody
     @ExceptionHandler(Exception.class)
-    public R globalException(HttpServletResponse response, Exception e) {
+    public R globalException(Exception e) {
         log.info(e.getMessage(), e);
         return R.error(e.getMessage());
     }
 
+    @ResponseBody
     @ExceptionHandler(CommonServiceException.class)
-    public R serviceException(HttpServletResponse response, CommonServiceException e) {
+    public R serviceException(CommonServiceException e) {
         log.info(e.getMessage(), e);
         return R.error(e.getCode(), e.getMessage());
     }

@@ -17,7 +17,5 @@ public interface UserTokenService {
 
     String refreshToken(String oldToken, User user);
 
-    void removeToken(String token);
-
     boolean shouldTokenRefresh(Integer userId, Date issuedAt);
 }

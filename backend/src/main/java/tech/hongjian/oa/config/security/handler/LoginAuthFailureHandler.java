@@ -2,7 +2,12 @@ package tech.hongjian.oa.config.security.handler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import tech.hongjian.oa.config.Code;
@@ -17,16 +22,16 @@ import java.io.PrintWriter;
 
 /**
  * @author xiahongjian
- * @since  2021-01-16 12:05:38
+ * @since 2021-01-16 12:05:38
  */
 @Slf4j
 public class LoginAuthFailureHandler implements AuthenticationFailureHandler {
 
-    //    @SuppressWarnings("deprecation")
+    @SuppressWarnings("deprecation")
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-            AuthenticationException exception) throws IOException, ServletException {
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                                        AuthenticationException exception) throws IOException, ServletException {
+        response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
         // log.error(exception.getMessage(), exception);
         PrintWriter out = response.getWriter();
         R r = null;

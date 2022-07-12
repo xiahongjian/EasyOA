@@ -31,7 +31,7 @@ public class TokenServiceImpl implements TokenService {
         }
 
         // 计算吊销token在redis中的有效期
-        long timeout = Duration.between(expireAt, now).toMillis() / 1000 + ADD;
+        long timeout = Duration.between(now, expireAt).toMillis() / 1000 + ADD;
         redisTemplate.opsForValue().set(toKey(token), "", timeout, TimeUnit.SECONDS);
     }
 

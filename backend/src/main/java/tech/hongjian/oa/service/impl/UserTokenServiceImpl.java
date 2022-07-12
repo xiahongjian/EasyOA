@@ -64,15 +64,6 @@ public class UserTokenServiceImpl implements UserTokenService {
     }
 
     @Override
-    public void removeToken(String token) {
-        ValueOperations<String, String> operations = redisTemplate.opsForValue();
-        if (operations.get(token) == null) {
-            return;
-        }
-        redisTemplate.delete(token);
-    }
-
-    @Override
     public UserDetails validate(String token) {
         String msg = "Token expires";
         ValueOperations<String, String> operations =
@@ -100,13 +91,6 @@ public class UserTokenServiceImpl implements UserTokenService {
         }
         ValueOperations<String, String> operations = redisTemplate.opsForValue();
         String newToken = generateToken(user);
-        // 缓存新token
-        operations.set(newToken,
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd " +
-                        "HH:mm:ss")), tokenConfig.getExpire(), TimeUnit.MINUTES);
-        // 设置旧token过期时间
-        redisTemplate.expire(oldToken, tokenConfig.getRefreshInterval(),
-                TimeUnit.MINUTES);
         // 设置最新token
         operations.set(generateLatestTokenKey(user.getId()), newToken,
                 tokenConfig.getExpire(), TimeUnit.MINUTES);

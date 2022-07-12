@@ -102,7 +102,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private AuthenticationException assetNotInBlockList(String token) {
         if (tokenService.inCancelList(token)) {
-            return new InsufficientAuthenticationException("Token is canceled");
+            return new InsufficientAuthenticationException("令牌已失效，请重新登录。");
         }
         return null;
     }
