@@ -23,7 +23,7 @@ public class LeaderAssignmentListener  implements TaskListener {
     @Setter
     private Expression level;
 
-    @Setter(onMethod_ = {@Autowired})
+    @Autowired
     private UserService userService;
 
 

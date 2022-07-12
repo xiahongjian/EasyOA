@@ -2,7 +2,6 @@ package tech.hongjian.oa.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RuntimeService;
@@ -22,11 +21,13 @@ import java.util.stream.Collectors;
 /**
  * Created by xiahongjian on 2021/4/21.
  */
-@Setter(onMethod_ = {@Autowired})
 @Service
 public class BizHistoricProcessInstanceServiceImpl implements BizHistoricProcessInstanceService {
+    @Autowired
     private HistoryService historyService;
+    @Autowired
     private RuntimeService runtimeService;
+    @Autowired
     private TaskService taskService;
 
     @Override

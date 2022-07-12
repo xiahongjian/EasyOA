@@ -1,10 +1,8 @@
 package tech.hongjian.oa.config.flowable;
 
-import lombok.Setter;
 import org.flowable.common.engine.api.delegate.event.FlowableEngineEventType;
 import org.flowable.common.engine.api.delegate.event.FlowableEventDispatcher;
 import org.flowable.spring.SpringProcessEngineConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -15,12 +13,19 @@ import tech.hongjian.oa.flowable.listener.global.UpdateBizFormVariableListener;
  * @author xiahongjian
  * @time 2021/3/15 21:13
  */
-@Setter(onMethod_ = {@Autowired})
 @Configuration
 public class FlowableGlobalListenerConfig implements ApplicationListener<ContextRefreshedEvent> {
-    private SpringProcessEngineConfiguration configuration;
-    private ProcessCreateListener processCreateListener;
-    private UpdateBizFormVariableListener updateBizFormVariableListener;
+    private final SpringProcessEngineConfiguration configuration;
+    private final ProcessCreateListener processCreateListener;
+    private final UpdateBizFormVariableListener updateBizFormVariableListener;
+
+    public FlowableGlobalListenerConfig(SpringProcessEngineConfiguration configuration,
+                                        ProcessCreateListener processCreateListener,
+                                        UpdateBizFormVariableListener updateBizFormVariableListener) {
+        this.configuration = configuration;
+        this.processCreateListener = processCreateListener;
+        this.updateBizFormVariableListener = updateBizFormVariableListener;
+    }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {

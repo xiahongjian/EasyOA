@@ -1,6 +1,5 @@
 package tech.hongjian.oa.controller;
 
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +13,7 @@ import tech.hongjian.oa.service.BizHistoricProcessInstanceService;
 @RestController
 @RequestMapping("/processes/instances")
 public class HistoricProcessInstanceController {
-    @Setter(onMethod_ = {@Autowired})
+    @Autowired
     private BizHistoricProcessInstanceService bizHistoricProcessInstanceService;
 
     @GetMapping("")

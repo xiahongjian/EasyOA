@@ -1,7 +1,6 @@
 package tech.hongjian.oa.controller;
 
 
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,11 +22,12 @@ import java.io.IOException;
  * @author xiahongjian
  * @since 2021-03-20
  */
-@Setter(onMethod_ = {@Autowired})
 @RestController
 @RequestMapping("/processes/models")
 public class ModelController {
+    @Autowired
     private ModelService modelService;
+    @Autowired
     private ProcessResourceService processResourceService;
 
     @GetMapping("")

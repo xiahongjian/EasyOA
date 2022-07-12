@@ -1,6 +1,5 @@
 package tech.hongjian.oa.service.impl;
 
-import lombok.Setter;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.task.api.history.HistoricTaskInstance;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class BizHistoryServiceImpl implements BizHistoryService {
-    @Setter(onMethod_ = {@Autowired})
+    @Autowired
     private HistoryService historyService;
 
     @Override

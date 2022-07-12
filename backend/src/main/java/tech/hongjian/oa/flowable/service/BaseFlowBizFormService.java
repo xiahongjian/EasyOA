@@ -2,7 +2,6 @@ package tech.hongjian.oa.flowable.service;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import tech.hongjian.oa.entity.FlowEntity;
 
@@ -12,8 +11,7 @@ import java.util.Map;
  * Created by xiahongjian on 2021/4/10.
  */
 public  abstract class BaseFlowBizFormService<M extends BaseMapper<T>, T extends FlowEntity> extends ServiceImpl<M, T> implements FlowBizFormService<T> {
-
-    @Setter(onMethod_ = {@Autowired})
+    @Autowired
     protected FlowService flowService;
 
     @Override

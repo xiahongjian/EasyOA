@@ -2,7 +2,6 @@ package tech.hongjian.oa.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.flowable.engine.RuntimeService;
@@ -30,13 +29,11 @@ import java.util.stream.Stream;
  */
 @Service
 public class BizTaskServiceImpl implements BizTaskService {
-    @Setter(onMethod_ = {@Autowired})
+    @Autowired
     private TaskService taskService;
-
-    @Setter(onMethod_ = {@Autowired})
+    @Autowired
     private UserService userService;
-
-    @Setter(onMethod_ = {@Autowired})
+    @Autowired
     private RuntimeService runtimeService;
 
     @Override

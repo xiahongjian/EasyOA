@@ -1,9 +1,7 @@
 package tech.hongjian.oa.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.hongjian.oa.entity.Menu;
@@ -27,7 +25,6 @@ import java.util.stream.Collectors;
  */
 
 @Slf4j
-@Setter(onMethod_ = {@Autowired})
 @Transactional(rollbackFor = Exception.class)
 @Service
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements MenuService {

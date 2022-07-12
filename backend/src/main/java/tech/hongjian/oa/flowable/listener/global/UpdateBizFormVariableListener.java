@@ -1,6 +1,5 @@
 package tech.hongjian.oa.flowable.listener.global;
 
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.common.engine.api.delegate.event.FlowableEngineEntityEvent;
 import org.flowable.engine.RuntimeService;
@@ -17,10 +16,11 @@ import tech.hongjian.oa.flowable.service.FlowService;
  * Created by xiahongjian on 2021/5/26.
  */
 @Slf4j
-@Setter(onMethod_ = {@Autowired})
 @Component
 public class UpdateBizFormVariableListener extends AbstractFlowableEngineEventListener {
+    @Autowired
     private RuntimeService runtimeService;
+    @Autowired
     private FlowService flowService;
 
     @Override

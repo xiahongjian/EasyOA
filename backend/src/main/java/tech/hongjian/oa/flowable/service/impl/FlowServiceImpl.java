@@ -1,6 +1,5 @@
 package tech.hongjian.oa.flowable.service.impl;
 
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.flowable.engine.IdentityService;
@@ -32,16 +31,20 @@ import java.util.Optional;
  * Created by xiahongjian on 2021/3/16.
  */
 @Slf4j
-@Setter(onMethod_ = {@Autowired})
 @Service
 public class FlowServiceImpl implements FlowService {
     public static final String SERVICE_BEAN_NAME_SUFFIX = "ServiceImpl";
     public static final String BIZ_KEY_SEPARATOR = ":";
 
+    @Autowired
     private RuntimeService runtimeService;
+    @Autowired
     private ApplicationContext appCtx;
+    @Autowired
     private TaskService taskService;
+    @Autowired
     private IdentityService identityService;
+    @Autowired
     private DictValueService dictValueService;
 
     @Override

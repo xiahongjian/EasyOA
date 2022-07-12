@@ -1,7 +1,6 @@
 package tech.hongjian.oa.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.Process;
@@ -39,11 +38,9 @@ public class ProcessResourceServiceImpl implements ProcessResourceService {
     public static final String DEFAULT_FONT = "宋体";
     public static final String DEFAULT_IMAGE_TYPE = "png";
 
-
-    @Setter(onMethod_ = {@Autowired})
+    @Autowired
     private ModelService modelService;
-
-    @Setter(onMethod_ = {@Autowired})
+    @Autowired
     private RepositoryService repositoryService;
 
 

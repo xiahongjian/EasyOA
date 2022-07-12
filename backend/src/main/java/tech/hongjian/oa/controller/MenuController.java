@@ -1,16 +1,8 @@
 package tech.hongjian.oa.controller;
 
 
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tech.hongjian.oa.entity.Menu;
 import tech.hongjian.oa.model.R;
 import tech.hongjian.oa.service.MenuService;
@@ -23,9 +15,9 @@ import tech.hongjian.oa.service.MenuService;
  * @author xiahongjian
  * @since 2021-01-12
  */
-@Setter(onMethod_ = {@Autowired})
 @RestController
 public class MenuController {
+    @Autowired
     private MenuService menuService;
 
     @GetMapping("/menu/menurole")

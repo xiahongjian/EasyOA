@@ -1,7 +1,6 @@
 package tech.hongjian.oa.controller;
 
 
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tech.hongjian.oa.entity.DictValue;
@@ -17,10 +16,10 @@ import tech.hongjian.oa.service.DictValueService;
  * @author xiahongjian
  * @since 2021-01-12
  */
-@Setter(onMethod_ = {@Autowired})
 @RestController
 @RequestMapping("/dict")
 public class DictValueController {
+    @Autowired
     private DictValueService dictValueService;
 
     @GetMapping("/datas")

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,6 @@ import java.time.LocalDateTime;
  * @since 2021-01-12
  */
 @Slf4j
-@Setter(onMethod_ = {@Autowired})
 @Transactional(rollbackFor = Exception.class)
 @Service
 public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements DictService {
@@ -41,6 +39,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         String PARAM_ERROR = "参数错误";
     }
 
+    @Autowired
     private DictValueService dictValueService;
 
     @Override

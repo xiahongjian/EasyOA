@@ -1,7 +1,6 @@
 package tech.hongjian.oa.controller;
 
 
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +17,9 @@ import tech.hongjian.oa.service.UserService;
  * @author xiahongjian
  * @since 2021-01-12
  */
-@Setter(onMethod_ = {@Autowired})
 @RestController
 public class UserController {
+    @Autowired
     private UserService userService;
 
     @GetMapping("/user/userinfo")

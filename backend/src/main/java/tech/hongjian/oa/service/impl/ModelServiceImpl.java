@@ -7,7 +7,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -63,10 +62,9 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
     protected BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
     protected ObjectMapper objectMapper = new ObjectMapper();
 
-    @Setter(onMethod_ = {@Autowired})
+    @Autowired
     private RepositoryService repositoryService;
-
-    @Setter(onMethod_ = {@Autowired})
+    @Autowired
     private ProcessResourceService processResourceService;
 
     @Override

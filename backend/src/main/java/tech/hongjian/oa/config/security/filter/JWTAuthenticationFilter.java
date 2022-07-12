@@ -1,14 +1,7 @@
 package tech.hongjian.oa.config.security.filter;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
@@ -24,11 +17,16 @@ import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.auth0.jwt.exceptions.JWTDecodeException;
-
-import lombok.extern.slf4j.Slf4j;
 import tech.hongjian.oa.config.security.token.JWTAuthenticationToken;
+import tech.hongjian.oa.service.TokenService;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author xiahongjian
@@ -38,6 +36,7 @@ import tech.hongjian.oa.config.security.token.JWTAuthenticationToken;
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
     public static final String DEFAULT_AUTHENTICATION_HEADER = "Authorization";
 
+    private TokenService tokenService;
     private String authenticationHeader;
     private AuthenticationManager authenticationManager;
     private RequestMatcher requiresAuthenticationRequestMatcher;
@@ -55,6 +54,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     public void afterPropertiesSet() {
+        Assert.notNull(tokenService, "tokenService must be specified");
         Assert.notNull(authenticationManager, "authenticationManager must be specified");
         Assert.notNull(successHandler, "authenticationSuccessHandler must be specified");
         Assert.notNull(failureHandler, "authenticationFailureHandler must be specified");
@@ -70,20 +70,26 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = getToken(request);
+
+        // 检查token是否在吊销列表中
+
         Authentication authResult = null;
-        AuthenticationException failed = null;
-        if (token != null) {
-            try {
-                JWTAuthenticationToken authToken = new JWTAuthenticationToken(token);
-                authResult = this.authenticationManager.authenticate(authToken);
-            } catch (JWTDecodeException e) {
-                log.error("Failed to decoded JWT, token: [{}].", token, e);
-                failed = new InsufficientAuthenticationException("JWT format error", e);
-            } catch (AuthenticationException e) {
-                failed = e;
+        AuthenticationException failed = assetNotInBlockList(token);
+
+        if (failed == null) {
+            if (token != null) {
+                try {
+                    JWTAuthenticationToken authToken = new JWTAuthenticationToken(token);
+                    authResult = this.authenticationManager.authenticate(authToken);
+                } catch (JWTDecodeException e) {
+                    log.error("Failed to decoded JWT, token: [{}].", token, e);
+                    failed = new InsufficientAuthenticationException("JWT format error", e);
+                } catch (AuthenticationException e) {
+                    failed = e;
+                }
+            } else {
+                failed = new InsufficientAuthenticationException("JWT is empty");
             }
-        } else {
-            failed = new InsufficientAuthenticationException("JWT is empty");
         }
         if (authResult != null) {
             this.successfulAuthentication(request, response, filterChain, authResult);
@@ -94,12 +100,20 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    private AuthenticationException assetNotInBlockList(String token) {
+        if (tokenService.inCancelList(token)) {
+            return new InsufficientAuthenticationException("Token is canceled");
+        }
+        return null;
+    }
+
     protected boolean permissiveRequest(HttpServletRequest request) {
         if (permissiveRequestMatchers == null)
             return false;
         for (RequestMatcher permissiveMatcher : permissiveRequestMatchers) {
-            if (permissiveMatcher.matches(request))
+            if (permissiveMatcher.matches(request)) {
                 return true;
+            }
         }
         return false;
     }
@@ -157,5 +171,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         for(String url : urls) {
             permissiveRequestMatchers .add(new AntPathRequestMatcher(url));
         }
+    }
+
+    public void setTokenService(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 }

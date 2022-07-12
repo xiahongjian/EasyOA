@@ -2,7 +2,6 @@ package tech.hongjian.oa.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.Setter;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
 import org.flowable.engine.repository.ProcessDefinition;
@@ -20,11 +19,12 @@ import java.util.stream.Collectors;
 /**
  * Created by xiahongjian on 2021/3/31.
  */
-@Setter(onMethod_ = {@Autowired})
 @Transactional(rollbackFor = Exception.class)
 @Service
 public class BizProcessDefinitionServiceImpl implements BizProcessDefinitionService {
+    @Autowired
     private RepositoryService repoService;
+    @Autowired
     private ProcessDefinitionMapper processDefinitionMapper;
 
     @Override

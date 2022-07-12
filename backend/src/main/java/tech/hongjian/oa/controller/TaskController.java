@@ -1,6 +1,5 @@
 package tech.hongjian.oa.controller;
 
-import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +17,9 @@ import java.util.Collections;
 @RestController
 @RequestMapping("/processes/tasks")
 public class TaskController {
-    @Setter(onMethod_ = {@Autowired})
+    @Autowired
     private BizTaskService bizTaskService;
-
-    @Setter(onMethod_ = {@Autowired})
+    @Autowired
     private FlowService flowService;
 
     @GetMapping("")

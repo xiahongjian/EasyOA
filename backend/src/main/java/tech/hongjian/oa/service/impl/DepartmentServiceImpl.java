@@ -2,9 +2,7 @@ package tech.hongjian.oa.service.impl;
 
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tech.hongjian.oa.entity.Department;
 import tech.hongjian.oa.entity.enums.Status;
@@ -14,11 +12,7 @@ import tech.hongjian.oa.service.DepartmentService;
 import tech.hongjian.oa.util.CommonUtil;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -29,7 +23,6 @@ import java.util.stream.Collectors;
  * @author xiahongjian
  * @since 2021-01-12
  */
-@Setter(onMethod_ = {@Autowired})
 @Service
 public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department> implements DepartmentService {
 

@@ -6,9 +6,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
-
 import tech.hongjian.oa.config.security.filter.JWTAuthenticationFilter;
 import tech.hongjian.oa.config.security.handler.LoginAuthFailureHandler;
+import tech.hongjian.oa.service.TokenService;
 
 /**
  * @author xiahongjian
@@ -30,6 +30,11 @@ public class JWTAuthConfigurer<T extends JWTAuthConfigurer<T, B>, B extends Http
 
         // 放在LogoutFilter之前是为了保证不会存在使用伪造token（不能通过验证）冒充登录者进行登出操作
         http.addFilterBefore(postProcess(authFilter), LogoutFilter.class);
+    }
+
+    public JWTAuthConfigurer<T, B> tokenService(TokenService tokenService) {
+        authFilter.setTokenService(tokenService);
+        return this;
     }
 
     public JWTAuthConfigurer<T, B> failureHandler(AuthenticationFailureHandler failureHandler) {

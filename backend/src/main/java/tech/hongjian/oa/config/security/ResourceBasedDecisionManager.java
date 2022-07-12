@@ -1,6 +1,5 @@
 package tech.hongjian.oa.config.security;
 
-import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDecisionManager;
@@ -25,9 +24,9 @@ import java.util.stream.Collectors;
  * @author xiahongjian
  * @since 2020-03-18 20:09:42
  */
-@Setter(onMethod_ = {@Autowired})
 @Component
 public class ResourceBasedDecisionManager implements AccessDecisionManager {
+    @Autowired
     private MenuService menuService;
 
     @Override

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties(prefix = "sys.token")
-public class SysTokenConfig {
+public class SysTokenProperties {
     private Integer expire;
     private Integer refreshInterval;
 }

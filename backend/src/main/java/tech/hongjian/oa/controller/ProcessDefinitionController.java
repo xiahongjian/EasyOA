@@ -1,6 +1,5 @@
 package tech.hongjian.oa.controller;
 
-import lombok.Setter;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by xiahongjian on 2021/3/31.
  */
-@Setter(onMethod_ = {@Autowired})
 @RestController
 @RequestMapping("/processes/definitions")
 public class ProcessDefinitionController {
+    @Autowired
     private BizProcessDefinitionService bizProcessDefinitionService;
+    @Autowired
     private ProcessResourceService processResourceService;
 
     @RequestMapping("")

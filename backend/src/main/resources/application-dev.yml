@@ -9,7 +9,7 @@ spring:
     port: 6379
     password: redis
 # log配置
-logging:
-  level:
+#logging:
+#  level:
 #    tech.hongjian.oa.mapper: debug
 #    org.flowable: debug

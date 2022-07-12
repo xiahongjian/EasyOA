@@ -2,20 +2,12 @@ package tech.hongjian.oa.controller;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import tech.hongjian.oa.model.RoleWithMenu;
+import org.springframework.web.bind.annotation.*;
 import tech.hongjian.oa.entity.Role;
 import tech.hongjian.oa.entity.enums.Status;
 import tech.hongjian.oa.model.R;
+import tech.hongjian.oa.model.RoleWithMenu;
 import tech.hongjian.oa.service.RoleService;
 
 /**
@@ -26,10 +18,9 @@ import tech.hongjian.oa.service.RoleService;
  * @author xiahongjian
  * @since 2021-01-12
  */
-@Setter(onMethod_ = {@Autowired})
 @RestController
 public class RoleController {
-
+    @Autowired
     private RoleService roleService;
 
     @GetMapping("/roles")

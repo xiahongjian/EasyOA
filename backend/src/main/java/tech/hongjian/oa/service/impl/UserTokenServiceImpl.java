@@ -3,7 +3,6 @@ package tech.hongjian.oa.service.impl;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -13,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tech.hongjian.oa.config.security.SysTokenConfig;
+import tech.hongjian.oa.config.security.SysTokenProperties;
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.service.UserService;
 import tech.hongjian.oa.service.UserTokenService;
@@ -30,12 +29,14 @@ import java.util.concurrent.TimeUnit;
  * @since 2021-01-16 14:29:39
  */
 @Slf4j
-@Setter(onMethod_ = {@Autowired})
 @Transactional(rollbackFor = Exception.class)
 @Service
 public class UserTokenServiceImpl implements UserTokenService {
-    private SysTokenConfig tokenConfig;
+    @Autowired
+    private SysTokenProperties tokenConfig;
+    @Autowired
     private StringRedisTemplate redisTemplate;
+    @Autowired
     private UserService userService;
 
     @Override
