@@ -29,7 +29,6 @@ public class AdvancedLoginAuthenticationFilter extends UsernamePasswordAuthentic
         this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(URLs.LOGIN, "POST"));
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
             HttpServletResponse response) throws AuthenticationException {

@@ -125,7 +125,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private AccessDeniedHandler accessDeniedHandler() {
         return (request, response, accessDeniedException) -> {
-            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             PrintWriter out = response.getWriter();
             out.print(JSONUtil.toJSON(R.error(Code.UNAUTHORIZED, accessDeniedException.getMessage())));
@@ -137,7 +137,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return (request, response, authException) -> {
             // AJAX请求
             if (WebUtil.isAjaxRequest(request)) {
-                response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 PrintWriter out = response.getWriter();
                 out.print(JSONUtil.toJSON(R.error(Code.UNAUTHORIZED,
