@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tech.hongjian.oa.config.security.SysTokenProperties;
 import tech.hongjian.oa.entity.User;
+import tech.hongjian.oa.service.TokenService;
 import tech.hongjian.oa.service.UserService;
 import tech.hongjian.oa.service.UserTokenService;
 
@@ -38,6 +39,8 @@ public class UserTokenServiceImpl implements UserTokenService {
     private StringRedisTemplate redisTemplate;
     @Autowired
     private UserService userService;
+    @Autowired
+    private TokenService tokenService;
 
     @Override
     public String createToken(User user) {
@@ -58,17 +61,14 @@ public class UserTokenServiceImpl implements UserTokenService {
         // 设置过期时间
         Date expire =
                 new Date(System.currentTimeMillis() + tokenConfig.getExpire() * 60000);
-        String token = JWT.create().withSubject(user.getUsername()).withExpiresAt(expire)
+        return JWT.create().withSubject(user.getUsername()).withExpiresAt(expire)
                 .withIssuedAt(new Date()).sign(Algorithm.HMAC256(salt));
-        return token;
     }
 
     @Override
     public UserDetails validate(String token) {
         String msg = "Token expires";
-        ValueOperations<String, String> operations =
-                redisTemplate.opsForValue();
-        if (operations.get(token) == null) {
+        if (tokenService.inCancelList(token)) {
             log.info("Expired token: {}", token);
             throw new CredentialsExpiredException(msg);
         }
@@ -76,7 +76,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         Date now = new Date();
         if (decode.getExpiresAt().before(now)) {
             Date expiresAt = decode.getExpiresAt();
-            log.info("ExpiresAt: {}",
+            log.info("Expires at: {}",
                     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(expiresAt));
             throw new CredentialsExpiredException(msg);
         }
@@ -89,12 +89,7 @@ public class UserTokenServiceImpl implements UserTokenService {
         if (!shouldTokenRefresh(user.getId(), decode.getIssuedAt())) {
             return null;
         }
-        ValueOperations<String, String> operations = redisTemplate.opsForValue();
-        String newToken = generateToken(user);
-        // 设置最新token
-        operations.set(generateLatestTokenKey(user.getId()), newToken,
-                tokenConfig.getExpire(), TimeUnit.MINUTES);
-        return newToken;
+        return generateToken(user);
     }
 
     @Override

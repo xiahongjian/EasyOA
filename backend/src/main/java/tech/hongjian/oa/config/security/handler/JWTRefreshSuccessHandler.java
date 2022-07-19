@@ -3,7 +3,6 @@ package tech.hongjian.oa.config.security.handler;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import tech.hongjian.oa.config.security.filter.JWTAuthenticationFilter;
-import tech.hongjian.oa.config.security.token.JWTAuthenticationToken;
 import tech.hongjian.oa.entity.User;
 import tech.hongjian.oa.service.UserTokenService;
 
@@ -28,7 +27,7 @@ public class JWTRefreshSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
-        String token = (String) ((JWTAuthenticationToken) authentication).getCredentials();
+        String token = (String) authentication.getCredentials();
         String newToken = tokenService.refreshToken(token, (User) authentication.getPrincipal());
         if (newToken != null) {
             response.setHeader(JWTAuthenticationFilter.DEFAULT_AUTHENTICATION_HEADER, newToken);
