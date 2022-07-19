@@ -13,6 +13,9 @@ import tech.hongjian.oa.flowable.FlowConstants;
 import tech.hongjian.oa.flowable.service.FlowService;
 
 /**
+ * 任务创建监听器，用于在流程实力创建之后，将流程关联的业务对象设置到流程变量中，
+ * 供后续使用。
+ *
  * Created by xiahongjian on 2021/5/26.
  */
 @Slf4j
